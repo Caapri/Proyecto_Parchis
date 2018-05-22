@@ -2,10 +2,9 @@ var socket = io.connect();
 //var socket = io.connect('http://192.168.12.83:9090/', { 'forceNew': true });
 
 // renderizado de los mensajes del chat
-socket.on('messages', function (data) {
-  //console.log(data);
+/*socket.on('messages', function (data) {
   render(data);
-});
+});*/
 
 // Incustacion de los dados aleatorios en el titulo
 socket.on("actualizartitulo", function (dados, room) {
@@ -34,6 +33,39 @@ socket.on("salallena", function () {
 // mensaje de alerta de cuando se conecta un usuario a la partida
 socket.emit('conectado');
 
+/*var submitChat = document.getElementById("enviarChat");
+var mensajeChat = document.getElementById("inputChat");
+console.log("Console log mensajeChat value: " + mensajeChat);
+submitChat.addEventListener("click", function() {
+  socket.emit("chat message", mensajeChat);
+});*/
+
+// CHAT
+function mensajeChat(e) {
+  var usuario = sessionStorage.getItem("user");
+  var mensaje = {
+    autor: usuario,
+    mensaje: document.getElementById("inputChat").value
+  }
+
+  socket.emit("chat_mensajes", mensaje);
+  return false;
+}
+
+socket.on("envioMsgCliente", function (msg) {
+  console.log("Entrando al envio de mensajes en el cliente");
+  var nick = msg.autor,
+    texto = msg.mensaje;
+
+  var ul = document.getElementById("messages");
+
+  // Creación del li nuevo
+  var li = document.createElement("li");
+  var listaMensajes = document.createTextNode(nick + ": " + texto);
+  li.appendChild(listaMensajes);
+  li.setAttribute("class", "msgChat");
+  ul.appendChild(li);
+});
 
 /*
 socket.on("hola", function () {
@@ -41,7 +73,7 @@ socket.on("hola", function () {
 });*/
 
 // funcion de añadir mensajes al array del chat
-function render(data) {
+/*function render(data) {
   var html = data.map(function (element, index) {
     return (`<div>
               <strong>${element.author}</strong>:
@@ -50,10 +82,10 @@ function render(data) {
   }).join(" ");
 
   document.getElementById('messages').innerHTML = html;
-}
+}*/
 
 // funcion de crear mensajes del chat
-function addMessage(e) {
+/*function addMessage(e) {
   var nombreusuario = sessionStorage.getItem("user");
   var mensaje = {
     author: nombreusuario,
@@ -62,11 +94,11 @@ function addMessage(e) {
 
   socket.emit("new-message", mensaje);
   return false;
-}
+}*/
+
+//////////////////////////////
 
 var daditos = 0;
-
-
 
 // carga de las funciones del js
 window.onload = function () {
@@ -87,6 +119,17 @@ window.onload = function () {
   socket.emit("room", salatual);
 
   var sala;
+
+  // MENSAJE DE BIENVENIDO/A A LA SALA 
+  var bienvenida = d3.select('#messages');
+  bienvenida.append("li")
+    .attr("class", "welcomeChat")
+    .html("Bienvenido/a a la sala " + salatual);
+  bienvenida.append("br");
+
+  /*
+  var welcomeChat = d3.select(".welcomeChat");
+  welcomeChat.append("li");*/
 
   var lanzar_dados = document.getElementById('boton');
 
@@ -119,7 +162,6 @@ window.onload = function () {
 
 
   });
-
 
   function tirada(turnos) {
     var toca = turnos;

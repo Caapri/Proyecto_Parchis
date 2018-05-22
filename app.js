@@ -69,9 +69,9 @@ app.get('/salas', function (req, res) { // SALAS
 });
 
 // Conexión de un nuevo socket
-io.on('connection', function(socket) {
+/*io.on('connection', function(socket) {
     console.log('Nuevo usuario conectado');
-});
+});*/
 
 // Puerto de escucha del servidor
 http.listen(3030, function() {
@@ -119,7 +119,14 @@ var salas = ["Sala1", "Sala2", "Sala3", "Sala4"];
 
 io.on('connection', function (socket) {
   console.log("Alguien se ha conectado con socket");
-  socket.emit('messages', mensajes);
+  //socket.emit('messages', mensajes);
+
+  // CHAT
+  socket.on("chat_mensajes", function(msg) {
+    io.sockets.in(getRoom(socket)).emit("envioMsgCliente", msg); // Enviar el msg a todos los clientes que pertenezcan a la sala del socket
+  });
+
+  ///////////////////////
 
   socket.emit("salas", salas);
 

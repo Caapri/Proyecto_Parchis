@@ -16,7 +16,16 @@
    id="svg8"
    inkscape:version="0.92.3 (unknown)"
    sodipodi:docname="parchis_v2.1_acabado.svg">
-  <defs id="defs587" />
+  <defs id="defs587">
+    <style type="text/css">
+      <![CDATA[
+        @font-face {
+          font-family: "Shine Bright - Demo";
+          src: url('../fonts/ShineBright.woff');
+        }
+      ]]>
+    </style>
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"

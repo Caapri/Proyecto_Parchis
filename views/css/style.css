@@ -10,7 +10,7 @@
     font-family: ShineBright;
     font-style: normal;
     font-weight: normal;
-    src: url('../ShineBright.ttf');
+    src: url('../fonts/ShineBright.woff');
 }
 
 /**/
@@ -425,7 +425,7 @@ object {
     grid-template-rows: 4fr
                         1fr;
     grid-gap: 10px;
-    padding: 10px;
+    background: red;
 }
   
 #messages{
@@ -433,8 +433,22 @@ object {
     overflow: auto;
     height: 500px;
 }
+
+#messages li {
+    list-style: none;
+}
+
+.welcomeChat {
+    font-weight: bold;
+    color: orange;
+}
+
+#nickChat {
+    color: blue;
+    font-weight: bold;
+}
   
-#formulario{
+#formChat{
     grid-area: texto;
 }
   

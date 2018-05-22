@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Jugar - Párchis</title>
+    <title>Jugar - Parchis</title>
     <link rel="icon" type="image/png" href="img/faviconParchis2.png" />
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -21,16 +21,19 @@
 
 <body>
     <div id="todo">
+        <!-- CABECERA -->
         <div id="titulo11">
             <h1 id="h1">Parchís</h1>
         </div>
 
+        <!-- BOTÓN DADOS -->
         <div id="botton11">
             <button id="boton" type="button">Dados</button>
         </div>
 
+        <!-- TABLERO -->
         <div id="tablero">
-            <div id="dados">
+            <div id="dados"> <!-- ESPACIO DADOS -->
                 <div id="interativo"></div>
                 <div id="interativo1"></div>
             </div>
@@ -38,14 +41,24 @@
             <object data="img/parchis_v2.1_acabado.svg" type="image/svg+xml" id="parchis" width="100%" height="100%"></object>
         </div>
 
-        <div id="chat">
+        <!-- CHAT -->
+
+        <!--<div id="chat">
             <div id="messages"></div>
             <form onsubmit="return addMessage(this)" id="formulario">
-                <!--<input id="username" type="text" placeholder="Tu nombre">-->
+                <input id="username" type="text" placeholder="Tu nombre">
                 <input id="texto" type="text" placeholder="Cuentanos algo...">
                 <input type="submit" valor="Send">
             </form>
+        </div>-->
+        <div id="chat">
+            <ul id="messages"></ul>
+            <form onsubmit="return mensajeChat(this)" id="formChat">
+                <input id="inputChat" autocomplete="off" />
+                <!--<button id="enviarChat">Enviar</button>-->
+            </form>
         </div>
+        
 
     </div>
 </body>
