@@ -4,14 +4,14 @@
   "description": "Creación de un Parchís Online con Node.js, Socket.IO y Express. Proyecto de 2º DAW.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Caapri/Proyecto_Parchis.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Xavier Giménez y Sara Garcia",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Caapri/Proyecto_Parchis/issues"

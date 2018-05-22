@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Registrarse - Parchís</title>
+  <link rel="icon" type="image/png" href="img/faviconParchis2.png" />
+  <script type="text/javascript" src="js/events.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <script src="js/signup.js"></script>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="form-header">
+      <h3 id="titleRegister">
+        <span class="glyphicon glyphicon-log-in"></span> Registro
+      </h3>
+    </div>
+    <span id="mensajeRegistro"></span>
+
+    <!-- BODY -->
+    <form id="formSignup" method="get" class="form-group"></form>
+      <div class="form-body">
+
+        <div class="input-group">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-user"></i>
+          </span>
+          <input id="userRegister" type="text" class="form-control" placeholder="Nombre de usuario" required="true">
+        </div>
+        <span id="messageUser"></span>
+
+        <div class="input-group">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-envelope"></i>
+          </span>
+          <input id="emailRegister" type="email" class="form-control" placeholder="Correo electrónico" required="true">
+        </div>
+        <span id="messageEmail"></span>
+
+        <div class="input-group">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-lock"></i>
+          </span>
+          <input id="passwordRegister" type="password" class="form-control" placeholder="Contraseña" required="true">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-lock"></i>
+          </span>
+          <input id="passwordRegister2" type="password" class="form-control" placeholder="Repetir contraseña" required="true">
+          <span class="input-group-addon"><i id="show-hide-passwd" class="glyphicon glyphicon-eye-open"></i></span>
+        </div>
+        <span id="messagePass"></span>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="form-footer">
+
+        <div class="input-group">
+          <button id="register" type="submit" class="btn btn-info" >
+            <span class="glyphicon glyphicon-log-in"></span> Registrarse
+          </button>
+        </div>
+
+      </div>
+      <br />
+
+      <div id="loguearse">
+        Ya tienes una cuenta?
+        <a href="/login">Loguéate</a>
+      </div>
+
+    </form>
+  </div>
+</body>
+
+</html>

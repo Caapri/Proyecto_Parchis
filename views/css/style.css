@@ -1,0 +1,444 @@
+/* FUENTES DE LETRA */
+@font-face {
+    font-family: Sims;
+    font-style: normal;
+    font-weight: normal;
+    src: url('../fonts/SimsLLHP.ttf');
+}
+
+body {
+    background-image: url("../img/wallpaper.png");
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: transparent;
+}
+
+/* Login */
+#usuario:focus {
+    /*background: ;*/
+}
+
+#logoParchis {
+    width: 90%;
+    margin: 0 auto;
+}
+
+#titleLogin {
+    
+}
+
+#contenedorLogin {
+    border: 1px black solid;
+    text-align: center;
+    padding: 3%;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 400px;
+    margin-top: 10px;
+    background-color: white;
+}
+
+#enviar {
+    color: white;
+    background: #0069d9;
+    border: none;
+}
+
+#enviar:hover {
+    opacity: 0.6;
+}
+
+/* Registro / Sign Up */
+.container {
+    border: 1px black solid;
+    background-color: white;
+    padding: 3px;
+    width: 100%;
+    max-width: 700px;
+    margin-top: 10px;
+    max-height: 100%;
+    height: 350px;
+}
+
+.form-header {
+    /*border-bottom: 1px grey solid;*/
+    text-align: center;
+    margin: 0 auto;
+}
+
+.form-body > .input-group {
+    padding: 3px;
+    width: 500px;
+    margin: 0 auto;
+}
+
+.form-footer > .input-group {
+    padding: 3px;
+    width: 500px;
+    margin: 0 auto;
+}
+
+.form-footer {
+    /*border-top: 1px grey solid;*/
+    border-bottom: 1px grey solid;
+    width: 600px;
+    margin: 0 auto;
+}
+
+#register {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+#loguearse {
+    text-align: center;
+    margin: 0 auto;
+    width: 500px;
+}
+
+/* Index.html (Inicio) */
+.gridIndex {
+    display: grid;
+    grid-template-areas: 'cabecera'
+                         'menu'
+                         'footer';
+    grid-row-gap: 10px; /* Espacio entre filas */
+}
+
+#cabecera {
+    /*width: 100%;*/
+    height: 80px;
+    /*background:linear-gradient(#2E9AFE, beige);*/
+    background:linear-gradient(#A9A9F5, beige);
+    /*opacity: 0.7;*/
+    grid-area: cabecera;
+    border-bottom: 1px black solid;
+}
+
+#welcomeUser {
+    /*background: pink;*/
+    /*width: 100%;
+    max-width: 250px;*/
+    display:inline-block;
+    /*float: left;*/
+}
+
+#iniciarSesion {
+    text-decoration: none;
+}
+
+#registrarse {
+    text-decoration: none;
+}
+
+#cerrarSesion {
+    text-decoration: none;
+}
+
+#containerUser {
+    /*float: right;*/
+    margin-top: 25px;
+    float: left;
+    margin-left: 50px;
+    font-size: 20px;
+}
+
+#nombreUsuario {
+    color:beige;
+}
+
+#nombreUsuario a {
+    text-decoration: none;
+    
+}
+
+
+#containerOpciones {
+    margin-top: 29px;
+    float: right;
+    margin-right: 50px;
+}
+
+#containerOpciones a {
+    margin-left: 15px;
+    color: black;
+}
+
+#containerOpciones a:hover {
+    /*color: white;*/
+    /*transition: 0.5s;
+    font-size: 20px;*/
+    text-shadow: 2px 2px 2px white;
+}
+
+#menu {
+    /*width: 100%;
+    height: 550px;
+    line-height: 550px;*/
+    grid-area: menu;
+    /*background-color: aliceblue;*/
+    text-align: center;
+    position: relative;
+    /*margin: 0px auto;*/
+    height: 775px;
+    /*border-top: 2px black solid;
+    border-bottom: 2px black solid;*/
+}
+
+#fondoMenu {
+    /*top: 10%;*/
+    /*vertical-align: middle;*/
+    margin: 0 auto;
+    margin-top: 130px;
+}
+
+#opcionesMenu {
+    position: absolute;
+    top: 58%;
+    left: 49%;
+    transform: translate(-50%, -50%);
+    font-family: Sims;
+    list-style: none;
+    font-size: 30px;
+    
+}
+
+#opcionesMenu li {
+    /*background: red;*/
+    margin-top: 10px;
+    border-radius: 10px;
+    width: 300px;
+    background: rgba(242,246,248,1);
+}
+
+#opcionesMenu li:hover {
+    background: orange;
+    transition: 0.5s;
+    padding: 10px;
+}
+
+#opcionesMenu li a {
+    text-decoration: none;
+    color: black;
+    display: block; /* Para que el enlace ocupe todo el ancho del contenedor */
+    
+}
+
+#logoIndex {
+    width: 300px;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.deshabilitado {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+#footerIndex {
+    grid-area: footer;
+    background: linear-gradient(white, #A9A9F5);
+    position: fixed;
+    /*opacity: 0.7;*/
+    width: 100%;
+    bottom: 0;
+    height: 90px;
+    border-top: 1px black solid;
+}
+
+#footer1 {
+    /*background: red;*/
+    float: left;
+    display: inline-block;
+    margin-top: 29px;
+    margin-left: 29px;
+    font-weight: bold;
+}
+
+#creadores {
+    /*background: blue;*/
+    display: inline-block;
+    margin-top: 20px;
+    margin-left: 50px;
+    font-weight: bold;
+    width: 290px;
+}
+
+#github {
+    float: right;
+    margin-right: 40px;
+    margin-top: 5px;
+    text-align: right;
+}
+
+#github a {
+    display: block;
+    text-decoration: none;
+}
+
+#titleGithub {
+    font-weight: bold;
+}
+
+/* PERFIL.HTML */
+#containerPrincipalPerfil {
+    display: grid;
+    grid-template-areas: "navegacion"
+                         "contenido";
+    width: 400px;
+    margin: 0 auto;
+    margin-top: 50px;
+    border: 1px black solid;
+}
+
+#navegacion {
+    grid-area: navegacion;
+    display: grid;
+    grid-template-areas: "datos estadisticas";
+    background: grey;
+}
+
+#datosUsuario {
+    grid-area: datos;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px black solid;
+    font-weight: bold;
+}
+
+#datosUsuario:hover {
+    background:#e1e1e1;
+}
+
+#estadisticasPersonales {
+    grid-area: estadisticas;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px black solid;
+    font-weight: bold;
+}
+
+#estadisticasPersonales:hover {
+    background:#e1e1e1;
+}
+
+#contenidoPerfil {
+    grid-area: contenido;
+    background:#9ecef3;
+    text-align:center;
+}
+
+#atrasPerfil {
+    background-color: white;
+    height: 40px;
+    width: 100px;
+    margin: 0 auto;
+    text-align:center;
+    border-radius: 10px;
+    border: 1px #45aaf2 solid;
+}
+
+#atrasPerfil a span {
+    margin-top: 11px;
+}
+
+#atrasPerfil a {
+    display: block;
+}
+
+/* PARTE XAVI */
+@font-face {
+    font-family: ShineBright;
+    font-style: normal;
+    font-weight: normal;
+    src: url('../ShineBright.ttf');
+  }
+  
+  #todo {
+    display: grid;
+    grid-template-areas:
+      'titulo titulo titulo'
+      'boton boton boton'
+      'tablero tablero chat';
+    grid-gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 10px;
+  }
+  
+  object {
+    font-family: ShineBright, fallBackFonts, sans-serif;
+  }
+  
+  #titulo11{
+    grid-area: titulo;
+    background: #f6f8ac;
+  }
+  
+  #botton11 {
+    grid-area: boton;
+  }
+  
+  #tablero {
+    grid-area: tablero;
+    background: #f6f8ac;
+    display: grid;
+    grid-template-areas: 'dados parchis';
+    grid-template-columns: 1fr 2fr;
+    grid-gap: 10px;
+    padding: 10px;
+    height: 700px;
+  }
+  
+  #dados{
+    grid-area: dados;
+    height: 70px;  
+    background: #f6f8ac;
+  }
+  
+  /*
+  #interativo{
+    transform: scale(0.3);
+  }
+  
+  #interativo1{
+    transform: scale(0.3);
+  }
+  */
+  
+  #parchis{
+    grid-area: parchis;
+  }
+  
+  #chat{
+    /*
+    width: 30%;
+    height: 650px;
+    float: left;
+    background: #f6f8ac;
+    border: 1 px solid black;
+    */
+    grid-area: chat;
+    display: grid;
+    grid-template-areas:
+      'mensajes'
+      'texto';
+    grid-template-rows: 4fr
+                        1fr;
+    grid-gap: 10px;
+    padding: 10px;
+  }
+  
+  #messages{
+    grid-area: mensajes;
+  }
+  
+  #formulario{
+    grid-area: texto;
+  }
+  
