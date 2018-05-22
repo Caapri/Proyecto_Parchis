@@ -430,7 +430,13 @@ object {
   
 #messages{
     grid-area: mensajes;
+<<<<<<< HEAD
 }
+=======
+    overflow: auto;
+    height: 500px;
+  }
+>>>>>>> 84355ccefc1344ed0755361eb9e07034514641d6
   
 #formulario{
     grid-area: texto;

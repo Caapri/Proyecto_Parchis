@@ -54,8 +54,9 @@ function render(data) {
 
 // funcion de crear mensajes del chat
 function addMessage(e) {
+  var nombreusuario = sessionStorage.getItem("user");
   var mensaje = {
-    author: document.getElementById('username').value,
+    author: nombreusuario,
     texto: document.getElementById('texto').value
   }
 
