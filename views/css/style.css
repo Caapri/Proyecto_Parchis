@@ -436,6 +436,8 @@ body {
   
   #messages{
     grid-area: mensajes;
+    overflow: auto;
+    height: 500px;
   }
   
   #formulario{
