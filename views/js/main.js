@@ -509,18 +509,28 @@ window.onload = function () {
         pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
         console.log("La segunda ficha no es la del medio");
 
-        var fichacentral = svg.select(pos22);
-        var ocupada = fichacentral.attr('style');
+        var fichaarriba = svg.select(pos11);
+        var ocupada1 = fichacentral.attr('style');
 
-        var color = "";
+        var fichacentral = svg.select(pos22);
+        var ocupada2 = fichacentral.attr('style');
+
+        var fichaabajo = svg.select(pos33);
+        var ocupada3 = fichacentral.attr('style');
+
+        var color1 = "";
+        var color2 = "";
+        var color3 = "";
         for (var i = 30; i < 37; i++) {
-          color += ocupada.charAt(i);
+          color1 += ocupada1.charAt(i);
+          color2 += ocupada2.charAt(i);
+          color3 += ocupada3.charAt(i);
         }
 
         if (color == "#ffffff") { // si es blanca
           console.log("La posición del medio está libre");
           idficha2 = pos22;
-        } else if (color != "#ffffff" || (pos33 == fichas[0].fill && pos11 == fichas[0].fill)) {
+        } else if (color1 == fichas[0].fill && color3 == fichas[0].fill) {
           console.log("hay un puente y no puedes mover");
           alert("hay un puente, imposible mover");
           idficha2 = idficha1;
