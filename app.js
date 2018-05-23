@@ -314,7 +314,7 @@ io.on('connection', function (socket) {
   console.log("Servidor iniciado por el pueto http://localhost:9090");
 });*/
 
-function getRoom(socket) {
+function getRoom(socket) { // Coger room socket
   var count = 0;
   var identifi = socket.id;
   var rooms = socket.adapter.sids[identifi];

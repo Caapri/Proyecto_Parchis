@@ -1,3 +1,5 @@
+/* CLIENTE */
+
 var socket = io.connect();
 //var socket = io.connect('http://192.168.12.83:9090/', { 'forceNew': true });
 
@@ -41,6 +43,12 @@ submitChat.addEventListener("click", function() {
 });*/
 
 // CHAT
+function pulsar(e) { // Borrar contenido input al pulsar al enter (enviar)
+  if(e.keyCode === 13 && !e.shiftKey) {
+    document.getElementById("inputChat").value = "";
+  }
+}
+
 function mensajeChat(e) {
   var usuario = sessionStorage.getItem("user");
   var mensaje = {
@@ -53,7 +61,7 @@ function mensajeChat(e) {
 }
 
 socket.on("envioMsgCliente", function (msg) {
-  console.log("Entrando al envio de mensajes en el cliente");
+  //console.log("Entrando al envio de mensajes en el cliente");
   var nick = msg.autor,
     texto = msg.mensaje;
 

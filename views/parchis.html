@@ -54,7 +54,7 @@
         <div id="chat">
             <ul id="messages"></ul>
             <form onsubmit="return mensajeChat(this)" id="formChat">
-                <input id="inputChat" autocomplete="off" />
+                <input id="inputChat" autocomplete="off" onkeypress="pulsar(event)" />
                 <!--<button id="enviarChat">Enviar</button>-->
             </form>
         </div>
