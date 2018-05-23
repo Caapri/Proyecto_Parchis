@@ -75,7 +75,7 @@ app.get('/salas', function (req, res) { // SALAS
 
 // Puerto de escucha del servidor
 http.listen(3030, function() {
-    console.log('Escuchando en el puerto 3030');
+    console.log('Escuchando en el puerto 2020');
 });
 
 //////////////////////////
@@ -114,6 +114,14 @@ participantesSala4.set('#3831eb', "").set('#188300', "").set('turno', turno);
 
 var salaactual;
 var salas = ["Sala1", "Sala2", "Sala3", "Sala4"];
+
+var fichasiniciales = [],
+fichasiniazules = {"fichaAzul01":1,"fichaAzul02":1,"fichaAzul03":1,"fichaAzul04":1},
+fichasiniverdes = {"fichaVerd01":1,"fichaVerd02":1,"fichaVerd03":1,"fichaVerd04":1};
+
+fichasiniciales.push(fichasiniazules);
+fichasiniciales.push(fichasiniverdes);
+
 
 //app.use(express.static('public'));
 
