@@ -43,12 +43,6 @@ submitChat.addEventListener("click", function() {
 });*/
 
 // CHAT
-function pulsar(e) { // Borrar contenido input al pulsar al enter (enviar)
-  if(e.keyCode === 13 && !e.shiftKey) {
-    document.getElementById("inputChat").value = "";
-  }
-}
-
 function mensajeChat(e) {
   var usuario = sessionStorage.getItem("user");
   var mensaje = {
@@ -74,6 +68,12 @@ socket.on("envioMsgCliente", function (msg) {
   li.setAttribute("class", "msgChat");
   ul.appendChild(li);
 });
+
+/*function pulsar(e) { // Borrar contenido input al pulsar al enter (enviar)
+  if(e.keyCode === 13 && !e.shiftKey) {
+    document.getElementById("inputChat").value = "";
+  }
+}*/
 
 /*
 socket.on("hola", function () {
