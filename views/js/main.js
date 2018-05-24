@@ -153,13 +153,18 @@ window.onload = function () {
     console.log(participantes);
 
     var socketcolores = Object.values(participantes);
+    var socketcoloreskeys = Object.keys(participantes);
     turnos = participantes.turno;
     var tusocket = socket.id;
     var colorparticipante;
-    if (turnos == 0) colorparticipante = socketcolores[0];
-    else colorparticipante = socketcolores[1];
-
+    if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0];
+    else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1];
+    console.log("Tu color es: " + colorpersona);
+    console.log("Turno del color ---------------- tu color");
     console.log(colorparticipante + " - " + tusocket);
+    if(colorpersona == "#3831eb") d3.select("#tucolor").html("Turno de las azules");
+    if(colorpersona == "#188300") d3.select("#tucolor").html("Turno de las verdes");
+
     if (colorparticipante == tusocket) {
 
       tirada(turnos);
@@ -215,15 +220,18 @@ window.onload = function () {
             ficha2.id = id;
             ficha2.fill = relleno;
             fichasamover.push(ficha2);
-
             //console.log(fichasamover);
           } else {
             // control de la posicion donde la quieres poner
             if (relleno != "#ffffff") { // si no es blanca
-              var ficha1 = new Object();
-              ficha1.id = id;
-              ficha1.fill = relleno;
-              fichasamover.push(ficha1);
+              if (relleno == colorpersona) {
+                var ficha1 = new Object();
+                ficha1.id = id;
+                ficha1.fill = relleno;
+                fichasamover.push(ficha1);
+              } else {
+                console.log("No intentes mover una ficha que no es tuya!!!");
+              }
             } else {
               console.log("la ficha es blanca");
             }
@@ -509,22 +517,32 @@ window.onload = function () {
         pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
         console.log("La segunda ficha no es la del medio");
 
-        var fichacentral = svg.select(pos22);
-        var ocupada = fichacentral.attr('style');
+        var fichaarriba = svg.select(pos11);
+        var ocupada1 = fichaarriba.attr('style');
 
-        var color = "";
+        var fichacentral = svg.select(pos22);
+        var ocupada2 = fichacentral.attr('style');
+
+        var fichaabajo = svg.select(pos33);
+        var ocupada3 = fichaabajo.attr('style');
+
+        var color1 = "";
+        var color2 = "";
+        var color3 = "";
         for (var i = 30; i < 37; i++) {
-          color += ocupada.charAt(i);
+          color1 += ocupada1.charAt(i);
+          color2 += ocupada2.charAt(i);
+          color3 += ocupada3.charAt(i);
         }
 
-        if (color == "#ffffff") { // si es blanca
+        if (color2 == "#ffffff") { // si es blanca
           console.log("La posición del medio está libre");
           idficha2 = pos22;
-        } else if (color != "#ffffff" || (pos33 == fichas[0].fill && pos11 == fichas[0].fill)) {
+        } else if (color1 == fichas[0].fill && color3 == fichas[0].fill) {
           console.log("hay un puente y no puedes mover");
           alert("hay un puente, imposible mover");
           idficha2 = idficha1;
-        } else if (color == fichas[0].fill) {
+        } else if (color2 == fichas[0].fill) {
           console.log("la ficha 2 es del mismo color que la primera");
           var fichaarriba = svg.select(pos33).attr('style');
           var fichaarribacolor = fichaarriba.replace(r, colorficha1);
