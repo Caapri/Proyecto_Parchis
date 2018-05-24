@@ -111,15 +111,11 @@ var daditos = 0;
 // carga de las funciones del js
 window.onload = function () {
 
-  var puentes = [],
-    fichasamover = [],
-    opciones = [],
-    turnos,
-    fichasini,
-    dados, dado1, dado2, dadosum,
-    participantes = new Map(),
-    cas = new RegExp(/fill:#([a-f0-9]+)/),
-    sala;
+  var puentes = [];
+  var fichasamover = [];
+  var opciones = [];
+  var turnos;
+  var cas = new RegExp(/fill:#([a-f0-9]+)/);
 
   // paso la sala por el localstorage
   salatual = sessionStorage.getItem("sala");
@@ -129,6 +125,8 @@ window.onload = function () {
 
   // union a la sala que quiere unirse
   socket.emit("room", salatual);
+
+  var sala;
 
   // MENSAJE DE BIENVENIDO/A A LA SALA 
   var bienvenida = d3.select('#messages');
@@ -143,11 +141,15 @@ window.onload = function () {
 
   var lanzar_dados = document.getElementById('boton');
 
-  // funcion para generar los dados  
+  // funcion para generar los dados
+  var dados;
 
-  socket.on("genteensala", function (gentedesala, fichasiniciales) {
+  var participantes = new Map();
+
+  socket.on("genteensala", function (gentedesala,fichasiniciales) {
     participantes = gentedesala;
-
+    console.log("fichas iniciales:");
+    console.log(fichasiniciales);
     console.log("gente que hay en sala, color y turno");
     //'#3831eb', ""     '#188300', ""     'turno', 0/1
     console.log(participantes);
@@ -157,17 +159,13 @@ window.onload = function () {
     turnos = participantes.turno;
     var tusocket = socket.id;
     var colorparticipante;
-    if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0], fichasini = fichasiniciales[0], fichasalida = "ficha56-2";
-    else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1], fichasini = fichasiniciales[1], fichasalida = "ficha22-2";
-
-    console.log("fichas iniciales:");
-    console.log(fichasini);
-
+    if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0];
+    else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1];
     console.log("Tu color es: " + colorpersona);
     console.log("Turno del color ---------------- tu color");
     console.log(colorparticipante + " - " + tusocket);
-    if (colorpersona == "#3831eb") d3.select("#tucolor").html("Turno de las azules");
-    if (colorpersona == "#188300") d3.select("#tucolor").html("Turno de las verdes");
+    if(colorpersona == "#3831eb") d3.select("#tucolor").html("Turno de las azules");
+    if(colorpersona == "#188300") d3.select("#tucolor").html("Turno de las verdes");
 
     if (colorparticipante == tusocket) {
       tirada(turnos);
@@ -186,9 +184,8 @@ window.onload = function () {
       var caca = dados3d(caca);
       dados = Array(caca[0], caca[1]);
       socket.emit("dados", dados);
-      dado1 = dados[0], dado2 = dados[1], dadosum = dado1 + dado2;
     }
-
+    
     // variable que coge el svg del parchis
     var svg = d3.select(document.getElementById("parchis").contentDocument);
     // console.log(svg);
@@ -197,7 +194,6 @@ window.onload = function () {
     var puentes = [];
     var fichasamover = [];
     var opciones = [];
-    var contdados = 0;
     var cas = new RegExp(/fill:#([a-f0-9]+)/);
 
     svg
@@ -212,76 +208,43 @@ window.onload = function () {
       if (typeof dados != "undefined") {
         // variable para el id de las fichas
         var id = d3.select(this).attr("id");
-        console.log("somos los dados!!!!");
 
+        // generar array para pas fichas a mover
+        if (fichasamover.length != 2) {
+          var relleno = rgb2hex(this.style.fill);
 
-        console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
-
-        if (dado1 == 5 || dado2 == 5 || dadosum == 5) {
-          console.log("ha salido un 5");
-          contdados += 5;
-
-          var fichaasacar;
-          for (let ficha in fichasini) {
-            console.log(fichasini[ficha]);
-            if (fichasini[ficha] == 1) {
-              fichaasacar = ficha;
-              break;
-            }
-          }
-          dados51 = { "id": fichaasacar, "fill": colorpersona };
-          dados52 = { "id": fichasalida, "fill": "ffffff" };
-
-          var dados5 = [];
-          dados5.push(dados51);
-          dados5.push(dados52);
-
-          socket.emit("movimiento", dados5);
-
-        } else {
-          // generar array para pas fichas a mover
-          if (fichasamover.length != 2) {
-            var relleno = rgb2hex(this.style.fill);
-
-            // condicion si el array ya tiene una ficha
-            if (fichasamover.length == 1) {
-              var ficha2 = new Object();
-              ficha2.id = id;
-              ficha2.fill = relleno;
-              fichasamover.push(ficha2);
-              //console.log(fichasamover);
-            } else {
-              // control de la posicion donde la quieres poner
-              if (relleno != "#ffffff") { // si no es blanca
-                if (relleno == colorpersona) {
-                  var ficha1 = new Object();
-                  ficha1.id = id;
-                  ficha1.fill = relleno;
-                  fichasamover.push(ficha1);
-                } else {
-                  console.log("No intentes mover una ficha que no es tuya!!!");
-                }
+          // condicion si el array ya tiene una ficha
+          if (fichasamover.length == 1) {
+            var ficha2 = new Object();
+            ficha2.id = id;
+            ficha2.fill = relleno;
+            fichasamover.push(ficha2);
+            //console.log(fichasamover);
+          } else {
+            // control de la posicion donde la quieres poner
+            if (relleno != "#ffffff") { // si no es blanca
+              if (relleno == colorpersona) {
+                var ficha1 = new Object();
+                ficha1.id = id;
+                ficha1.fill = relleno;
+                fichasamover.push(ficha1);
               } else {
-                console.log("la ficha es blanca");
+                console.log("No intentes mover una ficha que no es tuya!!!");
               }
+            } else {
+              console.log("la ficha es blanca");
             }
           }
         }
+
         // hacer el movimiento cuando ya has seleccionado 2 fichas
-        if (fichasamover.length == 2 || contdados == dadosum) {//salatual
+        if (fichasamover.length == 2) {//salatual
           socket.emit("movimiento", fichasamover);
           fichasamover = [];
 
           if (toca == 0) toca = 1;
           else toca = 0;
           socket.emit("cambiarturno", toca);
-
-          svg
-            .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
-            .on("mouseover", function () { }) // funcion para iluminar casillas donde puedes poner las fichas
-            .on("click", function () { }) //funcion para seleccionar fichas
-            .on("mouseout", function () { });
-          lanzar_dados.removeEventListener("click", lanzardados);
         }
       }
     }
@@ -354,6 +317,132 @@ window.onload = function () {
       opciones = [];
     }
 
+    // funcion para mover las fichas
+
+    socket.on("muevoficha", function (fichas) {
+      moverfichas(fichas);
+    });
+
+    function moverfichas(fichas) {
+      var r = new RegExp(/fill:#([a-f0-9]+)/);
+      var r1 = new RegExp(/opacity:(0|1)+/);
+
+      var idficha1 = "#" + fichas[0].id;
+      var colorficha1 = "fill:" + fichas[0].fill;
+      var idficha2 = "#" + fichas[1].id;
+      var colorficha2 = "fill:" + fichas[1].fill;
+
+      var pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
+      var pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
+      var pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
+
+      if (idficha1 == idficha2) {
+        alert("No puedes poner la ficha en el mismo sitio!!!\nTonto!");
+      } else if (idficha2 == pos3 || idficha2 == pos2 || idficha2 == pos1) {
+        alert("Que pretendes?\nDuplicarte?");
+      } else {
+        if (idficha1.charAt(idficha1.length - 1) != 2) {
+          pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
+          pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
+          pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
+
+          var fichaarriba = svg.select(pos3).attr('style');
+          var fichaarribablanca = fichaarriba.replace(r, "fill:#ffffff");
+          var fichaarribablancapaca = fichaarribablanca.replace(r1, "opacity:0");
+          svg.select(pos3).attr('style', fichaarribablancapaca);
+
+          var fichamedio = svg.select(pos2).attr('style');
+          var fichamediocolor = fichamedio.replace(r, colorficha1);
+          var fichamediocolormostrar = fichamediocolor.replace(r1, "opacity:1");
+          svg.select(pos2).attr('style', fichamediocolormostrar);
+
+          var fichaabajo = svg.select(pos1).attr('style');
+          var fichaabajoblanca = fichaabajo.replace(r, "fill:#ffffff");
+          var fichaabajoblancapaca = fichaabajoblanca.replace(r1, "opacity:0");
+          svg.select(pos1).attr('style', fichaabajoblancapaca);
+        }
+
+        if (idficha2.charAt(idficha2.length - 1) != 2) {
+          pos33 = idficha2.substr(0, idficha2.length - 1) + "3";
+          pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
+          pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
+          console.log("La segunda ficha no es la del medio");
+
+          var fichacentral = svg.select(pos22);
+          var ocupada = fichacentral.attr('style');
+
+          var color = "";
+          for (var i = 30; i < 37; i++) {
+            color += ocupada.charAt(i);
+          }
+
+          if (color == "#ffffff") { // si es blanca
+            console.log("La posición del medio está libre");
+            idficha2 = pos22;
+          } else if (color != "#ffffff" || (pos33 == fichas[0].fill && pos11 == fichas[0].fill)) {
+            console.log("hay un puente y no puedes mover");
+            alert("hay un puente, imposible mover");
+            idficha2 = idficha1;
+          } else if (color == fichas[0].fill) {
+            console.log("la ficha 2 es del mismo color que la primera");
+            var fichaarriba = svg.select(pos33).attr('style');
+            var fichaarribacolor = fichaarriba.replace(r, colorficha1);
+            fichaarribacolormostrar = fichaarribacolor.replace(r1, "opacity:1");
+            svg.select(pos33).attr('style', fichaarribacolormostrar);
+
+            var fichamedio = svg.select(pos22).attr('style');
+            var fichamedioblanca = fichamedio.replace(r, "fill:#f7f2f2");
+            fichamedioblancapaca = fichamedioblanca.replace(r1, "opacity:0");
+            svg.select(pos22).attr('style', fichamedioblancapaca);
+
+            var fichaabajo = svg.select(pos11).attr('style');
+            var fichaabajocolor = fichaabajo.replace(r, colorficha1);
+            fichaabajocolormostrar = fichaabajocolor.replace(r1, "opacity:1");
+            svg.select(pos11).attr('style', fichaabajocolormostrar);
+
+            new_puente = new Object();
+            new_puente.color = fichas[0].fill;
+            new_puente.ficha1 = pos1;
+            new_puente.ficha2 = pos2;
+            new_puente.ficha3 = pos3;
+            puentes.push(new_puente);
+          }
+        }
+
+        console.log(puentes);
+
+        // tratamiento de la primera ficha
+        var f1 = svg.select(idficha1).attr('style');
+        var newStyle = f1.replace(r, colorficha2);
+        newStyle = newStyle.replace(r1, "opacity:0");
+        svg.select(idficha1).attr('style', newStyle);
+
+        // tratamiento de la segunda ficha
+        var f2 = svg.select(idficha2).attr('style');
+        var newStyle1 = f2.replace(r, colorficha1);
+        newStyle1 = newStyle1.replace(r1, "opacity:1");
+        svg.select(idficha2).attr('style', newStyle1);
+        var f2 = svg.select(idficha2).attr('style');
+
+        /* // esto es para cuando se rompa el puente borrarlo del array de objetos de puentes
+        for(var element in puentes){
+          var temp = puentes[element];
+          var content = Object.values(temp);
+          console.log(content);
+          if(content.includes(idficha1)){
+            console.log("esta");
+          }
+        }*/
+
+        svg
+          .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
+          .on("mouseover", function () { }) // funcion para iluminar casillas donde puedes poner las fichas
+          .on("click", function () { }) //funcion para seleccionar fichas
+          .on("mouseout", function () { });
+        lanzar_dados.removeEventListener("click", lanzardados);
+      }
+    }
+
     function componentToHex(c) {
       var hex = c.toString(16);
       return hex.length == 1 ? "0" + hex : hex;
@@ -366,6 +455,14 @@ window.onload = function () {
         ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : orig;
     }
+    /*
+    svg
+      .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
+      .on("mouseover", function () { }) // funcion para iluminar casillas donde puedes poner las fichas
+      .on("click", function () { }) //funcion para seleccionar fichas
+      .on("mouseout", function () { });
+    lanzar_dados.removeEventListener("click", lanzardados);
+       */
 
   }
 
@@ -392,36 +489,28 @@ window.onload = function () {
     } else if (idficha2 == pos3 || idficha2 == pos2 || idficha2 == pos1) {
       alert("Que pretendes?\nDuplicarte?");
     } else {
-      var idfichacompare = idficha1.charAt(idficha1.length - 1);
-      var idfichasalida = idficha1.substr(0, idficha1.length - 1);
-      console.log("ficha1: " + idfichasalida);
-      if (idfichacompare != 2) {
-        if (idfichasalida == "#fichaAzul0" || idfichasalida == "#fichaVerd0" || idfichasalida == "#fichaAmar0" || idfichasalida == "#fichaRoja0") {
-          console.log("ficha de salida");
-          console.log(idfichacompare);
-        } else {
-          pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
-          pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
-          pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
+      if (idficha1.charAt(idficha1.length - 1) != 2) {
+        pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
+        pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
+        pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
 
-          var fichaarriba = svg.select(pos3).attr('style');
-          var fichaarribablanca = fichaarriba.replace(r, "fill:#ffffff");
-          var fichaarribablancapaca = fichaarribablanca.replace(r1, "opacity:0");
-          svg.select(pos3).attr('style', fichaarribablancapaca);
+        var fichaarriba = svg.select(pos3).attr('style');
+        var fichaarribablanca = fichaarriba.replace(r, "fill:#ffffff");
+        var fichaarribablancapaca = fichaarribablanca.replace(r1, "opacity:0");
+        svg.select(pos3).attr('style', fichaarribablancapaca);
 
-          var fichamedio = svg.select(pos2).attr('style');
-          var fichamediocolor = fichamedio.replace(r, colorficha1);
-          var fichamediocolormostrar = fichamediocolor.replace(r1, "opacity:1");
-          svg.select(pos2).attr('style', fichamediocolormostrar);
+        var fichamedio = svg.select(pos2).attr('style');
+        var fichamediocolor = fichamedio.replace(r, colorficha1);
+        var fichamediocolormostrar = fichamediocolor.replace(r1, "opacity:1");
+        svg.select(pos2).attr('style', fichamediocolormostrar);
 
-          var fichaabajo = svg.select(pos1).attr('style');
-          var fichaabajoblanca = fichaabajo.replace(r, "fill:#ffffff");
-          var fichaabajoblancapaca = fichaabajoblanca.replace(r1, "opacity:0");
-          svg.select(pos1).attr('style', fichaabajoblancapaca);
-        }
+        var fichaabajo = svg.select(pos1).attr('style');
+        var fichaabajoblanca = fichaabajo.replace(r, "fill:#ffffff");
+        var fichaabajoblancapaca = fichaabajoblanca.replace(r1, "opacity:0");
+        svg.select(pos1).attr('style', fichaabajoblancapaca);
       }
-      var idfichacompare2 = idficha2.charAt(idficha2.length - 1);
-      if (idfichacompare2 != 2) {
+
+      if (idficha2.charAt(idficha2.length - 1) != 2) {
         pos33 = idficha2.substr(0, idficha2.length - 1) + "3";
         pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
         pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
@@ -502,7 +591,6 @@ window.onload = function () {
           console.log("esta");
         }
       }*/
-
     }
   }
   // se ejecutara cuando el rival haga un movimiendo
