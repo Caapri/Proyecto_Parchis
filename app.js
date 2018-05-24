@@ -73,20 +73,24 @@ app.get('/salas', function (req, res) { // SALAS
     console.log('Nuevo usuario conectado');
 });*/
 
+<<<<<<< HEAD
 // Puerto de escucha del servidor
 http.listen(3031, function() {
     console.log('Escuchando en el puerto 3031');
 });
 
+=======
+>>>>>>> 689e62a298cfa64a5b91a3d2436ceb4f88ede79c
 //////////////////////////
 
-
+/*
 var mensajes = [{ id: 1, texto: "Bienvenido a la Sala", author: "Server" }];
 //var mensajes;
 var mensajesSala1 = [{ texto: "Bienvenido a la Sala 1", author: "Server" }],
   mensajesSala2 = [{ texto: "Bienvenido a la Sala 2", author: "Server" }],
   mensajesSala3 = [{ texto: "Bienvenido a la Sala 3", author: "Server" }],
   mensajesSala4 = [{ texto: "Bienvenido a la Sala 4", author: "Server" }];
+*/
 
 var salasuser = {};
 
@@ -214,7 +218,7 @@ io.on('connection', function (socket) {
       //'#3831eb', ""     '#188300', ""     'turno', turno
       var gente = { '#3831eb': gentedesala.get('#3831eb'), '#188300': gentedesala.get('#188300'), "turno": gentedesala.get('turno') }
       console.log(gente);
-      io.sockets.in(sala).emit("genteensala", gente);
+      io.sockets.in(sala).emit("genteensala", gente, fichasiniciales);
     }
   });
 
@@ -244,7 +248,7 @@ io.on('connection', function (socket) {
 
     var actualizarturno2 = { '#3831eb': actualizarturno.get('#3831eb'), '#188300': actualizarturno.get('#188300'), "turno": actualizarturno.get('turno') };
 
-    io.sockets.in(getRoom(socket)).emit("genteensala", actualizarturno2);
+    io.sockets.in(getRoom(socket)).emit("genteensala", actualizarturno2, fichasiniciales);
   });
 
   socket.on("rgbTohx", function (color) {
@@ -335,7 +339,10 @@ function getRoom(socket) { // Coger room socket
 
 ///////////////////////////
 
-
+// Puerto de escucha del servidor
+http.listen(3030, function() {
+  console.log('Escuchando en el puerto 3030');
+});
 
 
 
