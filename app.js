@@ -74,8 +74,8 @@ app.get('/salas', function (req, res) { // SALAS
 });*/
 
 // Puerto de escucha del servidor
-http.listen(3030, function() {
-    console.log('Escuchando en el puerto 2020');
+http.listen(3031, function() {
+    console.log('Escuchando en el puerto 3031');
 });
 
 //////////////////////////
