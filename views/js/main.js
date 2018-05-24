@@ -138,13 +138,9 @@ window.onload = function () {
   // union a la sala que quiere unirse
   socket.emit("room", salatual);
 
-<<<<<<< HEAD
   var sala;
 
   // Mensaje de bienvenido/a a la sala 
-=======
-  // MENSAJE DE BIENVENIDO/A A LA SALA 
->>>>>>> 689e62a298cfa64a5b91a3d2436ceb4f88ede79c
   var bienvenida = d3.select('#messages');
   bienvenida.append("li")
     .attr("class", "welcomeChat")
