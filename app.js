@@ -73,14 +73,11 @@ app.get('/salas', function (req, res) { // SALAS
     console.log('Nuevo usuario conectado');
 });*/
 
-<<<<<<< HEAD
 // Puerto de escucha del servidor
 http.listen(3031, function() {
     console.log('Escuchando en el puerto 3031');
 });
 
-=======
->>>>>>> 689e62a298cfa64a5b91a3d2436ceb4f88ede79c
 //////////////////////////
 
 /*
