@@ -108,7 +108,7 @@ body {
     grid-row-gap: 10px; /* Espacio entre filas */
 }
 
-#cabecera {
+#cabecera { /* Cabecera index.html */
     /*width: 100%;*/
     height: 80px;
     /*background:linear-gradient(#2E9AFE, beige);*/
@@ -118,28 +118,23 @@ body {
     border-bottom: 1px black solid;
 }
 
-#welcomeUser {
-    /*background: pink;*/
-    /*width: 100%;
-    max-width: 250px;*/
+#welcomeUser { /* Div con texto de bienvenido/a <usuario> */
     display:inline-block;
-    /*float: left;*/
 }
 
-#iniciarSesion {
+#iniciarSesion { /* Link para iniciar sesión */
     text-decoration: none;
 }
 
-#registrarse {
+#registrarse { /* Link para registrarse */
     text-decoration: none;
 }
 
-#cerrarSesion {
+#cerrarSesion { /* Link para cerrar sesión */
     text-decoration: none;
 }
 
-#containerUser {
-    /*float: right;*/
+#containerUser { /* Div contenedor del bienvenido/a <usuario> */
     margin-top: 25px;
     float: left;
     margin-left: 50px;
@@ -155,8 +150,7 @@ body {
     
 }
 
-
-#containerOpciones {
+#containerOpciones { /* Div contenedor de iniciar sesion y cerrar sesion */
     margin-top: 29px;
     float: right;
     margin-right: 50px;
@@ -168,9 +162,6 @@ body {
 }
 
 #containerOpciones a:hover {
-    /*color: white;*/
-    /*transition: 0.5s;
-    font-size: 20px;*/
     text-shadow: 2px 2px 2px white;
 }
 
@@ -244,36 +235,41 @@ body {
     grid-area: footer;
     background: linear-gradient(white, #A9A9F5);
     position: fixed;
-    /*opacity: 0.7;*/
     width: 100%;
     bottom: 0;
     height: 90px;
     border-top: 1px black solid;
+    display: grid;
+    grid-template-areas: 'copyright creadores github';
+    grid-column-gap: 10px;
 }
 
 #footer1 {
-    /*background: red;*/
-    float: left;
     display: inline-block;
-    margin-top: 29px;
+    margin-top: 35px;
     margin-left: 29px;
     font-weight: bold;
+    grid-area: copyright;
 }
 
 #creadores {
-    /*background: blue;*/
     display: inline-block;
-    margin-top: 20px;
-    margin-left: 50px;
     font-weight: bold;
     width: 290px;
+    grid-area: creadores;
+    margin: 0 auto;
+    margin-top: 25px;
+}
+
+#centrado {
+    text-align: center;
 }
 
 #github {
-    float: right;
     margin-right: 40px;
     margin-top: 5px;
     text-align: right;
+    grid-area: github;
 }
 
 #github a {
@@ -358,7 +354,7 @@ body {
     display: grid;
     grid-template-areas:
       'titulo titulo titulo titulo'
-      'boton boton boton boton'
+      'boton boton boton salir'
       'tablero tablero tablero chat';
     /*grid-gap: 10px;*/
     grid-column-gap: 10px;
@@ -371,10 +367,11 @@ body {
 }*/
   
 #titulo11 { /* Cabecera */
-    grid-area: titulo;
     background: #f6f8ac;
     display: grid;
     grid-template-areas: 'usuario logo sala';
+    grid-area: titulo;
+    border-bottom: 1px black solid;
 }
   
 #botton11 {
@@ -386,10 +383,6 @@ body {
     background: #f6f8ac;
     display: grid;
     grid-template-areas: 'dados parchis';
-    /*grid-template-columns: 1fr 2fr;*/
-    /*grid-gap: 10px;*/
-    /*padding: 10px;*/
-    /*height: 700px;*/
 }
   
 #dados{
@@ -413,11 +406,6 @@ body {
 }
   
 #chat {
-    /*
-    width: 30%;
-    height: 650px;
-    float: left;
-    background: #f6f8ac;*/
     border: 1px solid black;
     grid-area: chat;
     display: grid;
@@ -425,9 +413,8 @@ body {
       'mensajes'
       'texto';
     /*grid-gap: 10px;*/
-    background: red;
-    width: 300px;
-    
+    background: white;
+    width: 330px;
 }
   
 #messages{
@@ -452,7 +439,7 @@ body {
   
 #formChat {
     grid-area: texto;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
     height: 30px;
 }
 
@@ -494,4 +481,25 @@ body {
     background: yellow;
     text-align: center;
     text-shadow: 2px 2px 2px #0069d9;
+}
+
+#salirPartida {
+    grid-area: salir;
+    margin: 0 auto;
+    margin-top: 15px;
+    
+    /*display: block;*/
+}
+
+#btnSalir { /* Botón de salir de la partida */
+    /*background: red;
+    border: 1px black solid;
+    padding: 7px;
+    width: 100px;*/
+    display: block;
+    padding: 10px;
+    background:#C9302C;
+    border-radius: 7px;
+    text-decoration: none;
+    color: white;
 }
