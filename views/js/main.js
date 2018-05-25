@@ -9,8 +9,7 @@ var socket = io.connect();
 });*/
 
 // Incustacion de los dados aleatorios en el titulo
-socket.on("actualizartitulo", function (dados, room) {
-  //document.getElementById('h1').innerHTML = "Parchís " + " - " + room + " (" + dados[0] + "," + dados[1] + ")";
+socket.on("actualizartitulo", function (dados) {
   var dice = d3.selectAll("#dice");
   dice.remove();
 
@@ -84,30 +83,6 @@ socket.on("envioMsgCliente", function (msg) {
 socket.on("hola", function () {
   alert("Hola me he conectado a tu partida");
 });*/
-
-// funcion de añadir mensajes al array del chat
-/*function render(data) {
-  var html = data.map(function (element, index) {
-    return (`<div>
-              <strong>${element.author}</strong>:
-              <em>${element.texto}</em>
-            </div>`);
-  }).join(" ");
-
-  document.getElementById('messages').innerHTML = html;
-}*/
-
-// funcion de crear mensajes del chat
-/*function addMessage(e) {
-  var nombreusuario = sessionStorage.getItem("user");
-  var mensaje = {
-    author: nombreusuario,
-    texto: document.getElementById('texto').value
-  }
-
-  socket.emit("new-message", mensaje);
-  return false;
-}*/
 
 //////////////////////////////
 

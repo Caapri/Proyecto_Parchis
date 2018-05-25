@@ -11,61 +11,61 @@ app.use('/img', express.static(__dirname + '/views/img'));
 app.use('/', express.static(__dirname + '/views'));
 
 // REDIRECCIONES
-app.get('/', function(req, res) { // REDIRECCIÓN A RAÍZ
-    res.sendFile( __dirname + '/views/index.html');
+app.get('/', function (req, res) { // REDIRECCIÓN A RAÍZ
+  res.sendFile(__dirname + '/views/index.html');
 });
 
-app.get('/login', function(req, res) { // REDIRECCIÓN A LOGIN
-    var nombre = req.query.nombre;
-    var pass = req.query.pass;
-    //res.send(nombre);
-    res.sendFile( __dirname + '/views/login.html');
+app.get('/login', function (req, res) { // REDIRECCIÓN A LOGIN
+  var nombre = req.query.nombre;
+  var pass = req.query.pass;
+  //res.send(nombre);
+  res.sendFile(__dirname + '/views/login.html');
 });
 
-app.get('/signup', function(req, res) { // REDIRECCIÓN A REGISTRO
-    res.sendFile( __dirname + '/views/signup.html');
+app.get('/signup', function (req, res) { // REDIRECCIÓN A REGISTRO
+  res.sendFile(__dirname + '/views/signup.html');
 });
 
-app.get('/profile', function(req, res) { // REGISTRO DE USUARIO RECIBIENDO AJAX
-    mongo.insertarMongo(req.query.usuario, req.query.correo, req.query.pass).then(function(insertar) {
-        //console.log('Insertado: ' + insertar);
-        res.send(insertar);
-    });
+app.get('/profile', function (req, res) { // REGISTRO DE USUARIO RECIBIENDO AJAX
+  mongo.insertarMongo(req.query.usuario, req.query.correo, req.query.pass).then(function (insertar) {
+    //console.log('Insertado: ' + insertar);
+    res.send(insertar);
+  });
 });
 
-app.get('/entrar', function(req, res) { // LOGIN DE USUARIO RECIBIENDO AJAX
-    mongo.login(req.query.nombre, req.query.pass).then(function(resultado) {
-        res.send(resultado);
-    });
+app.get('/entrar', function (req, res) { // LOGIN DE USUARIO RECIBIENDO AJAX
+  mongo.login(req.query.nombre, req.query.pass).then(function (resultado) {
+    res.send(resultado);
+  });
 });
 
-app.get('/datosUsuario', function(req, res) { // LOGIN DE USUARIO RECIBIENDO AJAX
-    mongo.recuperarDatos(req.query.nombre).then(function(resultado) {
-        res.send(resultado);
-    });
+app.get('/datosUsuario', function (req, res) { // LOGIN DE USUARIO RECIBIENDO AJAX
+  mongo.recuperarDatos(req.query.nombre).then(function (resultado) {
+    res.send(resultado);
+  });
 });
 
-app.get('/salir', function(req, res) { // CERRAR SESIÓN
-    res.sendFile( __dirname + '/views/cerrarSesion.html');
+app.get('/salir', function (req, res) { // CERRAR SESIÓN
+  res.sendFile(__dirname + '/views/cerrarSesion.html');
 });
 
-app.get('/perfil', function(req, res) { // PERFIL DEL USUARIO
-    res.sendFile( __dirname + '/views/perfil.html');
+app.get('/perfil', function (req, res) { // PERFIL DEL USUARIO
+  res.sendFile(__dirname + '/views/perfil.html');
 });
-  
+
 app.post('/jugar', function (req, res) { // JUGAR AL PARCHÍS (TABLERO)
-    /*var directorio = __dirname;
-    directorio = directorio.substr(0, 55) + '/public/parchis.html';
-    res.sendFile(directorio);*/
-    res.sendFile( __dirname + '/views/parchis.html');
+  /*var directorio = __dirname;
+  directorio = directorio.substr(0, 55) + '/public/parchis.html';
+  res.sendFile(directorio);*/
+  res.sendFile(__dirname + '/views/parchis.html');
 });
 
 app.get('/salas', function (req, res) { // SALAS
-    /*var directorio = __dirname;
-    directorio = directorio.substr(0, 55) + '/public/salas.html';
-    res.sendFile(directorio);*/
-    //res.sendFile( __dirname +  '/public/salas.html');
-    res.sendFile( __dirname + '/views/salas.html');
+  /*var directorio = __dirname;
+  directorio = directorio.substr(0, 55) + '/public/salas.html';
+  res.sendFile(directorio);*/
+  //res.sendFile( __dirname +  '/public/salas.html');
+  res.sendFile(__dirname + '/views/salas.html');
 });
 
 // Conexión de un nuevo socket
@@ -74,8 +74,8 @@ app.get('/salas', function (req, res) { // SALAS
 });*/
 
 // Puerto de escucha del servidor
-http.listen(3030, function() {
-    console.log('Escuchando en el puerto 3030');
+http.listen(3030, function () {
+  console.log('Escuchando en el puerto 3030');
 });
 
 //////////////////////////
@@ -117,8 +117,8 @@ var salaactual;
 var salas = ["Sala1", "Sala2", "Sala3", "Sala4"];
 
 var fichasiniciales = [],
-fichasiniazules = {"fichaAzul01":1,"fichaAzul02":1,"fichaAzul03":1,"fichaAzul04":1},
-fichasiniverdes = {"fichaVerd01":1,"fichaVerd02":1,"fichaVerd03":1,"fichaVerd04":1};
+  fichasiniazules = { "fichaAzul01": 1, "fichaAzul02": 1, "fichaAzul03": 1, "fichaAzul04": 1 },
+  fichasiniverdes = { "fichaVerd01": 1, "fichaVerd02": 1, "fichaVerd03": 1, "fichaVerd04": 1 };
 
 fichasiniciales.push(fichasiniazules);
 fichasiniciales.push(fichasiniverdes);
@@ -131,29 +131,41 @@ io.on('connection', function (socket) {
   //socket.emit('messages', mensajes);
 
   // CHAT
-  socket.on("chat_mensajes", function(msg) {
+  socket.on("chat_mensajes", function (msg) {
     io.sockets.in(getRoom(socket)).emit("envioMsgCliente", msg); // Enviar el msg a todos los clientes que pertenezcan a la sala del socket
   });
 
   ///////////////////////
 
+
   socket.emit("salas", salas);
 
   socket.on("room", function (sala) {
+    // variable que guarda la sala que coje del sessionstorage
     var contador = contadoresSalas.get(sala);
-    if (contador >= 2) {
+
+    // control de usuarios en la sala
+    if (contador >= 2) { // si la sala tiene 2 o mas jugadores te echa
+      // envia mensaje de que la sala esta llena al jugador que intenta entrar
       io.sockets.to(socket.id).emit("salallena");
+      // envia mensaje para deshabilitar botones para no poder entrar en la sala
       io.sockets.emit("deshabilitarboton", sala);
-    } else {
+
+    } else { // si la sala no esta llena entra en este if
+      // funcion del socket para crear y unir salas
       socket.join(sala);
 
+      // variable para saber en que sala esta el socket actual
       salasuser[socket.id] = sala;
       //console.log(salasuser);
-      var entedesala;
-      if (sala == "Sala1") {
-        var keys = Array.from(participantesSala1.keys());
+
+      var gentedesala,  // variable para guardar los participantes de la sala que se va a enviar
+      keys,             // array para guardar las keys de los participantes de las salas
+      cont;             // contador de la gente que hay en la sala que se le indica
+      if (sala == "Sala1") { // Entra en el if si la sala a la que intenta entrar el cliente es Sala1
+        keys = Array.from(participantesSala1.keys());
         console.log("--ides de la sala: " + keys);
-        var cont = contadoresSalas.get('Sala1');
+        cont = contadoresSalas.get('Sala1');
         console.log("---personas en la sala: " + cont);
         participantesSala1.set(keys[cont], socket.id);
         console.log("----añade persona a la sala: ");
@@ -165,10 +177,11 @@ io.on('connection', function (socket) {
         console.log(contadoresSalas);
         gentedesala = participantesSala1;
       }
-      if (sala == "Sala2") {
-        var keys = Array.from(participantesSala2.keys());
+
+      if (sala == "Sala2") { // Entra en el if si la sala a la que intenta entrar el cliente es Sala2
+        keys = Array.from(participantesSala2.keys());
         console.log("--ides de la sala: " + keys);
-        var cont = contadoresSalas.get('Sala2');
+        cont = contadoresSalas.get('Sala2');
         console.log("---personas en la sala: " + cont);
         participantesSala2.set(keys[cont], socket.id);
         console.log("----añade persona a la sala: ");
@@ -180,10 +193,11 @@ io.on('connection', function (socket) {
         console.log(contadoresSalas);
         gentedesala = participantesSala2;
       }
-      if (sala == "Sala3") {
-        var keys = Array.from(participantesSala3.keys());
+
+      if (sala == "Sala3") { // Entra en el if si la sala a la que intenta entrar el cliente es Sala3
+        keys = Array.from(participantesSala3.keys());
         console.log("--ides de la sala: " + keys);
-        var cont = contadoresSalas.get('Sala3');
+        cont = contadoresSalas.get('Sala3');
         console.log("---personas en la sala: " + cont);
         participantesSala3.set(keys[cont], socket.id);
         console.log("----añade persona a la sala: ");
@@ -195,10 +209,11 @@ io.on('connection', function (socket) {
         console.log(contadoresSalas);
         gentedesala = participantesSala3;
       }
-      if (sala == "Sala4") {
-        var keys = Array.from(participantesSala4.keys());
+
+      if (sala == "Sala4") { // Entra en el if si la sala a la que intenta entrar el cliente es Sala4
+        keys = Array.from(participantesSala4.keys());
         console.log("--ides de la sala: " + keys);
-        var cont = contadoresSalas.get('Sala4');
+        cont = contadoresSalas.get('Sala4');
         console.log("---personas en la sala: " + cont);
         participantesSala4.set(keys[cont], socket.id);
         console.log("----añade persona a la sala: ");
@@ -210,11 +225,14 @@ io.on('connection', function (socket) {
         console.log(contadoresSalas);
         gentedesala = participantesSala4;
       }
+
       console.log("Se ha conectado a la sala " + sala + "");
 
       //'#3831eb', ""     '#188300', ""     'turno', turno
       var gente = { '#3831eb': gentedesala.get('#3831eb'), '#188300': gentedesala.get('#188300'), "turno": gentedesala.get('turno') }
       console.log(gente);
+
+      
       io.sockets.in(sala).emit("genteensala", gente, fichasiniciales);
     }
   });
