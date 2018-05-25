@@ -157,12 +157,13 @@ window.onload = function () {
   welcomeChat.append("li");*/
 
   /* Confirmación de salir de la partida (Función global reutilizable para mostrar un confirm) */
-  function confirm(string) {
-    if(!confirm(string)) {
+  function confirmar(string) {
+    /*if(!confirm(string)) {
       return false;
     } else {
       location.href = "/"; // Redireccionar a la página principal
-    }
+    }*/
+    
   }
 
   var lanzar_dados = document.getElementById('boton');
