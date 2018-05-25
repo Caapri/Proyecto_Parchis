@@ -42,6 +42,10 @@ submitChat.addEventListener("click", function() {
   socket.emit("chat message", mensajeChat);
 });*/
 
+/*var enviarChat = document.getElementById("enviarChat");
+enviarChat.addEventListener("click", mensajeChat(e));
+console.log("holiiis: " + enviarChat);*/
+
 // CHAT
 function mensajeChat(e) {
   var usuario = sessionStorage.getItem("user");
@@ -67,6 +71,7 @@ socket.on("envioMsgCliente", function (msg) {
   li.appendChild(listaMensajes);
   li.setAttribute("class", "msgChat");
   ul.appendChild(li);
+  
 });
 
 /*function pulsar(e) { // Borrar contenido input al pulsar al enter (enviar)
@@ -150,6 +155,15 @@ window.onload = function () {
   /*
   var welcomeChat = d3.select(".welcomeChat");
   welcomeChat.append("li");*/
+
+  /* Confirmación de salir de la partida (Función global reutilizable para mostrar un confirm) */
+  function confirm(string) {
+    if(!confirm(string)) {
+      return false;
+    } else {
+      location.href = "/"; // Redireccionar a la página principal
+    }
+  }
 
   var lanzar_dados = document.getElementById('boton');
 
