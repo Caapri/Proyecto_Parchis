@@ -74,8 +74,8 @@ app.get('/salas', function (req, res) { // SALAS
 });*/
 
 // Puerto de escucha del servidor
-http.listen(3031, function() {
-    console.log('Escuchando en el puerto 3031');
+http.listen(3030, function() {
+    console.log('Escuchando en el puerto 3030');
 });
 
 //////////////////////////
@@ -319,10 +319,6 @@ io.on('connection', function (socket) {
 
 });
 
-/*server.listen(9090, function () {
-  console.log("Servidor iniciado por el pueto http://localhost:9090");
-});*/
-
 function getRoom(socket) { // Coger room socket
   var count = 0;
   var identifi = socket.id;
@@ -335,11 +331,6 @@ function getRoom(socket) { // Coger room socket
 }
 
 ///////////////////////////
-
-// Puerto de escucha del servidor
-http.listen(3030, function() {
-  console.log('Escuchando en el puerto 3030');
-});
 
 
 
