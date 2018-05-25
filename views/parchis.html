@@ -12,6 +12,7 @@
     <!--<script src="js/main_sala.js"></script>-->
     <link href="css/style.css" type="text/css" rel="stylesheet" />
     <link href="css/style_dado.css" type="text/css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.js"></script>
@@ -23,7 +24,17 @@
     <div id="todo">
         <!-- CABECERA -->
         <div id="titulo11">
-            <h1 id="h1">Parchís</h1>
+            <div id="userPlay"> <!-- USUARIO CABECERA -->
+                <!--<i id="icon-user" class="fa fa-user"></i>-->
+                
+            </div>
+            <!--<h1 id="h1">Parchís</h1>-->
+            <div id="divLogoJugar"> <!-- LOGO CABECERA -->
+                <img id="logoParchisJugar" src="img/logoParchis7.png" alt="Logo Parchís" />
+            </div>
+            <div id="salaJugar"> <!-- TITULO SALA CABECERA -->
+                <h1 id="tituloSala"></h1>
+            </div>
         </div>
 
         <!-- BOTÓN DADOS -->
@@ -39,7 +50,7 @@
                 <div id="interativo1"></div>
             </div>
 
-            <object data="img/parchis_v2.1_acabado.svg" type="image/svg+xml" id="parchis" width="100%" height="100%"></object>
+            <object id="parchis" data="img/parchis_v2.1_acabado.svg" type="image/svg+xml" width="100%" height="100%"></object>
         </div>
 
         <!-- CHAT -->
@@ -53,9 +64,9 @@
             </form>
         </div>-->
         <div id="chat">
-            <ul id="messages"></ul>
+            <ul id="messages"><li id="msgChat"></li></ul>
             <form onsubmit="return mensajeChat(this)" id="formChat">
-                <input id="inputChat" autocomplete="off" onkeypress="pulsar(event)" />
+                <input id="inputChat" autocomplete="off" onkeypress="pulsar(event)" class="form-control" placeholder="Escribe algo" />
                 <!--<button id="enviarChat">Enviar</button>-->
             </form>
         </div>

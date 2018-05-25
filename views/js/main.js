@@ -10,7 +10,7 @@ var socket = io.connect();
 
 // Incustacion de los dados aleatorios en el titulo
 socket.on("actualizartitulo", function (dados, room) {
-  document.getElementById('h1').innerHTML = "Parchís " + " - " + room + " (" + dados[0] + "," + dados[1] + ")";
+  //document.getElementById('h1').innerHTML = "Parchís " + " - " + room + " (" + dados[0] + "," + dados[1] + ")";
   var dice = d3.selectAll("#dice");
   dice.remove();
 
@@ -121,16 +121,26 @@ window.onload = function () {
     cas = new RegExp(/fill:#([a-f0-9]+)/),
     sala;
 
-  // paso la sala por el localstorage
+  // Recoger el nombre de la sala del sessionStorage
   salatual = sessionStorage.getItem("sala");
 
-  var titulo = document.getElementById('h1');
-  titulo.innerHTML = titulo.innerHTML + " - " + salatual;
+  // Poner el nombre de la sala en la cabecera de la página de juego
+  var tituloSala = document.getElementById("tituloSala");
+  tituloSala.innerHTML = salatual;
+
+  // Poner el nombre de usuario en la cabecera de la página del juego
+  var nick = sessionStorage.getItem("user");
+  var userPlay = document.getElementById("userPlay");
+  userPlay.innerHTML = nick;
+
+  //console.log('elemnto hijo: ', document.getElementById("msgChat").lastElementChild);
 
   // union a la sala que quiere unirse
   socket.emit("room", salatual);
 
-  // MENSAJE DE BIENVENIDO/A A LA SALA 
+  var sala;
+
+  // Mensaje de bienvenido/a a la sala 
   var bienvenida = d3.select('#messages');
   bienvenida.append("li")
     .attr("class", "welcomeChat")
