@@ -307,9 +307,9 @@ window.onload = function () {
           //console.log(num);
 
           var mouse = d3.select(this).attr("id");
-          var temp1 = parseInt(num) + dados[0],
-            temp2 = parseInt(num) + dados[1],
-            temp3 = parseInt(num) + dados[0] + dados[1];
+          var temp1 = parseInt(num) + dado1,
+            temp2 = parseInt(num) + dado2,
+            temp3 = parseInt(num) + dadosum;
 
           if (temp1 < 10) temp1 = "0" + temp1;
           if (temp2 < 10) temp2 = "0" + temp2;
