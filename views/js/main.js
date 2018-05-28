@@ -99,7 +99,8 @@ window.onload = function () {
     dados, dado1, dado2, dadosum,
     participantes = new Map(),
     cas = new RegExp(/fill:#([a-f0-9]+)/),
-    sala;
+    sala,
+    contcasas = 4;
 
   // Recoger el nombre de la sala del sessionStorage
   salatual = sessionStorage.getItem("sala");
@@ -178,6 +179,8 @@ window.onload = function () {
   });
 
   function tirada(turnos) {
+    // variable que coge el svg del parchis
+    var svg = d3.select(document.getElementById("parchis").contentDocument);
     var toca = turnos;
     //}
     lanzar_dados.addEventListener("click", lanzardados);
@@ -187,10 +190,48 @@ window.onload = function () {
       dados = Array(caca[0], caca[1]);
       socket.emit("dados", dados);
       dado1 = dados[0], dado2 = dados[1], dadosum = dado1 + dado2;
+
+      console.log("somos los dados!!!!");
+
+      console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
+      if (dado1 == 5 || dado2 == 5 || dadosum == 5) {
+        if (contcasas > 0) {
+          console.log("ha salido un 5");
+          contdados += 5;
+
+          var fichaasacar;
+          for (let ficha in fichasini) {
+            console.log(fichasini[ficha]);
+            if (fichasini[ficha] == 1) {
+              fichaasacar = ficha;
+              fichasini[ficha] = 0;
+              contcasas--;
+              console.log("array de las casas:");
+              console.log(fichasini);
+              console.log("contador de casas: " + contcasas);
+              break;
+            }
+          }
+
+          if (dado1 == 5) dado1 = 0;
+          else if (dado2 == 5) dado2 = 0;
+
+          colorcasa = sacarcolor("#" + fichasalida);
+
+          dados51 = { "id": fichaasacar, "fill": colorpersona };
+          dados52 = { "id": fichasalida, "fill": colorcasa };
+
+          var dados5 = [];
+          dados5.push(dados51);
+          dados5.push(dados52);
+
+          socket.emit("movimiento", dados5);
+        }
+      }
     }
 
-    // variable que coge el svg del parchis
-    var svg = d3.select(document.getElementById("parchis").contentDocument);
+
+
     // console.log(svg);
 
     // inicializacion de la variable que contendra los puentes y los movimientos de las fichas
@@ -201,6 +242,8 @@ window.onload = function () {
     var cas = new RegExp(/fill:#([a-f0-9]+)/);
     var r = new RegExp(/fill:#([a-f0-9]+)/);
     var r1 = new RegExp(/opacity:(0|1)+/);
+
+
 
     svg
       .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
@@ -214,91 +257,56 @@ window.onload = function () {
       if (typeof dados != "undefined") {
         // variable para el id de las fichas
         var id = d3.select(this).attr("id");
-        console.log("somos los dados!!!!");
 
+        // generar array para pas fichas a mover
+        if (fichasamover.length != 2) {
+          var relleno = rgb2hex(this.style.fill);
 
-        console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
+          // condicion si el array ya tiene una ficha
+          if (fichasamover.length == 1) {
+            var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
+            var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
+            var fichapuente1 = "#" + id.substr(0, id.length - 1) + "1";
+            console.log("La segunda ficha no es la del medio");
 
-        if (dado1 == 5 || dado2 == 5 || dadosum == 5) {
-          console.log("ha salido un 5");
-          contdados += 5;
+            var color1 = sacarcolor(fichapuente3);
+            var color2 = sacarcolor(fichapuente2);
+            var color3 = sacarcolor(fichapuente1);
+            console.log(color1);
 
-          var fichaasacar;
-          for (let ficha in fichasini) {
-            console.log(fichasini[ficha]);
-            if (fichasini[ficha] == 1) {
-              fichaasacar = ficha;
-              break;
-            }
-          }
-          console.log("id de la ficha sacar: " + fichaasacar);
-          /*var fichacasa = svg.select(fichasalida);
-          var stylecasa = fichacasa.attr('style');
-
-          
-          for (var i = 30; i < 37; i++) {
-            colorcasa += stylecasa.charAt(i);
-          }*/
-          colorcasa = sacarcolor("#"+fichasalida);
-          console.log("color casa:" + colorcasa);
-          console.log("id de la ficha salida: " + colorcasa);
-          console.log(fichaasacar, fichasalida, colorpersona, colorcasa);
-          dados51 = { "id": fichaasacar, "fill": colorpersona };
-          dados52 = { "id": fichasalida, "fill": colorcasa };
-
-          var dados5 = [];
-          dados5.push(dados51);
-          dados5.push(dados52);
-
-          socket.emit("movimiento", dados5);
-
-        } else {
-          // generar array para pas fichas a mover
-          if (fichasamover.length != 2) {
-            var relleno = rgb2hex(this.style.fill);
-
-            // condicion si el array ya tiene una ficha
-            if (fichasamover.length == 1) {
-              var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
-              var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
-              var fichapuente1 = "#" + id.substr(0, id.length - 1) + "1";
-              console.log("La segunda ficha no es la del medio");
-
-              var color1 = sacarcolor(fichapuente3);
-              var color2 = sacarcolor(fichapuente2);
-              var color3 = sacarcolor(fichapuente1);
-              console.log(color1);
-
-              var ficha2 = new Object();
-              ficha2.id = id;
-              ficha2.fill = relleno;
-              fichasamover.push(ficha2);
-              //console.log(fichasamover);
-            } else {
-              // control de la posicion donde la quieres poner
-              if (relleno != "#ffffff") { // si no es blanca
-                if (relleno == colorpersona) {
-                  var ficha1 = new Object();
-                  ficha1.id = id;
-                  ficha1.fill = relleno;
-                  fichasamover.push(ficha1);
-                } else {
-                  console.log("No intentes mover una ficha que no es tuya!!!");
-                }
+            var ficha2 = new Object();
+            ficha2.id = id;
+            ficha2.fill = relleno;
+            fichasamover.push(ficha2);
+            //console.log(fichasamover);
+          } else {
+            // control de la posicion donde la quieres poner
+            if (relleno != "#ffffff") { // si no es blanca
+              if (relleno == colorpersona) {
+                var ficha1 = new Object();
+                ficha1.id = id;
+                ficha1.fill = relleno;
+                fichasamover.push(ficha1);
               } else {
-                console.log("la ficha es blanca");
+                console.log("No intentes mover una ficha que no es tuya!!!");
               }
+            } else {
+              console.log("la ficha es blanca");
             }
           }
         }
+
         // hacer el movimiento cuando ya has seleccionado 2 fichas
         if (fichasamover.length == 2 || contdados == dadosum) {//salatual
           socket.emit("movimiento", fichasamover);
           fichasamover = [];
 
+          //if (contdados == dadosum) {
           if (toca == 0) toca = 1;
           else toca = 0;
           socket.emit("cambiarturno", toca);
+          contdados = 0;
+          //}
 
           svg
             .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
@@ -314,13 +322,8 @@ window.onload = function () {
       if (typeof dados != "undefined") {
         var idficha = d3.select(this).attr("id");
         idficha = "#" + idficha;
-
-        var casilla = svg.select(idficha).attr('style');
-        var colorfich = "";
-
-        for (var i = 30; i < 37; i++) {
-          colorfich += casilla.charAt(i);
-        }
+        
+        var colorfich = sacarcolor(idficha);
 
         if (colorfich != "#ffffff") {
           var num = idficha.charAt(6) + idficha.charAt(7);
