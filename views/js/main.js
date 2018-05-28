@@ -70,7 +70,7 @@ socket.on("envioMsgCliente", function (msg) {
   li.appendChild(listaMensajes);
   li.setAttribute("class", "msgChat");
   ul.appendChild(li);
-  
+
 });
 
 /*function pulsar(e) { // Borrar contenido input al pulsar al enter (enviar)
@@ -90,7 +90,7 @@ var daditos = 0;
 
 // carga de las funciones del js
 window.onload = function () {
-
+  var svg = d3.select(document.getElementById("parchis").contentDocument);
   var puentes = [],
     fichasamover = [],
     opciones = [],
@@ -138,7 +138,7 @@ window.onload = function () {
     } else {
       location.href = "/"; // Redireccionar a la página principal
     }*/
-    
+
   }
 
   var lanzar_dados = document.getElementById('boton');
@@ -199,6 +199,8 @@ window.onload = function () {
     var opciones = [];
     var contdados = 0;
     var cas = new RegExp(/fill:#([a-f0-9]+)/);
+    var r = new RegExp(/fill:#([a-f0-9]+)/);
+    var r1 = new RegExp(/opacity:(0|1)+/);
 
     svg
       .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
@@ -229,14 +231,18 @@ window.onload = function () {
               break;
             }
           }
-
-          var fichacasa = svg.select(fichasalida);
+          console.log("id de la ficha sacar: " + fichaasacar);
+          /*var fichacasa = svg.select(fichasalida);
           var stylecasa = fichacasa.attr('style');
 
-          var colorcasa = "";
+          
           for (var i = 30; i < 37; i++) {
             colorcasa += stylecasa.charAt(i);
-          }
+          }*/
+          colorcasa = sacarcolor("#"+fichasalida);
+          console.log("color casa:" + colorcasa);
+          console.log("id de la ficha salida: " + colorcasa);
+          console.log(fichaasacar, fichasalida, colorpersona, colorcasa);
           dados51 = { "id": fichaasacar, "fill": colorpersona };
           dados52 = { "id": fichasalida, "fill": colorcasa };
 
@@ -253,6 +259,16 @@ window.onload = function () {
 
             // condicion si el array ya tiene una ficha
             if (fichasamover.length == 1) {
+              var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
+              var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
+              var fichapuente1 = "#" + id.substr(0, id.length - 1) + "1";
+              console.log("La segunda ficha no es la del medio");
+
+              var color1 = sacarcolor(fichapuente3);
+              var color2 = sacarcolor(fichapuente2);
+              var color3 = sacarcolor(fichapuente1);
+              console.log(color1);
+
               var ficha2 = new Object();
               ficha2.id = id;
               ficha2.fill = relleno;
@@ -415,7 +431,7 @@ window.onload = function () {
           pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
           pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
           console.log("quiero romper puente");
-          bridgebreak(pos3, pos22, pos11);
+          bridgebreak(pos3, pos2, pos1);
         }
       }
       var idfichacompare2 = idficha2.charAt(idficha2.length - 1);
@@ -450,59 +466,6 @@ window.onload = function () {
         }
       }
 
-      function bridgebreak(posicion3, posicion2, posicion1) {
-        console.log("Rompo el puente!");
-        var arriba = svg.select(posicion3).attr('style');
-        var arribablanca = arriba.replace(r, "fill:#ffffff");
-        var arribablancaopaca = arribablanca.replace(r1, "opacity:0");
-        svg.select(posicion3).attr('style', arribablancaopaca);
-
-        var medio = svg.select(posicion2).attr('style');
-        var medioblanca = medio.replace(r, colorficha1);
-        var medioblancaopaca = medioblanca.replace(r1, "opacity:1");
-        svg.select(posicion2).attr('style', medioblancaopaca);
-
-        var abajo = svg.select(posicion1).attr('style');
-        var abajoblanca = abajo.replace(r, "fill:#ffffff");
-        var abajoblancaopaca = abajoblanca.replace(r1, "opacity:0");
-        svg.select(posicion1).attr('style', abajoblancaopaca);
-      }
-
-      function bridgemake(posicion3, posicion2, posicion1) {
-        console.log("Pongo un puente!");
-        var arriba = svg.select(posicion3).attr('style');
-        var arribablanca = arriba.replace(r, colorficha1);
-        var arribablancaopaca = arribablanca.replace(r1, "opacity:1");
-        svg.select(posicion3).attr('style', arribablancaopaca);
-
-        var medio = svg.select(posicion2).attr('style');
-        var medioblanca = medio.replace(r, "fill:#f7f2f2");
-        var medioblancaopaca = medioblanca.replace(r1, "opacity:0");
-        svg.select(posicion2).attr('style', medioblancaopaca);
-
-        var abajo = svg.select(posicion1).attr('style');
-        var abajoblanca = abajo.replace(r, colorficha1);
-        var abajoblancaopaca = abajoblanca.replace(r1, "opacity:1");
-        svg.select(posicion1).attr('style', abajoblancaopaca);
-
-        new_puente = new Object();
-        new_puente.color = fichas[0].fill;
-        new_puente.ficha1 = pos1;
-        new_puente.ficha2 = pos2;
-        new_puente.ficha3 = pos3;
-        puentes.push(new_puente);
-      }
-
-      function sacarcolor(posi) {
-        var ficha = svg.select(posi);
-        var ocupada = ficha.attr('style');
-        var color = "";
-        for (var i = 30; i < 37; i++) {
-          color += ocupada.charAt(i);
-        }
-        return color;
-      }
-
       console.log(puentes);
 
       // tratamiento de la primera ficha
@@ -530,23 +493,60 @@ window.onload = function () {
 
     }
   }
-  // se ejecutara cuando el rival haga un movimiendo
-  // se le para el array de fichasamover
 
+  function sacarcolor(posi) {
+    var ficha = svg.select(posi);
+    var ocupada = ficha.attr('style');
+    var color = "";
+    for (var i = 30; i < 37; i++) {
+      color += ocupada.charAt(i);
+    }
+    return color;
+  }
 
-  // pasar los colores de rgba a hexadecimal
+  function bridgebreak(posicion3, posicion2, posicion1) {
+    console.log("Rompo el puente!");
+    var arriba = svg.select(posicion3).attr('style');
+    var arribablanca = arriba.replace(r, "fill:#ffffff");
+    var arribablancaopaca = arribablanca.replace(r1, "opacity:0");
+    svg.select(posicion3).attr('style', arribablancaopaca);
 
+    var medio = svg.select(posicion2).attr('style');
+    var medioblanca = medio.replace(r, colorficha1);
+    var medioblancaopaca = medioblanca.replace(r1, "opacity:1");
+    svg.select(posicion2).attr('style', medioblancaopaca);
 
-  /*// prueba de coger una ficha y ponerla verde
-    var a = document.getElementById("parchis");
-    var svgDoc = a.contentDocument;
-    var circulo11 = svgDoc.getElementById("ficha11-1");
-  
-    circulo11.addEventListener("mouseover", function () {
-      this.style.fill = "green";
-      this.style.opacity = 1;
-    }, false);
-  */
+    var abajo = svg.select(posicion1).attr('style');
+    var abajoblanca = abajo.replace(r, "fill:#ffffff");
+    var abajoblancaopaca = abajoblanca.replace(r1, "opacity:0");
+    svg.select(posicion1).attr('style', abajoblancaopaca);
+  }
+
+  function bridgemake(posicion3, posicion2, posicion1) {
+    console.log("Pongo un puente!");
+    var arriba = svg.select(posicion3).attr('style');
+    var arribablanca = arriba.replace(r, colorficha1);
+    var arribablancaopaca = arribablanca.replace(r1, "opacity:1");
+    svg.select(posicion3).attr('style', arribablancaopaca);
+
+    var medio = svg.select(posicion2).attr('style');
+    var medioblanca = medio.replace(r, "fill:#f7f2f2");
+    var medioblancaopaca = medioblanca.replace(r1, "opacity:0");
+    svg.select(posicion2).attr('style', medioblancaopaca);
+
+    var abajo = svg.select(posicion1).attr('style');
+    var abajoblanca = abajo.replace(r, colorficha1);
+    var abajoblancaopaca = abajoblanca.replace(r1, "opacity:1");
+    svg.select(posicion1).attr('style', abajoblancaopaca);
+
+    new_puente = new Object();
+    new_puente.color = fichas[0].fill;
+    new_puente.ficha1 = pos1;
+    new_puente.ficha2 = pos2;
+    new_puente.ficha3 = pos3;
+    puentes.push(new_puente);
+  }
+
 }
 
 
