@@ -70,19 +70,8 @@ socket.on("envioMsgCliente", function (msg) {
   li.appendChild(listaMensajes);
   li.setAttribute("class", "msgChat");
   ul.appendChild(li);
-
 });
 
-/*function pulsar(e) { // Borrar contenido input al pulsar al enter (enviar)
-  if(e.keyCode === 13 && !e.shiftKey) {
-    document.getElementById("inputChat").value = "";
-  }
-}*/
-
-/*
-socket.on("hola", function () {
-  alert("Hola me he conectado a tu partida");
-});*/
 
 //////////////////////////////
 
@@ -101,6 +90,8 @@ window.onload = function () {
     cas = new RegExp(/fill:#([a-f0-9]+)/),
     sala,
     contcasas = 4;
+    fichascasas = 1;
+
 
   // Recoger el nombre de la sala del sessionStorage
   salatual = sessionStorage.getItem("sala");
@@ -158,8 +149,10 @@ window.onload = function () {
     turnos = participantes.turno;
     var tusocket = socket.id;
     var colorparticipante;
-    if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0], fichasini = fichasiniciales[0], fichasalida = "ficha56-2";
-    else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1], fichasini = fichasiniciales[1], fichasalida = "ficha22-2";
+
+    if(fichascasas == 1) fichascasas = fichasiniciales;
+    if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0], fichasini = fichascasas[0], fichasalida = "ficha56-2";
+    else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1], fichasini = fichascasas[1], fichasalida = "ficha22-2";
 
     console.log("fichas iniciales:");
     console.log(fichasini);
@@ -197,12 +190,17 @@ window.onload = function () {
       if (dado1 == 5 || dado2 == 5 || dadosum == 5) {
         if (contcasas > 0) {
           console.log("ha salido un 5");
+
           contdados += 5;
+          if (dadosum == 5) dado1 = 0, dado2 = 0, dadosum = 0;
+          else dadosum -= 5;
 
           var fichaasacar;
           for (let ficha in fichasini) {
+            console.log("ficha: " + ficha);
             console.log(fichasini[ficha]);
             if (fichasini[ficha] == 1) {
+              console.log("esta es la ficha a sacar: " + ficha);
               fichaasacar = ficha;
               fichasini[ficha] = 0;
               contcasas--;
@@ -322,7 +320,7 @@ window.onload = function () {
       if (typeof dados != "undefined") {
         var idficha = d3.select(this).attr("id");
         idficha = "#" + idficha;
-        
+
         var colorfich = sacarcolor(idficha);
 
         if (colorfich != "#ffffff") {
@@ -334,6 +332,7 @@ window.onload = function () {
           //console.log(num);
 
           var mouse = d3.select(this).attr("id");
+
           var temp1 = parseInt(num) + dado1,
             temp2 = parseInt(num) + dado2,
             temp3 = parseInt(num) + dadosum;
@@ -346,9 +345,9 @@ window.onload = function () {
           var opcion2 = "#casilla" + temp2;
           var opcion3 = "#casilla" + temp3;
 
-          opciones.push(opcion1);
-          opciones.push(opcion2);
-          opciones.push(opcion3);
+          if (dado1 != 0 && dadosum != 0) opciones.push(opcion1);
+          if (dado2 != 0 && dadosum != 0) opciones.push(opcion2);
+          if (dadosum != 0) opciones.push(opcion3);
 
           for (var elementos of opciones) {
             var casilla = svg.select(elementos).attr('style');
@@ -361,19 +360,18 @@ window.onload = function () {
     }
 
     function descolorearcasillas() {
-      var defec;
+      var defec = "fill:#ffffff";
       for (var elementos of opciones) {
         var ponercolor = svg.select(elementos).attr('style');
 
         if (elementos == "#casilla05") defec = "fill:#ff0000";
-        else if (elementos == "#casilla68") defec = "fill:#ff0000";
-        else if (elementos == "#casilla17") defec = "fill:#188300";
-        else if (elementos == "#casilla22") defec = "fill:#188300";
-        else if (elementos == "#casilla34") defec = "fill:#f6ff4b";
-        else if (elementos == "#casilla39") defec = "fill:#f6ff4b";
-        else if (elementos == "#casilla39") defec = "fill:#3831eb";
-        else if (elementos == "#casilla39") defec = "fill:#3831eb";
-        else defec = "fill:#ffffff";
+        if (elementos == "#casilla68") defec = "fill:#ff0000";
+        if (elementos == "#casilla17") defec = "fill:#188300";
+        if (elementos == "#casilla22") defec = "fill:#188300";
+        if (elementos == "#casilla34") defec = "fill:#f6ff4b";
+        if (elementos == "#casilla39") defec = "fill:#f6ff4b";
+        if (elementos == "#casilla39") defec = "fill:#3831eb";
+        if (elementos == "#casilla39") defec = "fill:#3831eb";
 
         var ponercolorsus = ponercolor.replace(cas, defec);
         svg.select(elementos).attr('style', ponercolorsus);

@@ -138,6 +138,8 @@ io.on('connection', function (socket) {
   ///////////////////////
 
 
+  socket.emit("participantesyfichasini", fichasiniciales);
+
   socket.emit("salas", salas);
 
   socket.on("room", function (sala) {
