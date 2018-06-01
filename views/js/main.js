@@ -1,12 +1,6 @@
 /* CLIENTE */
 
 var socket = io.connect();
-//var socket = io.connect('http://192.168.12.83:9090/', { 'forceNew': true });
-
-// renderizado de los mensajes del chat
-/*socket.on('messages', function (data) {
-  render(data);
-});*/
 
 // Incustacion de los dados aleatorios en el titulo
 socket.on("actualizartitulo", function (dados) {
@@ -382,8 +376,8 @@ window.onload = function () {
         if (elementos == "#casilla22") defec = "fill:#188300";
         if (elementos == "#casilla34") defec = "fill:#f6ff4b";
         if (elementos == "#casilla39") defec = "fill:#f6ff4b";
-        if (elementos == "#casilla39") defec = "fill:#3831eb";
-        if (elementos == "#casilla39") defec = "fill:#3831eb";
+        if (elementos == "#casilla51") defec = "fill:#3831eb";
+        if (elementos == "#casilla56") defec = "fill:#3831eb";
 
         var ponercolorsus = ponercolor.replace(cas, defec);
         svg.select(elementos).attr('style', ponercolorsus);
