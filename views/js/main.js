@@ -86,11 +86,12 @@ window.onload = function () {
     turnos,
     fichasini,
     dados, dado1, dado2, dadosum,
+    mov1, mov2, mov3,
     participantes = new Map(),
     cas = new RegExp(/fill:#([a-f0-9]+)/),
     sala,
     contcasas = 4;
-    fichascasas = 1;
+  fichascasas = 1;
 
 
   // Recoger el nombre de la sala del sessionStorage
@@ -150,7 +151,7 @@ window.onload = function () {
     var tusocket = socket.id;
     var colorparticipante;
 
-    if(fichascasas == 1) fichascasas = fichasiniciales;
+    if (fichascasas == 1) fichascasas = fichasiniciales;
     if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0], fichasini = fichascasas[0], fichasalida = "ficha56-2";
     else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1], fichasini = fichascasas[1], fichasalida = "ficha22-2";
 
@@ -262,21 +263,28 @@ window.onload = function () {
 
           // condicion si el array ya tiene una ficha
           if (fichasamover.length == 1) {
-            var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
-            var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
-            var fichapuente1 = "#" + id.substr(0, id.length - 1) + "1";
-            console.log("La segunda ficha no es la del medio");
+            console.log("la id es: " + id);
+            var idrecortada = id.substr(0, id.length - 2);
+            console.log("la id recortada es: " + idrecortada);
+            if (idrecortada == mov1 || idrecortada == mov2 || idrecortada == mov3) {
+              var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
+              var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
+              var fichapuente1 = "#" + id.substr(0, id.length - 1) + "1";
+              console.log("La segunda ficha no es la del medio");
 
-            var color1 = sacarcolor(fichapuente3);
-            var color2 = sacarcolor(fichapuente2);
-            var color3 = sacarcolor(fichapuente1);
-            console.log(color1);
+              var color1 = sacarcolor(fichapuente3);
+              var color2 = sacarcolor(fichapuente2);
+              var color3 = sacarcolor(fichapuente1);
+              console.log(color1);
 
-            var ficha2 = new Object();
-            ficha2.id = id;
-            ficha2.fill = relleno;
-            fichasamover.push(ficha2);
-            //console.log(fichasamover);
+              var ficha2 = new Object();
+              ficha2.id = id;
+              ficha2.fill = relleno;
+              fichasamover.push(ficha2);
+              //console.log(fichasamover);
+            } else {
+              console.log("No puedes mover la ficha a esa posición");
+            }
           } else {
             // control de la posicion donde la quieres poner
             if (relleno != "#ffffff") { // si no es blanca
@@ -341,9 +349,13 @@ window.onload = function () {
           if (temp2 < 10) temp2 = "0" + temp2;
           if (temp3 < 10) temp3 = "0" + temp3;
 
-          var opcion1 = "#casilla" + temp1;
-          var opcion2 = "#casilla" + temp2;
-          var opcion3 = "#casilla" + temp3;
+          mov1 = "ficha" + temp1,
+            mov2 = "ficha" + temp2,
+            mov3 = "ficha" + temp3;
+
+          var opcion1 = "#casilla" + temp1,
+            opcion2 = "#casilla" + temp2,
+            opcion3 = "#casilla" + temp3;
 
           if (dado1 != 0 && dadosum != 0) opciones.push(opcion1);
           if (dado2 != 0 && dadosum != 0) opciones.push(opcion2);
