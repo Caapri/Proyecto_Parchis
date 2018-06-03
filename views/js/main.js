@@ -79,13 +79,14 @@ window.onload = function () {
     opciones = [],
     turnos,
     fichasini,
-    dados, dado1, dado2, dadosum,
+    dados, dado1, dado2, dadosum, dadosum2,
     mov1, mov2, mov3,
     participantes = new Map(),
     cas = new RegExp(/fill:#([a-f0-9]+)/),
     sala,
-    contcasas = 4;
-  fichascasas = 1;
+    contcasas = 4,
+    contdados = 0,
+    fichascasas = 1;
 
 
   // Recoger el nombre de la sala del sessionStorage
@@ -178,6 +179,7 @@ window.onload = function () {
       dados = Array(caca[0], caca[1]);
       socket.emit("dados", dados);
       dado1 = dados[0], dado2 = dados[1], dadosum = dado1 + dado2;
+      dado11 = dados[0], dado22 = dados[1], dadosum2 = dado1 + dado2;
 
       console.log("somos los dados!!!!");
 
@@ -188,7 +190,6 @@ window.onload = function () {
 
           contdados += 5;
           if (dadosum == 5) dado1 = 0, dado2 = 0, dadosum = 0;
-          else dadosum -= 5;
 
           var fichaasacar;
           for (let ficha in fichasini) {
@@ -231,7 +232,6 @@ window.onload = function () {
     var puentes = [];
     var fichasamover = [];
     var opciones = [];
-    var contdados = 0;
     var cas = new RegExp(/fill:#([a-f0-9]+)/);
     var r = new RegExp(/fill:#([a-f0-9]+)/);
     var r1 = new RegExp(/opacity:(0|1)+/);
@@ -261,6 +261,10 @@ window.onload = function () {
             var idrecortada = id.substr(0, id.length - 2);
             console.log("la id recortada es: " + idrecortada);
             if (idrecortada == mov1 || idrecortada == mov2 || idrecortada == mov3) {
+              if (idrecortada == mov1) contdados += dado11;
+              if (idrecortada == mov2) contdados += dado22;
+              if (idrecortada == mov3) contdados += dadosum2;
+
               var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
               var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
               var fichapuente1 = "#" + id.substr(0, id.length - 1) + "1";
@@ -297,15 +301,20 @@ window.onload = function () {
         }
 
         // hacer el movimiento cuando ya has seleccionado 2 fichas
-        if (fichasamover.length == 2 || contdados == dadosum) {//salatual
+        if (fichasamover.length == 2 || dadosum == 5) {//salatual
           socket.emit("movimiento", fichasamover);
           fichasamover = [];
-
-          //if (contdados == dadosum) {
+          console.log("contador de dados = " + contdados);
+          console.log("suma de dados = " + dadosum2);
+          //if (contdados == dadosum2) {
           if (toca == 0) toca = 1;
           else toca = 0;
+          dado1 = 0, dado2 = 0, dadosum = 0;
+          dado11 = 0, dado22 = 0, dadosum2 = 0;
           socket.emit("cambiarturno", toca);
           contdados = 0;
+          //} else {
+          //console.log("sigue moviendo");
           //}
 
           svg
