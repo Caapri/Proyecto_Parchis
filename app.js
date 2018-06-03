@@ -253,7 +253,7 @@ io.on('connection', function (socket) {
 
   socket.on("dados", function (dados) {
     console.log(dados[0], dados[1]);
-    io.sockets.in(getRoom(socket)).emit("actualizartitulo", dados, getRoom(socket));
+    io.sockets.to(getRoom(socket)).emit("actualizartitulo", dados, getRoom(socket));
   });
 
   socket.on("cambiarturno", function (turnos2) {

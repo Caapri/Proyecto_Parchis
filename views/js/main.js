@@ -85,8 +85,9 @@ window.onload = function () {
     cas = new RegExp(/fill:#([a-f0-9]+)/),
     sala,
     contcasas = 4,
+    fichascasas = 1,
     contdados = 0,
-    fichascasas = 1;
+    todosumacinco = 1;
 
 
   // Recoger el nombre de la sala del sessionStorage
@@ -100,6 +101,8 @@ window.onload = function () {
   var nick = sessionStorage.getItem("user");
   var userPlay = document.getElementById("userPlay");
   userPlay.innerHTML = nick;
+
+  var lanzar_dados = document.getElementById('boton');
 
   //console.log('elemnto hijo: ', document.getElementById("msgChat").lastElementChild);
 
@@ -129,8 +132,6 @@ window.onload = function () {
 
   }
 
-  var lanzar_dados = document.getElementById('boton');
-
   // funcion para generar los dados  
 
   socket.on("genteensala", function (gentedesala, fichasiniciales) {
@@ -140,11 +141,11 @@ window.onload = function () {
     //'#3831eb', ""     '#188300', ""     'turno', 0/1
     console.log(participantes);
 
-    var socketcolores = Object.values(participantes);
-    var socketcoloreskeys = Object.keys(participantes);
-    turnos = participantes.turno;
-    var tusocket = socket.id;
-    var colorparticipante;
+    var socketcolores = Object.values(participantes),
+      socketcoloreskeys = Object.keys(participantes),
+      turnos = participantes.turno,
+      tusocket = socket.id,
+      colorparticipante = [];
 
     if (fichascasas == 1) fichascasas = fichasiniciales;
     if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0], fichasini = fichascasas[0], fichasalida = "ficha56-2";
@@ -171,11 +172,11 @@ window.onload = function () {
     // variable que coge el svg del parchis
     var svg = d3.select(document.getElementById("parchis").contentDocument);
     var toca = turnos;
-    //}
+
     lanzar_dados.addEventListener("click", lanzardados);
 
     function lanzardados() {
-      var caca = dados3d(caca);
+      var caca = dados3d();
       dados = Array(caca[0], caca[1]);
       socket.emit("dados", dados);
       dado1 = dados[0], dado2 = dados[1], dadosum = dado1 + dado2;
@@ -189,7 +190,8 @@ window.onload = function () {
           console.log("ha salido un 5");
 
           contdados += 5;
-          if (dadosum == 5) dado1 = 0, dado2 = 0, dadosum = 0;
+          if (dadosum == 5) dado1 = 0, dado2 = 0, dadosum = 0, todosumacinco = 0;
+          else dadosum -= 5;
 
           var fichaasacar;
           for (let ficha in fichasini) {
@@ -224,10 +226,6 @@ window.onload = function () {
       }
     }
 
-
-
-    // console.log(svg);
-
     // inicializacion de la variable que contendra los puentes y los movimientos de las fichas
     var puentes = [];
     var fichasamover = [];
@@ -235,8 +233,6 @@ window.onload = function () {
     var cas = new RegExp(/fill:#([a-f0-9]+)/);
     var r = new RegExp(/fill:#([a-f0-9]+)/);
     var r1 = new RegExp(/opacity:(0|1)+/);
-
-
 
     svg
       .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
@@ -279,7 +275,7 @@ window.onload = function () {
               ficha2.id = id;
               ficha2.fill = relleno;
               fichasamover.push(ficha2);
-              //console.log(fichasamover);
+              console.log(fichasamover);
             } else {
               console.log("No puedes mover la ficha a esa posición");
             }
@@ -304,18 +300,15 @@ window.onload = function () {
         if (fichasamover.length == 2 || dadosum == 5) {//salatual
           socket.emit("movimiento", fichasamover);
           fichasamover = [];
-          console.log("contador de dados = " + contdados);
+          console.log("contador de dados = " + contdados / 2);
           console.log("suma de dados = " + dadosum2);
-          //if (contdados == dadosum2) {
+          //if (Math.round(contdados / 2) == dadosum2 || todosumacinco == 0) {
           if (toca == 0) toca = 1;
           else toca = 0;
           dado1 = 0, dado2 = 0, dadosum = 0;
           dado11 = 0, dado22 = 0, dadosum2 = 0;
           socket.emit("cambiarturno", toca);
           contdados = 0;
-          //} else {
-          //console.log("sigue moviendo");
-          //}
 
           svg
             .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
@@ -323,6 +316,10 @@ window.onload = function () {
             .on("click", function () { }) //funcion para seleccionar fichas
             .on("mouseout", function () { });
           lanzar_dados.removeEventListener("click", lanzardados);
+
+          // } else {
+          // console.log("sigue moviendo");
+          //}
         }
       }
     }
@@ -344,9 +341,15 @@ window.onload = function () {
 
           var mouse = d3.select(this).attr("id");
 
-          var temp1 = parseInt(num) + dado1,
-            temp2 = parseInt(num) + dado2,
-            temp3 = parseInt(num) + dadosum;
+          var numero = parseInt(num);
+
+          var temp1 = numero + dado1,
+            temp2 = numero + dado2,
+            temp3 = numero + dadosum;
+
+          if (temp1 > 68) temp1 = temp1 - 68;
+          if (temp2 > 68) temp2 = temp2 - 68;
+          if (temp3 > 68) temp3 = temp3 - 68;
 
           if (temp1 < 10) temp1 = "0" + temp1;
           if (temp2 < 10) temp2 = "0" + temp2;
@@ -440,14 +443,14 @@ window.onload = function () {
           console.log("ficha de salida");
           console.log(idfichacompare);
           if (fichas[0].fill == fichas[1].fill) {
-            bridgemake(pos3, pos2, pos1);
+            bridgemake(pos3, pos2, pos1, colorficha1);
           }
         } else {
           pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
           pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
           pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
           console.log("quiero romper puente");
-          bridgebreak(pos3, pos2, pos1);
+          bridgebreak(pos3, pos2, pos1, colorficha1);
         }
       }
       var idfichacompare2 = idficha2.charAt(idficha2.length - 1);
@@ -470,7 +473,7 @@ window.onload = function () {
           idficha2 = idficha1;
         } else if (color2 == fichas[0].fill) {
           console.log("la ficha 2 es del mismo color que la primera");
-          bridgemake(pos33, pos22, pos11);
+          bridgemake(pos33, pos22, pos11, colorficha1);
         }
       } else {
         if (fichas[0].fill == fichas[1].fill) {
@@ -478,7 +481,7 @@ window.onload = function () {
           pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
           pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
           console.log("la ficha 2 es del mismo color que la primera");
-          bridgemake(pos33, pos22, pos11);
+          bridgemake(pos33, pos22, pos11, colorficha1);
         }
       }
 
@@ -520,7 +523,9 @@ window.onload = function () {
     return color;
   }
 
-  function bridgebreak(posicion3, posicion2, posicion1) {
+  function bridgebreak(posicion3, posicion2, posicion1, colorficha1) {
+    var r = new RegExp(/fill:#([a-f0-9]+)/);
+    var r1 = new RegExp(/opacity:(0|1)+/);
     console.log("Rompo el puente!");
     var arriba = svg.select(posicion3).attr('style');
     var arribablanca = arriba.replace(r, "fill:#ffffff");
@@ -538,7 +543,9 @@ window.onload = function () {
     svg.select(posicion1).attr('style', abajoblancaopaca);
   }
 
-  function bridgemake(posicion3, posicion2, posicion1) {
+  function bridgemake(posicion3, posicion2, posicion1, colorficha1) {
+    var r = new RegExp(/fill:#([a-f0-9]+)/);
+    var r1 = new RegExp(/opacity:(0|1)+/);
     console.log("Pongo un puente!");
     var arriba = svg.select(posicion3).attr('style');
     var arribablanca = arriba.replace(r, colorficha1);
@@ -555,11 +562,11 @@ window.onload = function () {
     var abajoblancaopaca = abajoblanca.replace(r1, "opacity:1");
     svg.select(posicion1).attr('style', abajoblancaopaca);
 
-    new_puente = new Object();
-    new_puente.color = fichas[0].fill;
-    new_puente.ficha1 = pos1;
-    new_puente.ficha2 = pos2;
-    new_puente.ficha3 = pos3;
+    var new_puente = new Object();
+    new_puente.color = colorficha1;
+    new_puente.ficha1 = colorficha1;
+    new_puente.ficha2 = posicion2;
+    new_puente.ficha3 = posicion3;
     puentes.push(new_puente);
   }
 
