@@ -14,9 +14,9 @@ socket.on("actualizartitulo", function (dados) {
 });
 
 socket.on("borrarsala", function () {
-  console.log(sessionStorage.getItem("sala"));
+  //console.log(sessionStorage.getItem("sala"));
   sessionStorage.removeItem("sala");
-  console.log(sessionStorage.getItem("sala"));
+  //console.log(sessionStorage.getItem("sala"));
 });
 
 // Decirle al cliente que la sala está llena y redirigirlo a las salas
@@ -137,7 +137,7 @@ window.onload = function () {
   socket.on("genteensala", function (gentedesala, fichasiniciales) {
     participantes = gentedesala;
 
-    console.log("gente que hay en sala, color y turno");
+    //console.log("gente que hay en sala, color y turno");
     //'#3831eb', ""     '#188300', ""     'turno', 0/1
     console.log(participantes);
 
@@ -183,34 +183,44 @@ window.onload = function () {
       dado11 = dados[0], dado22 = dados[1], dadosum2 = dado1 + dado2;
 
       console.log("somos los dados!!!!");
-
       console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
       if (dado1 == 5 || dado2 == 5 || dadosum == 5) {
         if (contcasas > 0) {
           console.log("ha salido un 5");
 
-          contdados += 5;
-          if (dadosum == 5) dado1 = 0, dado2 = 0, dadosum = 0, todosumacinco = 0;
-          else dadosum -= 5;
+          if (dado1 == 5) {
+            contdados += 5;
+            dado1 == 0;
+            console.log("El primer dado vale 5");
+          } else if (dado2 == 5) {
+            contdados += 5;
+            dado2 == 0;
+            console.log("El segundo dado vale 5");
+
+          } else {
+            contdados += 5;
+            dadosum == 0;
+            console.log("la suma de los dados vale 5");
+          }
 
           var fichaasacar;
           for (let ficha in fichasini) {
-            console.log("ficha: " + ficha);
-            console.log(fichasini[ficha]);
+            //console.log("ficha: " + ficha);
+            //console.log(fichasini[ficha]);
             if (fichasini[ficha] == 1) {
-              console.log("esta es la ficha a sacar: " + ficha);
+              //console.log("esta es la ficha a sacar: " + ficha);
               fichaasacar = ficha;
               fichasini[ficha] = 0;
               contcasas--;
-              console.log("array de las casas:");
-              console.log(fichasini);
-              console.log("contador de casas: " + contcasas);
+              //console.log("array de las casas:");
+              //console.log(fichasini);
+              //console.log("contador de casas: " + contcasas);
               break;
             }
           }
+          console.log("somos los dados despues del 5!!!!");
+          console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
 
-          if (dado1 == 5) dado1 = 0;
-          else if (dado2 == 5) dado2 = 0;
 
           colorcasa = sacarcolor("#" + fichasalida);
 
@@ -253,13 +263,13 @@ window.onload = function () {
 
           // condicion si el array ya tiene una ficha
           if (fichasamover.length == 1) {
-            console.log("la id es: " + id);
+            //console.log("la id es: " + id);
             var idrecortada = id.substr(0, id.length - 2);
-            console.log("la id recortada es: " + idrecortada);
+            //console.log("la id recortada es: " + idrecortada);
             if (idrecortada == mov1 || idrecortada == mov2 || idrecortada == mov3) {
-              if (idrecortada == mov1) contdados += dado11;
-              if (idrecortada == mov2) contdados += dado22;
-              if (idrecortada == mov3) contdados += dadosum2;
+              if (idrecortada == mov1) contdados += dado11, dado1 = 0;
+              if (idrecortada == mov2) contdados += dado22, dado2 = 0;
+              if (idrecortada == mov3) contdados += dadosum2, dadosum = 0;
 
               var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
               var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
@@ -269,13 +279,13 @@ window.onload = function () {
               var color1 = sacarcolor(fichapuente3);
               var color2 = sacarcolor(fichapuente2);
               var color3 = sacarcolor(fichapuente1);
-              console.log(color1);
+              //console.log(color1);
 
               var ficha2 = new Object();
               ficha2.id = id;
               ficha2.fill = relleno;
               fichasamover.push(ficha2);
-              console.log(fichasamover);
+              //console.log(fichasamover);
             } else {
               console.log("No puedes mover la ficha a esa posición");
             }
@@ -300,32 +310,34 @@ window.onload = function () {
         if (fichasamover.length == 2 || dadosum == 5) {//salatual
           socket.emit("movimiento", fichasamover);
           fichasamover = [];
-          console.log("contador de dados = " + contdados / 2);
+          console.log("contador de dados = " + contdados);
           console.log("suma de dados = " + dadosum2);
           //if (Math.round(contdados / 2) == dadosum2 || todosumacinco == 0) {
-          if (toca == 0) toca = 1;
-          else toca = 0;
-          dado1 = 0, dado2 = 0, dadosum = 0;
-          dado11 = 0, dado22 = 0, dadosum2 = 0;
-          socket.emit("cambiarturno", toca);
-          contdados = 0;
+          if (contdados == dadosum2 || todosumacinco == 0) {
+            if (toca == 0) toca = 1;
+            else toca = 0;
+            dado1 = 0, dado2 = 0, dadosum = 0;
+            dado11 = 0, dado22 = 0, dadosum2 = 0;
+            socket.emit("cambiarturno", toca);
+            contdados = 0;
 
-          svg
-            .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
-            .on("mouseover", function () { }) // funcion para iluminar casillas donde puedes poner las fichas
-            .on("click", function () { }) //funcion para seleccionar fichas
-            .on("mouseout", function () { });
-          lanzar_dados.removeEventListener("click", lanzardados);
+            svg
+              .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
+              .on("mouseover", function () { }) // funcion para iluminar casillas donde puedes poner las fichas
+              .on("click", function () { }) //funcion para seleccionar fichas
+              .on("mouseout", function () { });
+            lanzar_dados.removeEventListener("click", lanzardados);
 
-          // } else {
-          // console.log("sigue moviendo");
-          //}
+          } else {
+            console.log("sigue moviendo");
+          }
         }
       }
     }
 
     function colorearcasillas() {
       if (typeof dados != "undefined") {
+        //console.log("entro en colorear ficha");
         var idficha = d3.select(this).attr("id");
         idficha = "#" + idficha;
 
@@ -335,44 +347,45 @@ window.onload = function () {
           var num = idficha.charAt(6) + idficha.charAt(7);
           //console.log(num);
           if (isNaN(num)) {
-            num = idficha.charAt(10) + idficha.charAt(11);
+            //num = idficha.charAt(10) + idficha.charAt(11);
+            console.log("no puedes pover esa ficha");
+          } else {
+            //console.log(num);
+
+            var mouse = d3.select(this).attr("id");
+
+            var numero = parseInt(num);
+
+            var temp1 = numero + dado1,
+              temp2 = numero + dado2,
+              temp3 = numero + dadosum;
+
+            if (temp1 > 68) temp1 = temp1 - 68;
+            if (temp2 > 68) temp2 = temp2 - 68;
+            if (temp3 > 68) temp3 = temp3 - 68;
+
+            if (temp1 < 10) temp1 = "0" + temp1;
+            if (temp2 < 10) temp2 = "0" + temp2;
+            if (temp3 < 10) temp3 = "0" + temp3;
+
+            mov1 = "ficha" + temp1,
+              mov2 = "ficha" + temp2,
+              mov3 = "ficha" + temp3;
+
+            var opcion1 = "#casilla" + temp1,
+              opcion2 = "#casilla" + temp2,
+              opcion3 = "#casilla" + temp3;
+
+            if (dado1 != 0 && dadosum != 0) opciones.push(opcion1);
+            if (dado2 != 0 && dadosum != 0) opciones.push(opcion2);
+            if (dadosum != 0) opciones.push(opcion3);
+
+            for (var elementos of opciones) {
+              var casilla = svg.select(elementos).attr('style');
+              var casillacolor = casilla.replace(cas, "fill:#00ccff");
+              svg.select(elementos).attr('style', casillacolor);
+            }
           }
-          //console.log(num);
-
-          var mouse = d3.select(this).attr("id");
-
-          var numero = parseInt(num);
-
-          var temp1 = numero + dado1,
-            temp2 = numero + dado2,
-            temp3 = numero + dadosum;
-
-          if (temp1 > 68) temp1 = temp1 - 68;
-          if (temp2 > 68) temp2 = temp2 - 68;
-          if (temp3 > 68) temp3 = temp3 - 68;
-
-          if (temp1 < 10) temp1 = "0" + temp1;
-          if (temp2 < 10) temp2 = "0" + temp2;
-          if (temp3 < 10) temp3 = "0" + temp3;
-
-          mov1 = "ficha" + temp1,
-            mov2 = "ficha" + temp2,
-            mov3 = "ficha" + temp3;
-
-          var opcion1 = "#casilla" + temp1,
-            opcion2 = "#casilla" + temp2,
-            opcion3 = "#casilla" + temp3;
-
-          if (dado1 != 0 && dadosum != 0) opciones.push(opcion1);
-          if (dado2 != 0 && dadosum != 0) opciones.push(opcion2);
-          if (dadosum != 0) opciones.push(opcion3);
-
-          for (var elementos of opciones) {
-            var casilla = svg.select(elementos).attr('style');
-            var casillacolor = casilla.replace(cas, "fill:#00ccff");
-            svg.select(elementos).attr('style', casillacolor);
-          }
-
         }
       }
     }
@@ -437,11 +450,11 @@ window.onload = function () {
     } else {
       var idfichacompare = idficha1.charAt(idficha1.length - 1);
       var idfichasalida = idficha1.substr(0, idficha1.length - 1);
-      console.log("ficha1: " + idfichasalida);
+      //console.log("ficha1: " + idfichasalida);
       if (idfichacompare != 2) {
         if (idfichasalida == "#fichaAzul0" || idfichasalida == "#fichaVerd0" || idfichasalida == "#fichaAmar0" || idfichasalida == "#fichaRoja0") {
-          console.log("ficha de salida");
-          console.log(idfichacompare);
+          //console.log("ficha de salida");
+          //console.log(idfichacompare);
           if (fichas[0].fill == fichas[1].fill) {
             bridgemake(pos3, pos2, pos1, colorficha1);
           }
@@ -449,7 +462,7 @@ window.onload = function () {
           pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
           pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
           pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
-          console.log("quiero romper puente");
+          //console.log("quiero romper puente");
           bridgebreak(pos3, pos2, pos1, colorficha1);
         }
       }
@@ -465,14 +478,14 @@ window.onload = function () {
         var color3 = sacarcolor(pos33);
 
         if (color2 == "#ffffff") { // si es blanca
-          console.log("La posición del medio está libre");
+          //console.log("La posición del medio está libre");
           idficha2 = pos22;
         } else if (color1 == fichas[0].fill && color3 == fichas[0].fill) {
-          console.log("hay un puente y no puedes mover");
+          //console.log("hay un puente y no puedes mover");
           alert("hay un puente, imposible mover");
           idficha2 = idficha1;
         } else if (color2 == fichas[0].fill) {
-          console.log("la ficha 2 es del mismo color que la primera");
+          //console.log("la ficha 2 es del mismo color que la primera");
           bridgemake(pos33, pos22, pos11, colorficha1);
         }
       } else {
@@ -480,12 +493,12 @@ window.onload = function () {
           pos33 = idficha2.substr(0, idficha2.length - 1) + "3";
           pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
           pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
-          console.log("la ficha 2 es del mismo color que la primera");
+          //console.log("la ficha 2 es del mismo color que la primera");
           bridgemake(pos33, pos22, pos11, colorficha1);
         }
       }
 
-      console.log(puentes);
+      //console.log(puentes);
 
       // tratamiento de la primera ficha
       var f1 = svg.select(idficha1).attr('style');
