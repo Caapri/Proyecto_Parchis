@@ -16,8 +16,8 @@ app.get('/', function (req, res) { // REDIRECCIÓN A RAÍZ
 });
 
 app.get('/login', function (req, res) { // REDIRECCIÓN A LOGIN
-  var nombre = req.query.nombre;
-  var pass = req.query.pass;
+  /*var nombre = req.query.nombre;
+  var pass = req.query.pass;*/
   //res.send(nombre);
   res.sendFile(__dirname + '/views/login.html');
 });
@@ -26,7 +26,7 @@ app.get('/signup', function (req, res) { // REDIRECCIÓN A REGISTRO
   res.sendFile(__dirname + '/views/signup.html');
 });
 
-app.get('/profile', function (req, res) { // REGISTRO DE USUARIO RECIBIENDO AJAX
+app.get('/registro', function (req, res) { // REGISTRO DE USUARIO RECIBIENDO AJAX
   mongo.insertarMongo(req.query.usuario, req.query.correo, req.query.pass).then(function (insertar) {
     //console.log('Insertado: ' + insertar);
     res.send(insertar);

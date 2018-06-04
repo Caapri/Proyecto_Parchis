@@ -120,7 +120,7 @@ window.onload = () => {
             msgPass.innerHTML = "";
             //console.log("validación correcta");
             $.ajax({    // AJAX
-                url: '/profile',
+                url: '/registro',
                 data: { usuario: usuario, correo: correo, pass: pass },
                 type: 'GET',
 
