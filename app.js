@@ -235,7 +235,7 @@ io.on('connection', function (socket) {
       console.log(gente);
 
       
-      io.sockets.in(sala).emit("genteensala", gente, fichasiniciales);
+      io.sockets.to(sala).emit("genteensala", gente, fichasiniciales);
     }
   });
 

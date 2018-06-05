@@ -177,6 +177,7 @@ window.onload = function () {
 
     function lanzardados() {
       var caca = dados3d();
+      contdados = 0;
       dados = Array(caca[0], caca[1]);
       socket.emit("dados", dados);
       dado1 = dados[0], dado2 = dados[1], dadosum = dado1 + dado2;
@@ -190,48 +191,59 @@ window.onload = function () {
 
           if (dado1 == 5) {
             contdados += 5;
-            dado1 == 0;
+            dado1 = 0;
+            dadosum -=5;
             console.log("El primer dado vale 5");
-          } else if (dado2 == 5) {
+            sacarcasa();
+          }
+          if (dado2 == 5) {
             contdados += 5;
-            dado2 == 0;
+            dado2 = 0;
+            dadosum -=5;
             console.log("El segundo dado vale 5");
-
-          } else {
-            contdados += 5;
-            dadosum == 0;
+            sacarcasa();
+          }
+          if (dadosum == 5) {
+            contdados = dadosum2;
+            dado1 = 0;
+            dado2 = 0;
+            dadosum = 0;
             console.log("la suma de los dados vale 5");
+            sacarcasa();
           }
 
-          var fichaasacar;
-          for (let ficha in fichasini) {
-            //console.log("ficha: " + ficha);
-            //console.log(fichasini[ficha]);
-            if (fichasini[ficha] == 1) {
-              //console.log("esta es la ficha a sacar: " + ficha);
-              fichaasacar = ficha;
-              fichasini[ficha] = 0;
-              contcasas--;
-              //console.log("array de las casas:");
-              //console.log(fichasini);
-              //console.log("contador de casas: " + contcasas);
-              break;
+          function sacarcasa() {
+            var fichaasacar;
+            for (let ficha in fichasini) {
+              //console.log("ficha: " + ficha);
+              //console.log(fichasini[ficha]);
+              if (fichasini[ficha] == 1) {
+                //console.log("esta es la ficha a sacar: " + ficha);
+                fichaasacar = ficha;
+                fichasini[ficha] = 0;
+                contcasas--;
+                //console.log("array de las casas:");
+                //console.log(fichasini);
+                //console.log("contador de casas: " + contcasas);
+                break;
+              }
             }
+            console.log("somos los dados despues del 5!!!!");
+            console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
+
+
+            colorcasa = sacarcolor("#" + fichasalida);
+
+            dados51 = { "id": fichaasacar, "fill": colorpersona };
+            dados52 = { "id": fichasalida, "fill": colorcasa };
+
+            var dados5 = [];
+            dados5.push(dados51);
+            dados5.push(dados52);
+
+            socket.emit("movimiento", dados5);
           }
-          console.log("somos los dados despues del 5!!!!");
-          console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
 
-
-          colorcasa = sacarcolor("#" + fichasalida);
-
-          dados51 = { "id": fichaasacar, "fill": colorpersona };
-          dados52 = { "id": fichasalida, "fill": colorcasa };
-
-          var dados5 = [];
-          dados5.push(dados51);
-          dados5.push(dados52);
-
-          socket.emit("movimiento", dados5);
         }
       }
     }
@@ -307,13 +319,13 @@ window.onload = function () {
         }
 
         // hacer el movimiento cuando ya has seleccionado 2 fichas
-        if (fichasamover.length == 2 || dadosum == 5) {//salatual
+        if (fichasamover.length == 2 || (dado1 == 0 && dado2 == 0 && dadosum == 0)) {//salatual
           socket.emit("movimiento", fichasamover);
           fichasamover = [];
           console.log("contador de dados = " + contdados);
           console.log("suma de dados = " + dadosum2);
           //if (Math.round(contdados / 2) == dadosum2 || todosumacinco == 0) {
-          if (contdados == dadosum2 || todosumacinco == 0) {
+          if (contdados == dadosum2 || (dado1 == 0 && dado2 == 0 && dadosum == 0)) {
             if (toca == 0) toca = 1;
             else toca = 0;
             dado1 = 0, dado2 = 0, dadosum = 0;
@@ -360,6 +372,7 @@ window.onload = function () {
               temp2 = numero + dado2,
               temp3 = numero + dadosum;
 
+
             if (temp1 > 68) temp1 = temp1 - 68;
             if (temp2 > 68) temp2 = temp2 - 68;
             if (temp3 > 68) temp3 = temp3 - 68;
@@ -368,16 +381,53 @@ window.onload = function () {
             if (temp2 < 10) temp2 = "0" + temp2;
             if (temp3 < 10) temp3 = "0" + temp3;
 
-            mov1 = "ficha" + temp1,
-              mov2 = "ficha" + temp2,
-              mov3 = "ficha" + temp3;
+            var opcion1, opcion2, opcion3;
+            //fichaMetaVerde01-2  fichaMetaAzul01-2
+            if (colorfich == "#188300" && (dado1 > 17 && dado1 < 29)) {
+              console.log("la ficha roja se va la meta - 1");
+              opcion1 = "#metaRoja" + temp1;
+              mov1 = "fichaMetaVerde" + temp1;
+            } else if (colorfich == "#3831eb" && (dado1 > 51 && dado1 < 63)) {
+              console.log("la ficha azul se va la meta - 1");              
+              opcion1 = "#metaAzul" + temp1;
+              mov1 = "fichaMetaAzul" + temp1;
+            } else {
+              console.log("sigue tu camino que sin ti me va mejor - 1");              
+              opcion1 = "#casilla" + temp1;
+              mov1 = "ficha" + temp1;
+            }
 
-            var opcion1 = "#casilla" + temp1,
-              opcion2 = "#casilla" + temp2,
+            if (colorfich == "#188300" && (dado2 > 17 && dado2 < 29)) {
+              console.log("la ficha roja se va la meta - 2");
+              opcion2 = "#metaRoja" + temp2;
+              mov2 = "fichaMetaVerde" + temp2;
+            } else if (colorfich == "#3831eb" && (dado2 > 51 && dado2 < 63)) {
+              console.log("la ficha azul se va la meta - 2");              
+              opcion2 = "#metaAzul" + temp2;
+              mov2 = "fichaMetaAzul" + temp2;
+            } else {
+              console.log("sigue tu camino que sin ti me va mejor - 2");              
+              opcion2 = "#casilla" + temp2;
+              mov2 = "ficha" + temp2;
+            }
+
+            if (colorfich == "#188300" && (dadosum > 17 && dadosum < 29)) {
+              console.log("la ficha roja se va la meta - 3");
+              opcion3 = "#metaRoja" + temp3;
+              mov3 = "fichaMetaVerde" + temp3;
+            } else if (colorfich == "#3831eb" && (dadosum > 51 && dadosum < 63)) {
+              console.log("la ficha azul se va la meta - 3");              
+              opcion3 = "#metaAzul" + temp3;
+              mov3 = "fichaMetaAzul" + temp3;
+            } else {
+              console.log("sigue tu camino que sin ti me va mejor - 3");              
               opcion3 = "#casilla" + temp3;
-
-            if (dado1 != 0 && dadosum != 0) opciones.push(opcion1);
-            if (dado2 != 0 && dadosum != 0) opciones.push(opcion2);
+              mov3 = "ficha" + temp3;
+            }
+            console.log(typeof dado1);
+            console.log(dado1);
+            if (dado1 != 0) opciones.push(opcion1);
+            if (dado2 != 0) opciones.push(opcion2);
             if (dadosum != 0) opciones.push(opcion3);
 
             for (var elementos of opciones) {
