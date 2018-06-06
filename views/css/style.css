@@ -358,7 +358,7 @@ body {
       'tablero tablero tablero chat';
     /*grid-gap: 10px;*/
     grid-column-gap: 10px;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     /*padding: 10px;*/
 }
   
@@ -388,7 +388,7 @@ body {
 #dados{
     grid-area: dados;
     height: 70px;  
-    background: #f6f8ac;
+    /*background: #f6f8ac;*/
 }
   
 #interativo { /* Dado 1 */
@@ -444,7 +444,9 @@ body {
 }
 
 #inputChat { /* Input chat página parchis.html*/
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
+    width: 100%;
+    margin: 0 auto;
 }
 
 #icon-user { /* Icono usuario página parchis.html */
@@ -467,20 +469,20 @@ body {
 }
 
 #divLogoJugar { /* Div con el logo página parchis.html */
-    background: blue;
+    /*background: blue;*/
     margin: 0 auto;
     grid-area: logo;
 }
 
 #salaJugar { /* Div con la sala página parchis.html */
     grid-area: sala;
-    background: green;
+    /*background: green;*/
 }
 
 #tituloSala { /* Titulo de la sala página parchis.html */
-    background: yellow;
+    /*background: yellow;*/
     text-align: center;
-    text-shadow: 2px 2px 2px #0069d9;
+    text-shadow: 2px 2px 2px white;
 }
 
 #salirPartida {

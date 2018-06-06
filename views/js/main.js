@@ -103,6 +103,10 @@ window.onload = function () {
   var nick = sessionStorage.getItem("user");
   var userPlay = document.getElementById("userPlay");
   userPlay.innerHTML = nick;
+  /*var divNick = document.createElement("p");
+  var textNick = divNick.createTextNode(nick);
+  divNick.appendChild(textNick);
+  userPlay.appendChild(divNick);*/
 
   var lanzar_dados = document.getElementById('boton');
 
@@ -168,7 +172,9 @@ window.onload = function () {
     if (colorparticipante == tusocket) {
       tirada(turnos);
     } else {
-      alert("turno del rival");
+      // USO DE ALERTIFY PARA NOTIFICACIONES
+      alertify.set('notifier','position','top-right');
+      alertify.warning('Turno del rival');
     }
 
   });
