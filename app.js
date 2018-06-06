@@ -39,7 +39,7 @@ app.get('/entrar', function (req, res) { // LOGIN DE USUARIO RECIBIENDO AJAX
   });
 });
 
-app.get('/datosUsuario', function (req, res) { // LOGIN DE USUARIO RECIBIENDO AJAX
+app.get('/datosUsuario', function (req, res) { // PERFIL DE USUARIO RECIBIENDO AJAX
   mongo.recuperarDatos(req.query.nombre).then(function (resultado) {
     res.send(resultado);
   });
