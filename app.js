@@ -332,10 +332,12 @@ io.on('connection', function (socket) {
     console.log(keysalas);
     console.log("Se ha desconectado");
 
+    socket.broadcast.to(usersal).emit("fueritadeaca"); 
+    /*
     var contador = contadoresSalas.get(usersal);
     if (contador < 2) {
       io.sockets.emit("habilitarboton", usersal);
-    }
+    }*/
   });
 
 });

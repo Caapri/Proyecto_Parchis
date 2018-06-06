@@ -21,8 +21,13 @@ socket.on("borrarsala", function () {
 
 // Decirle al cliente que la sala está llena y redirigirlo a las salas
 socket.on("salallena", function () {
-  alert("La sala esta llena");
+  alertify.alert('La sala esta llena');
   location.href = "/";
+});
+
+socket.on("fueritadeaca", function () {
+  alertify.alert('Contrincante desconectado');
+  setTimeout(function () { location.href = "/"; }, 5000);
 });
 
 // mensaje de alerta de cuando se conecta un usuario a la partida
@@ -66,6 +71,9 @@ socket.on("envioMsgCliente", function (msg) {
   ul.appendChild(li);
 });
 
+socket.on("fueritadeaca", function () {
+  location.href = "/";
+});
 
 //////////////////////////////
 
@@ -164,16 +172,27 @@ window.onload = function () {
     console.log(metasini);
 
     console.log("Tu color es: " + colorpersona);
+
     console.log("Turno del color ---------------- tu color");
     console.log(colorparticipante + " - " + tusocket);
-    if (colorpersona == "#3831eb") d3.select("#tucolor").html("Turno de las azules");
-    if (colorpersona == "#188300") d3.select("#tucolor").html("Turno de las verdes");
+    if (colorpersona == "#3831eb") {
+      d3.select("#tucolor").html("Turno de las azules");
+      alertify.set('notifier', 'position', 'top-right');
+      alertify.warning('Turno de los Azules');
+    }
+    if (colorpersona == "#188300") {
+      d3.select("#tucolor").html("Turno de las verdes");
+      alertify.set('notifier', 'position', 'top-right');
+      alertify.warning('Turno de los Verdes');
+    }
 
     if (colorparticipante == tusocket) {
+      alertify.set('notifier', 'position', 'top-right');
+      alertify.success('Tu turno');
       tirada(turnos);
     } else {
       // USO DE ALERTIFY PARA NOTIFICACIONES
-      alertify.set('notifier','position','top-right');
+      alertify.set('notifier', 'position', 'top-right');
       alertify.warning('Turno del rival');
     }
 
@@ -252,6 +271,9 @@ window.onload = function () {
             dados5.push(dados51);
             dados5.push(dados52);
 
+            alertify.set('notifier', 'position', 'top-right');
+            alertify.success('Saco ficha');
+
             socket.emit("movimiento", dados5);
           }
 
@@ -310,7 +332,8 @@ window.onload = function () {
               fichasamover.push(ficha2);
               //console.log(fichasamover);
             } else {
-              console.log("No puedes mover la ficha a esa posición");
+              alertify.set('notifier', 'position', 'top-right');
+              alertify.error('No puedes mover la ficha a esa posición');
             }
           } else {
             // control de la posicion donde la quieres poner
@@ -321,7 +344,8 @@ window.onload = function () {
                 ficha1.fill = relleno;
                 fichasamover.push(ficha1);
               } else {
-                console.log("No intentes mover una ficha que no es tuya!!!");
+                alertify.set('notifier', 'position', 'top-right');
+                alertify.error('No intentes mover una ficha que no es tuya!!!');
               }
             } else {
               console.log("la ficha es blanca");
@@ -387,7 +411,8 @@ window.onload = function () {
 
           if (isNaN(num)) {
             //num = idficha.charAt(10) + idficha.charAt(11);
-            console.log("no puedes pover esa ficha");
+            alertify.set('notifier', 'position', 'top-right');
+            alertify.error('No puedes mover esa ficha');
           } else {
             //console.log(num);
 
@@ -607,9 +632,11 @@ window.onload = function () {
     var pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
 
     if (idficha1 == idficha2) {
-      alert("No puedes poner la ficha en el mismo sitio!!!\nTonto!");
+      alertify.set('notifier', 'position', 'top-right');
+      alertify.warning('No puedes poner la ficha en el mismo sitio!!!\nTonto!');
     } else if (idficha2 == pos3 || idficha2 == pos2 || idficha2 == pos1) {
-      alert("Que pretendes?\nDuplicarte?");
+      alertify.set('notifier', 'position', 'top-right');
+      alertify.warning('Que pretendes?\nDuplicarte?');
     } else {
       var idfichacompare = idficha1.charAt(idficha1.length - 1);
       var idfichasalida = idficha1.substr(0, idficha1.length - 1);
@@ -634,7 +661,7 @@ window.onload = function () {
         pos33 = idficha2.substr(0, idficha2.length - 1) + "3";
         pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
         pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
-        console.log("La segunda ficha no es la del medio");
+        //console.log("La segunda ficha no es la del medio");
 
         var color1 = sacarcolor(pos11);
         var color2 = sacarcolor(pos22);
@@ -645,7 +672,8 @@ window.onload = function () {
           idficha2 = pos22;
         } else if (color1 == fichas[0].fill && color3 == fichas[0].fill) {
           //console.log("hay un puente y no puedes mover");
-          alert("hay un puente, imposible mover");
+          alertify.set('notifier', 'position', 'top-right');
+          alertify.error('hay un puente, imposible mover');
           idficha2 = idficha1;
         } else if (color2 == fichas[0].fill) {
           //console.log("la ficha 2 es del mismo color que la primera");
