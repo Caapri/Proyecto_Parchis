@@ -29,7 +29,7 @@ app.get('/signup', function (req, res) { // REDIRECCIÓN A REGISTRO
 app.get('/registro', function (req, res) { // REGISTRO DE USUARIO RECIBIENDO AJAX
   mongo.insertarMongo(req.query.usuario, req.query.correo, req.query.pass).then(function (insertar) {
     //console.log('Insertado: ' + insertar);
-    res.send(insertar);
+  res.send(insertar);
   });
 });
 
