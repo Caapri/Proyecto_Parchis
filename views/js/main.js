@@ -79,6 +79,7 @@ window.onload = function () {
     opciones = [],
     turnos,
     fichasini,
+    metasini,
     dados, dado1, dado2, dadosum, dadosum2,
     mov1, mov2, mov3,
     participantes = new Map(),
@@ -86,6 +87,7 @@ window.onload = function () {
     sala,
     contcasas = 4,
     fichascasas = 1,
+    fichasmetas = 1,
     contdados = 0,
     todosumacinco = 1;
 
@@ -134,7 +136,7 @@ window.onload = function () {
 
   // funcion para generar los dados  
 
-  socket.on("genteensala", function (gentedesala, fichasiniciales) {
+  socket.on("genteensala", function (gentedesala, fichasiniciales, metasiniciales) {
     participantes = gentedesala;
 
     //console.log("gente que hay en sala, color y turno");
@@ -148,11 +150,14 @@ window.onload = function () {
       colorparticipante = [];
 
     if (fichascasas == 1) fichascasas = fichasiniciales;
-    if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0], fichasini = fichascasas[0], fichasalida = "ficha56-2";
-    else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1], fichasini = fichascasas[1], fichasalida = "ficha22-2";
+    if (fichasmetas == 1) fichasmetas = metasiniciales;
+    if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0], fichasini = fichascasas[0], fichasalida = "ficha56-2", metasini = fichasmetas[0];
+    else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1], fichasini = fichascasas[1], fichasalida = "ficha22-2", metasini = fichasmetas[1];
 
     console.log("fichas iniciales:");
     console.log(fichasini);
+    console.log("fichas metas:");
+    console.log(metasini);
 
     console.log("Tu color es: " + colorpersona);
     console.log("Turno del color ---------------- tu color");
@@ -349,6 +354,7 @@ window.onload = function () {
 
     function colorearcasillas() {
       if (typeof dados != "undefined") {
+        var meta = 0;
         //console.log("entro en colorear ficha");
         var idficha = d3.select(this).attr("id");
         idficha = "#" + idficha;
@@ -358,6 +364,21 @@ window.onload = function () {
         if (colorfich != "#ffffff") {
           var num = idficha.charAt(6) + idficha.charAt(7);
           //console.log(num);
+
+          var idfichameta = idficha.substr(0, idficha.length - 4);
+          console.log("ficha meta: " + idfichameta);
+
+          if (idfichameta == "#fichaMetaAzul") {
+            num = idficha.charAt(14) + idficha.charAt(15);
+            console.log("si es casilla de meta azul: " + num);
+            meta = 1;
+          }
+          if (idfichameta == "#fichaMetaVerde") {
+            num = idficha.charAt(15) + idficha.charAt(16);
+            console.log("si es casilla de meta verde: " + num);
+            meta = 1;
+          }
+
           if (isNaN(num)) {
             //num = idficha.charAt(10) + idficha.charAt(11);
             console.log("no puedes pover esa ficha");
@@ -392,17 +413,39 @@ window.onload = function () {
                 opcion1 = "#metaAzul" + temp1;
                 mov1 = "fichaMetaAzul" + temp1;
               } else {
-                opcion1 = "#casilla" + temp1;
-                mov1 = "ficha" + temp1;
+                if (meta == 1) {
+                  if (temp1 > 7) {
+                    console.log("ten cuidadol!!");
+                    opcion1 = "#casilla" + temp1;
+                    mov1 = "ficha" + temp1;
+                  } else {
+                    opcion1 = "#metaAzul" + temp1;
+                    mov1 = "fichaMetaAzul" + temp1;
+                  }
+                } else {
+                  opcion1 = "#casilla" + temp1;
+                  mov1 = "ficha" + temp1;
+                }
               }
               if (temp2 > 51 && temp2 < 56) {
                 console.log("la ficha azul se va la meta - 2");
-                temp2 = "0" + (temp3 - 51);
+                temp2 = "0" + (temp2 - 51);
                 opcion2 = "#metaAzul" + temp2;
                 mov2 = "fichaMetaAzul" + temp2;
               } else {
-                opcion2 = "#casilla" + temp2;
-                mov2 = "ficha" + temp2;
+                if (meta == 1) {
+                  if (temp2 > 7) {
+                    console.log("ten cuidadol!!");
+                    opcion2 = "#casilla" + temp2;
+                    mov2 = "ficha" + temp2;
+                  } else {
+                    opcion2 = "#metaAzul" + temp2;
+                    mov2 = "fichaMetaAzul" + temp2;
+                  }
+                } else {
+                  opcion2 = "#casilla" + temp2;
+                  mov2 = "ficha" + temp2;
+                }
               }
               if (temp3 > 51 && temp3 < 56) {
                 temp3 = "0" + (temp3 - 51);
@@ -410,8 +453,19 @@ window.onload = function () {
                 opcion3 = "#metaAzul" + temp3;
                 mov3 = "fichaMetaAzul" + temp3;
               } else {
-                opcion3 = "#casilla" + temp3;
-                mov3 = "ficha" + temp3;
+                if (meta == 1) {
+                  if (temp3 > 7) {
+                    console.log("ten cuidadol!!");
+                    opcion3 = "#casilla" + temp3;
+                    mov3 = "ficha" + temp3
+                  } else {
+                    opcion3 = "#metaAzul" + temp3;
+                    mov3 = "fichaMetaAzul" + temp3;
+                  }
+                } else {
+                  opcion3 = "#casilla" + temp3;
+                  mov3 = "ficha" + temp3;
+                }
               }
             }
 
@@ -423,8 +477,19 @@ window.onload = function () {
                 opcion1 = "#metaVerde" + temp1;
                 mov1 = "fichaMetaVerde" + temp1;
               } else {
-                opcion1 = "#casilla" + temp1;
-                mov1 = "ficha" + temp1;
+                if (meta == 1) {
+                  if (temp1 > 7) {
+                    console.log("ten cuidadol!!");
+                    opcion1 = "#casilla" + temp1;
+                    mov1 = "ficha" + temp1;
+                  } else {
+                    opcion1 = "#metaVerde" + temp1;
+                    mov1 = "fichaMetaVerde" + temp1;
+                  }
+                } else {
+                  opcion1 = "#casilla" + temp1;
+                  mov1 = "ficha" + temp1;
+                }
               }
               if (temp2 > 17 && temp2 < 22) {
                 temp2 = "0" + (temp2 - 17);
@@ -432,8 +497,19 @@ window.onload = function () {
                 opcion2 = "#metaVerde" + temp2;
                 mov2 = "fichaMetaVerde" + temp2;
               } else {
-                opcion2 = "#casilla" + temp2;
-                mov2 = "ficha" + temp2;
+                if (meta == 1) {
+                  if (temp2 > 7) {
+                    console.log("ten cuidadol!!");
+                    opcion2 = "#casilla" + temp2;
+                    mov2 = "ficha" + temp2;
+                  } else {
+                    opcion2 = "#metaVerde" + temp2;
+                    mov2 = "fichaMetaVerde" + temp2;
+                  }
+                } else {
+                  opcion2 = "#casilla" + temp2;
+                  mov2 = "ficha" + temp2;
+                }
               }
               if (temp3 > 17 && temp3 < 22) {
                 temp3 = "0" + (temp3 - 17);
@@ -441,8 +517,19 @@ window.onload = function () {
                 opcion3 = "#metaVerde" + temp3;
                 mov3 = "fichaMetaVerde" + temp3;
               } else {
-                opcion3 = "#casilla" + temp3;
-                mov3 = "ficha" + temp3;
+                if (meta == 1) {
+                  if (temp3 > 7) {
+                    console.log("ten cuidadol!!");
+                    opcion3 = "#casilla" + temp3;
+                    mov3 = "ficha" + temp3;
+                  } else {
+                    opcion3 = "#metaVerde" + temp3;
+                    mov3 = "fichaMetaVerde" + temp3;
+                  }
+                } else {
+                  opcion3 = "#casilla" + temp3;
+                  mov3 = "ficha" + temp3;
+                }
               }
             }
 

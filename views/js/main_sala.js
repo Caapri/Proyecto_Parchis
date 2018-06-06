@@ -1,7 +1,7 @@
 var socket = io.connect();
 
 window.onload = function () {
-
+    
     socket.on("salas", function (salas) {
         var inputs = d3.select("#ajugar");
 

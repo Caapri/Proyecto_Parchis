@@ -54,17 +54,10 @@ app.get('/perfil', function (req, res) { // PERFIL DEL USUARIO
 });
 
 app.post('/jugar', function (req, res) { // JUGAR AL PARCHÍS (TABLERO)
-  /*var directorio = __dirname;
-  directorio = directorio.substr(0, 55) + '/public/parchis.html';
-  res.sendFile(directorio);*/
   res.sendFile(__dirname + '/views/parchis.html');
 });
 
 app.get('/salas', function (req, res) { // SALAS
-  /*var directorio = __dirname;
-  directorio = directorio.substr(0, 55) + '/public/salas.html';
-  res.sendFile(directorio);*/
-  //res.sendFile( __dirname +  '/public/salas.html');
   res.sendFile(__dirname + '/views/salas.html');
 });
 
@@ -123,6 +116,14 @@ var fichasiniciales = [],
 fichasiniciales.push(fichasiniazules);
 fichasiniciales.push(fichasiniverdes);
 
+var metasiniciales = [],
+  metasiniazules = { "fichaMetaAzulFin01": 0, "fichaMetaAzulFin02": 0, "fichaMetaAzulFin03": 0, "fichaMetaAzulFin04": 0 },
+  metasiniverdes = { "fichaMetaVerdeFin01": 0, "fichaMetaVerdeFin02": 0, "fichaMetaVerdeFin03": 0, "fichaMetaVerdeFin04": 0 };
+
+metasiniciales.push(metasiniazules);
+metasiniciales.push(metasiniverdes);
+
+
 
 //app.use(express.static('public'));
 
@@ -162,8 +163,8 @@ io.on('connection', function (socket) {
       //console.log(salasuser);
 
       var gentedesala,  // variable para guardar los participantes de la sala que se va a enviar
-      keys,             // array para guardar las keys de los participantes de las salas
-      cont;             // contador de la gente que hay en la sala que se le indica
+        keys,             // array para guardar las keys de los participantes de las salas
+        cont;             // contador de la gente que hay en la sala que se le indica
       if (sala == "Sala1") { // Entra en el if si la sala a la que intenta entrar el cliente es Sala1
         keys = Array.from(participantesSala1.keys());
         console.log("--ides de la sala: " + keys);
@@ -234,8 +235,8 @@ io.on('connection', function (socket) {
       var gente = { '#3831eb': gentedesala.get('#3831eb'), '#188300': gentedesala.get('#188300'), "turno": gentedesala.get('turno') }
       console.log(gente);
 
-      
-      io.sockets.to(sala).emit("genteensala", gente, fichasiniciales);
+
+      io.sockets.to(sala).emit("genteensala", gente, fichasiniciales, metasiniciales);
     }
   });
 
