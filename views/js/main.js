@@ -192,14 +192,14 @@ window.onload = function () {
           if (dado1 == 5) {
             contdados += 5;
             dado1 = 0;
-            dadosum -=5;
+            dadosum -= 5;
             console.log("El primer dado vale 5");
             sacarcasa();
           }
           if (dado2 == 5) {
             contdados += 5;
             dado2 = 0;
-            dadosum -=5;
+            dadosum -= 5;
             console.log("El segundo dado vale 5");
             sacarcasa();
           }
@@ -279,8 +279,8 @@ window.onload = function () {
             var idrecortada = id.substr(0, id.length - 2);
             //console.log("la id recortada es: " + idrecortada);
             if (idrecortada == mov1 || idrecortada == mov2 || idrecortada == mov3) {
-              if (idrecortada == mov1) contdados += dado11, dado1 = 0;
-              if (idrecortada == mov2) contdados += dado22, dado2 = 0;
+              if (idrecortada == mov1) contdados += dado11, dadosum -= dado1, dado1 = 0;
+              if (idrecortada == mov2) contdados += dado22, dadosum -= dado2, dado2 = 0;
               if (idrecortada == mov3) contdados += dadosum2, dadosum = 0;
 
               var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
@@ -372,7 +372,6 @@ window.onload = function () {
               temp2 = numero + dado2,
               temp3 = numero + dadosum;
 
-
             if (temp1 > 68) temp1 = temp1 - 68;
             if (temp2 > 68) temp2 = temp2 - 68;
             if (temp3 > 68) temp3 = temp3 - 68;
@@ -382,50 +381,71 @@ window.onload = function () {
             if (temp3 < 10) temp3 = "0" + temp3;
 
             var opcion1, opcion2, opcion3;
+            console.log("color de la ficha: " + colorfich);
             //fichaMetaVerde01-2  fichaMetaAzul01-2
-            if (colorfich == "#188300" && (dado1 > 17 && dado1 < 29)) {
-              console.log("la ficha roja se va la meta - 1");
-              opcion1 = "#metaRoja" + temp1;
-              mov1 = "fichaMetaVerde" + temp1;
-            } else if (colorfich == "#3831eb" && (dado1 > 51 && dado1 < 63)) {
-              console.log("la ficha azul se va la meta - 1");              
-              opcion1 = "#metaAzul" + temp1;
-              mov1 = "fichaMetaAzul" + temp1;
-            } else {
-              console.log("sigue tu camino que sin ti me va mejor - 1");              
-              opcion1 = "#casilla" + temp1;
-              mov1 = "ficha" + temp1;
+            if (colorfich == "#3831eb") {
+              console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color azul");
+
+              if (temp1 > 51 && temp1 < 56) {
+                console.log("la ficha azul se va la meta - 1");
+                temp1 = "0" + (temp1 - 51);
+                opcion1 = "#metaAzul" + temp1;
+                mov1 = "fichaMetaAzul" + temp1;
+              } else {
+                opcion1 = "#casilla" + temp1;
+                mov1 = "ficha" + temp1;
+              }
+              if (temp2 > 51 && temp2 < 56) {
+                console.log("la ficha azul se va la meta - 2");
+                temp2 = "0" + (temp3 - 51);
+                opcion2 = "#metaAzul" + temp2;
+                mov2 = "fichaMetaAzul" + temp2;
+              } else {
+                opcion2 = "#casilla" + temp2;
+                mov2 = "ficha" + temp2;
+              }
+              if (temp3 > 51 && temp3 < 56) {
+                temp3 = "0" + (temp3 - 51);
+                console.log("la ficha azul se va la meta - 2");
+                opcion3 = "#metaAzul" + temp3;
+                mov3 = "fichaMetaAzul" + temp3;
+              } else {
+                opcion3 = "#casilla" + temp3;
+                mov3 = "ficha" + temp3;
+              }
             }
 
-            if (colorfich == "#188300" && (dado2 > 17 && dado2 < 29)) {
-              console.log("la ficha roja se va la meta - 2");
-              opcion2 = "#metaRoja" + temp2;
-              mov2 = "fichaMetaVerde" + temp2;
-            } else if (colorfich == "#3831eb" && (dado2 > 51 && dado2 < 63)) {
-              console.log("la ficha azul se va la meta - 2");              
-              opcion2 = "#metaAzul" + temp2;
-              mov2 = "fichaMetaAzul" + temp2;
-            } else {
-              console.log("sigue tu camino que sin ti me va mejor - 2");              
-              opcion2 = "#casilla" + temp2;
-              mov2 = "ficha" + temp2;
+            if (colorfich == "#188300") {
+              console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color verde");
+              if (temp1 > 17 && temp1 < 22) {
+                temp1 = "0" + (temp1 - 17);
+                console.log("la ficha Verde se va la meta - 1");
+                opcion1 = "#metaVerde" + temp1;
+                mov1 = "fichaMetaVerde" + temp1;
+              } else {
+                opcion1 = "#casilla" + temp1;
+                mov1 = "ficha" + temp1;
+              }
+              if (temp2 > 17 && temp2 < 22) {
+                temp2 = "0" + (temp2 - 17);
+                console.log("la ficha Verde se va la meta - 2");
+                opcion2 = "#metaVerde" + temp2;
+                mov2 = "fichaMetaVerde" + temp2;
+              } else {
+                opcion2 = "#casilla" + temp2;
+                mov2 = "ficha" + temp2;
+              }
+              if (temp3 > 17 && temp3 < 22) {
+                temp3 = "0" + (temp3 - 17);
+                console.log("la ficha Verde se va la meta - 2");
+                opcion3 = "#metaVerde" + temp3;
+                mov3 = "fichaMetaVerde" + temp3;
+              } else {
+                opcion3 = "#casilla" + temp3;
+                mov3 = "ficha" + temp3;
+              }
             }
 
-            if (colorfich == "#188300" && (dadosum > 17 && dadosum < 29)) {
-              console.log("la ficha roja se va la meta - 3");
-              opcion3 = "#metaRoja" + temp3;
-              mov3 = "fichaMetaVerde" + temp3;
-            } else if (colorfich == "#3831eb" && (dadosum > 51 && dadosum < 63)) {
-              console.log("la ficha azul se va la meta - 3");              
-              opcion3 = "#metaAzul" + temp3;
-              mov3 = "fichaMetaAzul" + temp3;
-            } else {
-              console.log("sigue tu camino que sin ti me va mejor - 3");              
-              opcion3 = "#casilla" + temp3;
-              mov3 = "ficha" + temp3;
-            }
-            console.log(typeof dado1);
-            console.log(dado1);
             if (dado1 != 0) opciones.push(opcion1);
             if (dado2 != 0) opciones.push(opcion2);
             if (dadosum != 0) opciones.push(opcion3);

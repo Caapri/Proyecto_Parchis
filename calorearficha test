@@ -1,0 +1,150 @@
+    function colorearcasillas() {
+      if (typeof dados != "undefined") {
+        var meta = 0;
+        //console.log("entro en colorear ficha");
+        var idficha = d3.select(this).attr("id");
+        idficha = "#" + idficha;
+
+        var colorfich = sacarcolor(idficha);
+        var idfichameta = idficha.substr(0, idficha.length - 2);
+        console.log("ficha meta: " + idfichameta);
+        if (colorfich != "#ffffff") {
+          var num = idficha.charAt(6) + idficha.charAt(10);
+          if (idfichameta == "fichaMeta") {
+            num = idficha.charAt(16) + idficha.charAt(17);
+            meta = 1;
+          }
+          //console.log(num);
+          if (isNaN(num)) {
+            //num = idficha.charAt(10) + idficha.charAt(11);
+            console.log("no puedes pover esa ficha");
+          } else {
+            //console.log(num);
+
+            var mouse = d3.select(this).attr("id");
+
+            var numero = parseInt(num);
+
+            var temp1 = numero + dado1,
+              temp2 = numero + dado2,
+              temp3 = numero + dadosum;
+
+            if (temp1 > 68) temp1 = temp1 - 68;
+            if (temp2 > 68) temp2 = temp2 - 68;
+            if (temp3 > 68) temp3 = temp3 - 68;
+
+            if (temp1 < 10) temp1 = "0" + temp1;
+            if (temp2 < 10) temp2 = "0" + temp2;
+            if (temp3 < 10) temp3 = "0" + temp3;
+
+            var opcion1, opcion2, opcion3;
+            console.log("color de la ficha: " + colorfich);
+            //fichaMetaVerde01-2  fichaMetaAzul01-2
+            if (colorfich == "#3831eb") {
+              console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color azul");
+
+              if (temp1 > 51 && temp1 < 56) {
+                console.log("la ficha azul se va la meta - 1");
+                temp1 = "0" + (temp1 - 51);
+                opcion1 = "#metaAzul" + temp1;
+                mov1 = "fichaMetaAzul" + temp1;
+              } else {
+                if (meta == 1) {
+                  opcion1 = "#metaAzul" + temp1;
+                  mov1 = "fichaMetaAzul" + temp1;
+                } else {
+                  opcion1 = "#casilla" + temp1;
+                  mov1 = "ficha" + temp1;
+                }
+              }
+              if (temp2 > 51 && temp2 < 56) {
+                console.log("la ficha azul se va la meta - 2");
+                temp2 = "0" + (temp3 - 51);
+                opcion2 = "#metaAzul" + temp2;
+                mov2 = "fichaMetaAzul" + temp2;
+              } else {
+                if (meta == 1) {
+                  opcion2 = "#metaAzul" + temp2;
+                  mov2 = "fichaMetaAzul" + temp2;
+                } else {
+                  opcion2 = "#casilla" + temp2;
+                  mov2 = "ficha" + temp2;
+                }
+              }
+              if (temp3 > 51 && temp3 < 56) {
+                temp3 = "0" + (temp3 - 51);
+                console.log("la ficha azul se va la meta - 2");
+                opcion3 = "#metaAzul" + temp3;
+                mov3 = "fichaMetaAzul" + temp3;
+              } else {
+                if (meta == 1) {
+                  opcion3 = "#metaAzul" + temp3;
+                  mov3 = "fichaMetaAzul" + temp3;
+                } else {
+                  opcion3 = "#casilla" + temp3;
+                  mov3 = "ficha" + temp3;
+                }
+              }
+            }
+
+            if (colorfich == "#188300") {
+              console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color verde");
+              if (temp1 > 17 && temp1 < 22) {
+                temp1 = "0" + (temp1 - 17);
+                console.log("la ficha Verde se va la meta - 1");
+                opcion1 = "#metaVerde" + temp1;
+                mov1 = "fichaMetaVerde" + temp1;
+              } else {
+                if (meta == 1) {
+                  opcion1 = "#metaVerde" + temp1;
+                  mov1 = "fichaMetaVerde" + temp1;
+                } else {
+                  opcion1 = "#casilla" + temp1;
+                  mov1 = "ficha" + temp1;
+                }
+              }
+              if (temp2 > 17 && temp2 < 22) {
+                temp2 = "0" + (temp2 - 17);
+                console.log("la ficha Verde se va la meta - 2");
+                opcion2 = "#metaVerde" + temp2;
+                mov2 = "fichaMetaVerde" + temp2;
+              } else {
+                if (meta == 1) {
+                  opcion2 = "#metaVerde" + temp2;
+                  mov2 = "fichaMetaVerde" + temp2;
+                } else {
+                  opcion2 = "#casilla" + temp2;
+                  mov2 = "ficha" + temp2;
+                }
+              }
+              if (temp3 > 17 && temp3 < 22) {
+                temp3 = "0" + (temp3 - 17);
+                console.log("la ficha Verde se va la meta - 2");
+                opcion3 = "#metaVerde" + temp3;
+                mov3 = "fichaMetaVerde" + temp3;
+              } else {
+                if (meta == 1) {
+                  opcion3 = "#metaVerde" + temp3;
+                  mov3 = "fichaMetaVerde" + temp3;
+                } else {
+                  opcion3 = "#casilla" + temp3;
+                  mov3 = "ficha" + temp3;
+                }
+              }
+            }
+
+            meta = 0;
+
+            if (dado1 != 0) opciones.push(opcion1);
+            if (dado2 != 0) opciones.push(opcion2);
+            if (dadosum != 0) opciones.push(opcion3);
+
+            for (var elementos of opciones) {
+              var casilla = svg.select(elementos).attr('style');
+              var casillacolor = casilla.replace(cas, "fill:#00ccff");
+              svg.select(elementos).attr('style', casillacolor);
+            }
+          }
+        }
+      }
+    }
