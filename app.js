@@ -61,11 +61,6 @@ app.get('/salas', function (req, res) { // SALAS
   res.sendFile(__dirname + '/views/salas.html');
 });
 
-// Conexión de un nuevo socket
-/*io.on('connection', function(socket) {
-    console.log('Nuevo usuario conectado');
-});*/
-
 // Puerto de escucha del servidor
 http.listen(3030, function () {
   console.log('Escuchando en el puerto 3030');
@@ -83,6 +78,9 @@ var mensajesSala1 = [{ texto: "Bienvenido a la Sala 1", author: "Server" }],
 */
 
 var salasuser = {};
+
+// LISTA DE USUARIOS CONECTADOS 07/06/18 16 h (Borrar si no va)
+//var onlineUsers = [];
 
 // azul: #3831eb      rojo: #a11f1f  
 // amarillo: #e8c45e  verde: #188300
@@ -123,10 +121,7 @@ var metasiniciales = [],
 metasiniciales.push(metasiniazules);
 metasiniciales.push(metasiniverdes);
 
-
-
-//app.use(express.static('public'));
-
+// Conexión de un nuevo socket
 io.on('connection', function (socket) {
   console.log("Alguien se ha conectado con socket");
   //socket.emit("conectado");
@@ -138,14 +133,27 @@ io.on('connection', function (socket) {
 
   ///////////////////////
 
+  // USUARIOS CONECTADOS EN SALA 07/06/18 16 h (Borrar si no va)
+  /*socket.on('all online users', function () {
+    socket.emit('all online users', onlineUsers);
+  });
+  
+  socket.on('nuevo usuario', function (user) {
+    socket.user = user;
+    onlineUsers.push(user);
+    io.emit('nuevo usuario', user);
+  });*/
+
+  ////////////////
 
   socket.emit("participantesyfichasini", fichasiniciales);
 
   socket.emit("salas", salas);
 
   socket.on("room", function (sala) {
-    // variable que guarda la sala que coje del sessionstorage
+    // variable que guarda la sala que coge del sessionstorage
     var contador = contadoresSalas.get(sala);
+    //console.log('CONTADOR SGM USUS SALA 0: ' + contador);
 
     // control de usuarios en la sala
     if (contador >= 2) { // si la sala tiene 2 o mas jugadores te echa
@@ -156,7 +164,13 @@ io.on('connection', function (socket) {
 
     } else { // si la sala no esta llena entra en este if
       // funcion del socket para crear y unir salas
-      socket.join(sala);
+      socket.join(sala); // Unir al usuario a la sala
+      //console.log('CONTADOR SGM USUS SALA: ' + contador);
+
+      // SGM!!! ESTO ES UNA PRUEBA PARA DEJAR AL USUARIO ESPERANDO AL CONTRINCANTE SI SOLO HAY UN USUARIO EN LA SALA
+      /*if(contador == 1) { // Si hay un jugador en la sala
+
+      }*/
 
       // variable para saber en que sala esta el socket actual
       salasuser[socket.id] = sala;
@@ -286,7 +300,7 @@ io.on('connection', function (socket) {
     io.sockets.in(getRoom(socket)).emit("muevoficha", fichasamover);
   });
 
-  socket.on('disconnect', function () {
+  socket.on('disconnect', function () { // Desconexión del socket
     console.log(salasuser);
     var usersal = salasuser[socket.id];
     console.log("--sala del socket(usersal): " + usersal);
@@ -340,6 +354,12 @@ io.on('connection', function (socket) {
     if (contador < 2) {
       io.sockets.emit("habilitarboton", usersal);
     }*/
+
+    // LISTA DE USUARIOS CONECTADOS 07/06/18 16 h (Borrar si no va)
+    /*onlineUsers.splice(onlineUsers.indexOf(socket.user), 1);
+    io.emit('remove user', socket.user);*/
+    //console.log('User disconnected');
+
   });
 
 });

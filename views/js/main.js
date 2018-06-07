@@ -40,6 +40,31 @@ socket.on("hola", function () {
   alertify.success("Se ha conectado un usuario.");
 });
 
+// USUARIOS CONECTADOS EN SALA 07/06/18 16 h (Borrar si no va)
+/*socket.on('all online users', function (users) {
+  console.log('HOLA????');
+  console.log(users.length + ' users received');
+  for (var i=0; i<users.length; i++) 
+  {
+    var htmluser = '<li id="' + users[i]._id + '">' + users[i]._id + '</li>';
+    $('#online-userslist').append(htmluser);
+  }
+});
+
+socket.on('nuevo usuario', function(nuser) {
+  var linuser = '<li id="' + nuser.id + '">' + nuser.id + '</li>';
+  $('#online-userslist').append(linuser);
+});
+
+socket.on('remove user', function (nuser) {
+  $('#' + nuser._id).remove();
+});
+
+socket.emit('all online users');
+socket.emit('nuevo usuario');*/
+
+////////////
+
 // CHAT
 function mensajeChat(e) {
   var usuario = sessionStorage.getItem("user");
@@ -109,10 +134,9 @@ window.onload = function () {
   var nick = sessionStorage.getItem("user");
   var userPlay = document.getElementById("userPlay");
   userPlay.innerHTML = "<h1>" + nick + "</h1>";
-  /*var divNick = document.createElement("p");
-  var textNick = divNick.createTextNode(nick);
-  divNick.appendChild(textNick);
-  userPlay.appendChild(divNick);*/
+
+  // Poner el nombre de la sala en el título de la página
+  document.title = document.title + " (" + salatual + ")";
 
   var lanzar_dados = document.getElementById('boton');
 
@@ -174,18 +198,19 @@ window.onload = function () {
     console.log("Turno del color ---------------- tu color");
     console.log(colorparticipante + " - " + tusocket);
     if (colorpersona == "#3831eb") {
-      d3.select("#tucolor").html("Turno de las azules");
+      //d3.select("#tucolor").html("Turno de las azules");
       alertify.set('notifier', 'position', 'top-right');
-      alertify.warning('Turno de los Azules');
+      alertify.warning('Turno de los azules');
     }
     if (colorpersona == "#188300") {
-      d3.select("#tucolor").html("Turno de las verdes");
+      //d3.select("#tucolor").html("Turno de las verdes");
       alertify.set('notifier', 'position', 'top-right');
-      alertify.warning('Turno de los Verdes');
+      alertify.warning('Turno de los verdes');
     }
 
     if (colorparticipante == tusocket) {
       alertify.set('notifier', 'position', 'top-right');
+      //alertify.set('notifier','delay', 10); // Dejar la notificación 30 segundos
       alertify.success('Tu turno');
       tirada(turnos);
     } else {
