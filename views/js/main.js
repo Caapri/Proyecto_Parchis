@@ -22,21 +22,21 @@ socket.on("borrarsala", function () {
 
 // Decirle al cliente que la sala está llena y redirigirlo a las salas
 socket.on("salallena", function () {
-  alertify.alert('La sala está llena.<br />Se te redigirá a la página de inicio.');
-  setTimeout("location.href = '/';", 3000); // Redirigir a la pag de inicio en 3 segundos
+  alertify.alert('La sala está llena.<br />Se te redigirá a la página de inicio.').setHeader("Sala llena");
+  setTimeout("location.href = '/salas';", 4000); // Redirigir a la pag de inicio en 3 segundos
 });
 
-// Función para decirle al cliente que su rival se ha desconectado
+// Función para decirle al cliente que su rival se ha desconectado y redirigirlo a la página de inicio
 socket.on("fueritadeaca", function () {
-  alertify.alert('Tu rival se ha desconectado.<br /> Se te redigirá a la página de inicio.');
-  setTimeout("location.href = '/';", 3000); // Redirigir a la pag de inicio en 3 segundos
+  alertify.alert('Tu rival se ha desconectado.<br /> Se te redigirá a la página de inicio.').setHeader("Desconexión de rival");
+  setTimeout("location.href = '/';", 4000); // Redirigir a la pag de inicio en 3 segundos
 });
 
 // Mensaje de alerta cuando se conecta un usuario a la partida
-socket.emit('conectado', sessionStorage.getItem("user"));
+//socket.emit('conectado', sessionStorage.getItem("user"));
 
 socket.on("hola", function (usuario) {
-  alertify.set("notifier", "position", "top-center");
+  alertify.set("notifier", "position", "top-right");
   alertify.success("Se ha conectado " + usuario);
 });
 
@@ -97,7 +97,7 @@ socket.on("fueritadeaca", function () {
 });
 
 socket.on("perder", function () {
-  alertify.alert("Has perdido").setHeader("Loser!!!");
+  alertify.alert("Ooohhh... <br />Has perdido. Otra vez será...").setHeader("Loser!!!");
 });
 
 //////////////////////////////
@@ -148,6 +148,9 @@ window.onload = function () {
 
   // union a la sala que quiere unirse
   socket.emit("room", salatual);
+
+  // Mensaje de se ha conectado el otro usuario
+  socket.emit('conectado', sessionStorage.getItem("user"));
 
   var sala;
 
@@ -442,7 +445,7 @@ window.onload = function () {
         }
 
         if (contmetas == 4) {
-          alertify.alert("Has ganado").setHeader("Winner!!");
+          alertify.alert("Enhorabuena!!!!<br />Has ganado").setHeader("Winner!!");
           socket.emit("perdedor");
         }
       }

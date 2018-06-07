@@ -290,12 +290,11 @@ io.on('connection', function (socket) {
 
   // Cuando un usuario se conecta
   socket.on("conectado", function (usuario) {
-    //socket.broadcast.emit("hola");
     socket.broadcast.to(getRoom(socket)).emit("hola",usuario); // Función para decirle al cliente que se ha conectado un nuevo usuario a la sala
   });
 
   socket.on("movimiento", function (fichasamover) {
-    console.log("He recivido un movimiento");
+    console.log("He recibido un movimiento");
     //io.sockets.emit("muevoficha", fichasamover);
     io.sockets.to(getRoom(socket)).emit("muevoficha", fichasamover);
   });
