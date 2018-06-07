@@ -29,7 +29,7 @@ app.get('/signup', function (req, res) { // REDIRECCIÓN A REGISTRO
 app.get('/registro', function (req, res) { // REGISTRO DE USUARIO RECIBIENDO AJAX
   mongo.insertarMongo(req.query.usuario, req.query.correo, req.query.pass).then(function (insertar) {
     //console.log('Insertado: ' + insertar);
-  res.send(insertar);
+    res.send(insertar);
   });
 });
 
@@ -297,7 +297,11 @@ io.on('connection', function (socket) {
   socket.on("movimiento", function (fichasamover) {
     console.log("He recivido un movimiento");
     //io.sockets.emit("muevoficha", fichasamover);
-    io.sockets.in(getRoom(socket)).emit("muevoficha", fichasamover);
+    io.sockets.to(getRoom(socket)).emit("muevoficha", fichasamover);
+  });
+
+  socket.on("perdedor", function () {
+    io.sockets.to(getRoom(socket)).emit("perder");
   });
 
   socket.on('disconnect', function () { // Desconexión del socket
@@ -348,7 +352,7 @@ io.on('connection', function (socket) {
     console.log(keysalas);
     console.log("Se ha desconectado");
 
-    socket.broadcast.to(usersal).emit("fueritadeaca"); 
+    socket.broadcast.to(usersal).emit("fueritadeaca");
     /*
     var contador = contadoresSalas.get(usersal);
     if (contador < 2) {

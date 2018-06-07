@@ -1,4 +1,4 @@
-import { WSAEPROVIDERFAILEDINIT } from "constants";
+//import { WSAEPROVIDERFAILEDINIT } from "constants";
 
 /* CLIENTE */
 
@@ -94,6 +94,10 @@ socket.on("envioMsgCliente", function (msg) {
 
 socket.on("fueritadeaca", function () {
   location.href = "/";
+});
+
+socket.on("perder", function () {
+  alertify.alert("Has perdido").setHeader("Loser!!!");
 });
 
 //////////////////////////////
@@ -298,6 +302,7 @@ window.onload = function () {
             alertify.success('Saco ficha');
 
             socket.emit("movimiento", dados5);
+            dados5 = [];
           }
 
         }
@@ -333,8 +338,11 @@ window.onload = function () {
           if (fichasamover.length == 1) {
             console.log("la id es: " + id);
             var idrecortada = id.substr(0, id.length - 2);
-            if (idrecortada == "fichaMetaVerdeFin" || idrecortada == "fichaMetaAzul0") {
+            if (idrecortada == "fichaMetaVerdeFin" || idrecortada == "fichaMetaAzulFin") {
               idrecortada = id;
+              metasini[id] = 1;
+              contmetas++;
+              console.log("la id recortada es si es meta: " + idrecortada);
             }
             console.log("la id recortada es: " + idrecortada);
             console.log("movimientos: " + mov1 + " " + mov2 + " " + mov3);
@@ -343,21 +351,34 @@ window.onload = function () {
               if (idrecortada == mov2) contdados += dado22, dadosum -= dado2, dado2 = 0;
               if (idrecortada == mov3) contdados += dadosum2, dadosum = 0;
 
-              var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
-              var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
-              var fichapuente1 = "#" + id.substr(0, id.length - 1) + "1";
-              console.log("La segunda ficha no es la del medio");
+              var idrecortada1 = id.substr(0, id.length - 2);
+              console.log("recortada segundo control: " + idrecortada1);
+              if (idrecortada1 == "fichaMetaVerdeFin" || idrecortada1 == "fichaMetaAzulFin") {
+                var ficha2 = new Object();
+                ficha2.id = id;
+                ficha2.fill = relleno;
+                fichasamover.push(ficha2);
+                //console.log(fichasamover);
+              } else {
+                var fichapuente3 = "#" + id.substr(0, id.length - 1) + "3";
+                var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
+                var fichapuente1 = "#" + id.substr(0, id.length - 1) + "1";
 
-              var color1 = sacarcolor(fichapuente3);
-              var color2 = sacarcolor(fichapuente2);
-              var color3 = sacarcolor(fichapuente1);
-              //console.log(color1);
+                console.log("La segunda ficha no es la del medio");
 
-              var ficha2 = new Object();
-              ficha2.id = id;
-              ficha2.fill = relleno;
-              fichasamover.push(ficha2);
-              //console.log(fichasamover);
+                var color1 = sacarcolor(fichapuente3);
+                var color2 = sacarcolor(fichapuente2);
+                var color3 = sacarcolor(fichapuente1);
+                //console.log(color1);
+
+                var ficha2 = new Object();
+                ficha2.id = id;
+                ficha2.fill = relleno;
+                fichasamover.push(ficha2);
+                //console.log(fichasamover);
+              }
+
+
             } else {
               alertify.set('notifier', 'position', 'top-right');
               alertify.error('No puedes mover la ficha a esa posición');
@@ -405,6 +426,11 @@ window.onload = function () {
           } else {
             console.log("sigue moviendo");
           }
+        }
+
+        if (contmetas == 4){
+          alertify.alert("Has ganado").setHeader("Winner!!");
+          socket.emit("perdedor");
         }
       }
     }
@@ -479,8 +505,6 @@ window.onload = function () {
                         console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
-                          metasini[ficha] = 1;
-                          contmetas++;
                           break;
                         }
                       }
@@ -488,7 +512,6 @@ window.onload = function () {
                       opcion1 = "#" + temp4;
                       mov1 = temp4;
                     } else {
-                      console.log("ten cuidadol!!");
                       opcion1 = "#casilla" + temp1;
                       mov1 = "ficha" + temp1;
                     }
@@ -514,16 +537,13 @@ window.onload = function () {
                         console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
-                          metasini[ficha] = 1;
-                          contmetas++;
                           break;
                         }
                       }
                       console.log("ficha que devuelve " + temp4);
-                      opcion1 = "#" + temp4;
-                      mov1 = temp4;
+                      opcion2 = "#" + temp4;
+                      mov2 = temp4;
                     } else {
-                      console.log("ten cuidadol!!");
                       opcion2 = "#casilla" + temp2;
                       mov2 = "ficha" + temp2;
                     }
@@ -549,16 +569,13 @@ window.onload = function () {
                         console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
-                          metasini[ficha] = 1;
-                          contmetas++;
                           break;
                         }
                       }
                       console.log("ficha que devuelve " + temp4);
-                      opcion1 = "#" + temp4;
-                      mov1 = temp4;
+                      opcion3 = "#" + temp4;
+                      mov3 = temp4;
                     } else {
-                      console.log("ten cuidadol!!");
                       opcion3 = "#casilla" + temp3;
                       mov3 = "ficha" + temp3;
                     }
@@ -588,8 +605,6 @@ window.onload = function () {
                         console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
-                          metasini[ficha] = 1;
-                          contmetas++;
                           break;
                         }
                       }
@@ -597,7 +612,6 @@ window.onload = function () {
                       opcion1 = "#" + temp4;
                       mov1 = temp4;
                     } else {
-                      console.log("ten cuidadol!!");
                       opcion1 = "#casilla" + temp1;
                       mov1 = "ficha" + temp1;
                     }
@@ -623,16 +637,13 @@ window.onload = function () {
                         console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
-                          metasini[ficha] = 1;
-                          contmetas++;
                           break;
                         }
                       }
                       console.log("ficha que devuelve " + temp4);
-                      opcion1 = "#" + temp4;
-                      mov1 = temp4;
+                      opcion2 = "#" + temp4;
+                      mov2 = temp4;
                     } else {
-                      console.log("ten cuidadol!!");
                       opcion2 = "#casilla" + temp2;
                       mov2 = "ficha" + temp2;
                     }
@@ -658,16 +669,13 @@ window.onload = function () {
                         console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
-                          metasini[ficha] = 1;
-                          contmetas++;
                           break;
                         }
                       }
                       console.log("ficha que devuelve " + temp4);
-                      opcion1 = "#" + temp4;
-                      mov1 = temp4;
+                      opcion3 = "#" + temp4;
+                      mov3 = temp4;
                     } else {
-                      console.log("ten cuidadol!!");
                       opcion3 = "#casilla" + temp3;
                       mov3 = "ficha" + temp3;
                     }
@@ -777,72 +785,89 @@ window.onload = function () {
       alertify.set('notifier', 'position', 'top-right');
       alertify.warning('Que pretendes?\nDuplicarte?');
     } else {
-      var idfichacompare = idficha1.charAt(idficha1.length - 1);
-      var idfichasalida = idficha1.substr(0, idficha1.length - 1);
-      //console.log("ficha1: " + idfichasalida);
-      if (idfichacompare != 2) {
-        if (idfichasalida == "#fichaAzul0" || idfichasalida == "#fichaVerd0" || idfichasalida == "#fichaAmar0" || idfichasalida == "#fichaRoja0") {
-          //console.log("ficha de salida");
-          //console.log(idfichacompare);
-          if (fichas[0].fill == fichas[1].fill) {
-            bridgemake(pos3, pos2, pos1, colorficha1);
-          }
-        } else {
-          pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
-          pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
-          pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
-          //console.log("quiero romper puente");
-          bridgebreak(pos3, pos2, pos1, colorficha1);
-        }
-      }
-      var idfichacompare2 = idficha2.charAt(idficha2.length - 1);
-      if (idfichacompare2 != 2) {
-        pos33 = idficha2.substr(0, idficha2.length - 1) + "3";
-        pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
-        pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
-        //console.log("La segunda ficha no es la del medio");
+      var idrecortada1 = fichas[1].id.substr(0, fichas[1].id.length - 2);
+      console.log("recortada segundo control: " + idrecortada1);
+      if (idrecortada1 == "fichaMetaVerdeFin" || idrecortada1 == "fichaMetaAzulFin") {
+        var f1 = svg.select(idficha1).attr('style');
+        var newStyle = f1.replace(r, colorficha2);
+        newStyle = newStyle.replace(r1, "opacity:0");
+        svg.select(idficha1).attr('style', newStyle);
 
-        var color1 = sacarcolor(pos11);
-        var color2 = sacarcolor(pos22);
-        var color3 = sacarcolor(pos33);
-
-        if (color2 == "#ffffff") { // si es blanca
-          //console.log("La posición del medio está libre");
-          idficha2 = pos22;
-        } else if (color1 == fichas[0].fill && color3 == fichas[0].fill) {
-          //console.log("hay un puente y no puedes mover");
-          alertify.set('notifier', 'position', 'top-right');
-          alertify.error('hay un puente, imposible mover');
-          idficha2 = idficha1;
-        } else if (color2 == fichas[0].fill) {
-          //console.log("la ficha 2 es del mismo color que la primera");
-          bridgemake(pos33, pos22, pos11, colorficha1);
-        }
+        // tratamiento de la segunda ficha
+        var f2 = svg.select(idficha2).attr('style');
+        var newStyle1 = f2.replace(r, colorficha1);
+        newStyle1 = newStyle1.replace(r1, "opacity:1");
+        svg.select(idficha2).attr('style', newStyle1);
+        var f2 = svg.select(idficha2).attr('style');
       } else {
-        if (fichas[0].fill == fichas[1].fill) {
+
+
+        var idfichacompare = idficha1.charAt(idficha1.length - 1);
+        var idfichasalida = idficha1.substr(0, idficha1.length - 1);
+        //console.log("ficha1: " + idfichasalida);
+        if (idfichacompare != 2) {
+          if (idfichasalida == "#fichaAzul0" || idfichasalida == "#fichaVerd0" || idfichasalida == "#fichaAmar0" || idfichasalida == "#fichaRoja0") {
+            //console.log("ficha de salida");
+            //console.log(idfichacompare);
+            if (fichas[0].fill == fichas[1].fill) {
+              bridgemake(pos3, pos2, pos1, colorficha1);
+            }
+          } else {
+            pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
+            pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
+            pos1 = idficha1.substr(0, idficha1.length - 1) + "1";
+            //console.log("quiero romper puente");
+            bridgebreak(pos3, pos2, pos1, colorficha1);
+          }
+        }
+        var idfichacompare2 = idficha2.charAt(idficha2.length - 1);
+        if (idfichacompare2 != 2) {
           pos33 = idficha2.substr(0, idficha2.length - 1) + "3";
           pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
           pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
-          //console.log("la ficha 2 es del mismo color que la primera");
-          bridgemake(pos33, pos22, pos11, colorficha1);
+          //console.log("La segunda ficha no es la del medio");
+
+          var color1 = sacarcolor(pos11);
+          var color2 = sacarcolor(pos22);
+          var color3 = sacarcolor(pos33);
+
+          if (color2 == "#ffffff") { // si es blanca
+            //console.log("La posición del medio está libre");
+            idficha2 = pos22;
+          } else if (color1 == fichas[0].fill && color3 == fichas[0].fill) {
+            //console.log("hay un puente y no puedes mover");
+            alertify.set('notifier', 'position', 'top-right');
+            alertify.error('hay un puente, imposible mover');
+            idficha2 = idficha1;
+          } else if (color2 == fichas[0].fill) {
+            //console.log("la ficha 2 es del mismo color que la primera");
+            bridgemake(pos33, pos22, pos11, colorficha1);
+          }
+        } else {
+          if (fichas[0].fill == fichas[1].fill) {
+            pos33 = idficha2.substr(0, idficha2.length - 1) + "3";
+            pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
+            pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
+            //console.log("la ficha 2 es del mismo color que la primera");
+            bridgemake(pos33, pos22, pos11, colorficha1);
+          }
         }
+
+        //console.log(puentes);
+
+        // tratamiento de la primera ficha
+        var f1 = svg.select(idficha1).attr('style');
+        var newStyle = f1.replace(r, colorficha2);
+        newStyle = newStyle.replace(r1, "opacity:0");
+        svg.select(idficha1).attr('style', newStyle);
+
+        // tratamiento de la segunda ficha
+        var f2 = svg.select(idficha2).attr('style');
+        var newStyle1 = f2.replace(r, colorficha1);
+        newStyle1 = newStyle1.replace(r1, "opacity:1");
+        svg.select(idficha2).attr('style', newStyle1);
+        var f2 = svg.select(idficha2).attr('style');
       }
-
-      //console.log(puentes);
-
-      // tratamiento de la primera ficha
-      var f1 = svg.select(idficha1).attr('style');
-      var newStyle = f1.replace(r, colorficha2);
-      newStyle = newStyle.replace(r1, "opacity:0");
-      svg.select(idficha1).attr('style', newStyle);
-
-      // tratamiento de la segunda ficha
-      var f2 = svg.select(idficha2).attr('style');
-      var newStyle1 = f2.replace(r, colorficha1);
-      newStyle1 = newStyle1.replace(r1, "opacity:1");
-      svg.select(idficha2).attr('style', newStyle1);
-      var f2 = svg.select(idficha2).attr('style');
-
       /* // esto es para cuando se rompa el puente borrarlo del array de objetos de puentes
       for(var element in puentes){
         var temp = puentes[element];
