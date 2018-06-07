@@ -1,8 +1,30 @@
 window.onload = () => {
 
+    // FUNCIONES
+    function comoJugar() {
+        var pre = document.createElement('pre');
+        //custom style.
+        /*pre.style.maxHeight = "400px";
+        pre.style.margin = "0";
+        pre.style.padding = "24px";
+        pre.style.whiteSpace = "pre-wrap";
+        pre.style.textAlign = "justify";*/
+        /*pre.style.maxWidth = "900px";*/
+        pre.appendChild(document.createTextNode($('#divComoJugar').text()));
+        //show as confirm
+        alertify.confirm(pre, function () {
+            //alertify.success('Accepted');
+            console.log("Aceptado");
+        }, function () {
+            //alertify.warning('Salir');
+        }).set({ labels: { cancel: 'Salir' }, padding: false });
+    }
+
     /* COGER ID's HTML */
     var welcome = document.getElementById("welcomeUser"),
-        copyrightFooter = document.getElementById("footer1");
+        copyrightFooter = document.getElementById("footer1"),
+        divComoJugar = document.getElementById("divComoJugar"),
+        btnComoJugar = document.getElementById("comojugar");
 
     // RECUPERAR EL NOMBRE DE USUARIO DEL ALMACENAMIENTO DE SESIÓN
     var nick = sessionStorage.getItem("user");
@@ -15,8 +37,8 @@ window.onload = () => {
         // Creación del nuevo link
         var cerrarSesion = document.createElement("a"),
             contenido = document.createTextNode("Cerrar sesión");
-            cerrarSesion.appendChild(contenido);
-            cerrarSesion.setAttribute("href", "salir"),
+        cerrarSesion.appendChild(contenido);
+        cerrarSesion.setAttribute("href", "salir"),
             cerrarSesion.setAttribute("id", "cerrarSesion");
 
         var parentDiv = document.getElementById("containerOpciones");
@@ -28,8 +50,8 @@ window.onload = () => {
         // Creación del nuevo link
         var iniciarSesion = document.createElement("a"),
             contenido = document.createTextNode("Iniciar sesión");
-            iniciarSesion.appendChild(contenido);
-            iniciarSesion.setAttribute("href", "/login"),
+        iniciarSesion.appendChild(contenido);
+        iniciarSesion.setAttribute("href", "/login"),
             iniciarSesion.setAttribute("id", "iniciarSesion");
 
         var parentDiv = document.getElementById("containerOpciones");
@@ -40,8 +62,8 @@ window.onload = () => {
         // Creación del nuevo link
         var registro = document.createElement("a"),
             contenido = document.createTextNode("Regístrate");
-            registro.appendChild(contenido);
-            registro.setAttribute("href", "/signup"),
+        registro.appendChild(contenido);
+        registro.setAttribute("href", "/signup"),
             registro.setAttribute("id", "registrarse");
 
         var div = document.getElementById("iniciarSesion");
@@ -64,6 +86,22 @@ window.onload = () => {
     copyrightFooter.innerHTML = copyrightFooter.innerHTML + " " + year;
 
     // DEFINICIÓN DE EVENTOS EN LOS BOTONES
+    btnComoJugar.addEventListener("click", comoJugar);
 
+    /*var pre = document.createElement('pre');
+    //custom style.
+    pre.style.maxHeight = "400px";
+    pre.style.margin = "0";
+    pre.style.padding = "24px";
+    pre.style.whiteSpace = "pre-wrap";
+    pre.style.textAlign = "right";
+    pre.appendChild(document.createTextNode($('#divComoJugar').text()));
+    //show as confirm
+    alertify.confirm(pre, function () {
+        //alertify.success('Accepted');
+        console.log("Aceptado");
+    }, function () {
+        //alertify.warning('Salir');
+    }).set({ labels: { cancel: 'Salir' }, padding: false });*/
 
 }

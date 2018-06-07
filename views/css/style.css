@@ -99,7 +99,7 @@ body {
     width: 500px;
 }
 
-/* Index.html (Inicio) */
+/* INDEX.HTML (INICIO) */
 .gridIndex {
     display: grid;
     grid-template-areas: 'cabecera'
@@ -279,6 +279,16 @@ body {
 
 #titleGithub {
     font-weight: bold;
+}
+
+#divComoJugar {
+    display: none;
+    /*background-image: url("../img/logoParchis7.png");*/
+}
+
+#comojugar {
+    cursor: pointer;
+    color: black;
 }
 
 /* PERFIL.HTML */

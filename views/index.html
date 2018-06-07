@@ -5,6 +5,14 @@
     <link rel="icon" type="image/png" href="img/faviconParchis2.png" />
     <script src="js/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/css/alertify.min.css" />
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/css/themes/default.min.css" />
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/css/themes/semantic.min.css" />
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/css/themes/bootstrap.min.css" />
     <!--<script src="https://d3js.org/d3.v5.min.js"></script>-->
     <link rel="stylesheet" href="css/style.css" type="text/css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -31,8 +39,26 @@
         <ul id="opcionesMenu">
           <li id="opcionJugar"><a href="/salas">Jugar</a></li>
           <!--<li id="opciones"><a href="">Opciones</a></li>-->
-          <li id="comojugar"><a href="">Como se juega</a></li>
+          <li id="comojugar">Como se juega</li>
         </ul>
+      </div>
+      <div id="divComoJugar">
+        Para jugar debes registrarte, o si ya lo estas, identificarte clicando en Iniciar Sesión.
+        Una vez te hayas logueado, tan solo has de darle al botón de Jugar, elegir una sala y
+        esperar a tu contrincante. Cuando ya tengas un rival, a jugar!
+        A la izquierda tienes el tablero y a la derecha un chat para poder comunicarte con tu 
+        rival. 
+
+        Este parchís se juega en la modalidad de 2 dados. Es muy similar a jugar con 1 dado.
+        Moverás las fichas hasta la suma de los dos dados. Puedes mover con una ficha el número
+        de un dado y con otra ficha el número del otro dado o bien mover con una sola ficha
+        la suma de los dos, tu eliges. Si sacas el mismo número en los dos dados, debes volver 
+        a tirar.
+        Si hay un puente (ya sea tuyo o bien del rival) no puedes mover mas allá hasta que 
+        éste se rompa, ya sea porque el jugador lo rompe o bien porque sacas dobles.
+
+        Gana quien antes consiga meter sus 4 fichas en la casa de su color.
+        Mucha suerte y disfruta!
       </div>
 
       <!-- FOOTER -->
