@@ -17,14 +17,14 @@ window.onload = () => {
         divDatos.addEventListener("click", function() {
             contenido.style.height = "300px";
             divEstadisticas.style.background = "grey";
-            this.style.background = "#9ecef3";
+            this.style.background = "white";
             contenido.innerHTML = "<h2 id='tituloDatos'>DATOS</h2><br /><br /><b>Usuario:</b> " + datosUsu[0] + "<br /><b>Email:</b> " + datosUsu[1];
             //contenido.innerHTML += "<br /><br /><div class='btn btn-primary'>Borrar cuenta</div>"
         });
 
         divEstadisticas.addEventListener("click", function() {
             divDatos.style.background = "grey";
-            this.style.background = "#9ecef3";
+            this.style.background = "white";
             contenido.innerHTML = "Estadísticas";
     
         });

@@ -314,12 +314,13 @@ body {
     padding: 20px;
     text-align: center;
     cursor: pointer;
-    border: 1px black solid;
+    /*border: 1px black solid;*/
+    border-right: 1px black solid;
     font-weight: bold;
 }
 
 #datosUsuario:hover {
-    background:#e1e1e1;
+    /*background:#e1e1e1;*/
 }
 
 #estadisticasPersonales {
@@ -327,7 +328,7 @@ body {
     padding: 20px;
     text-align: center;
     cursor: pointer;
-    border: 1px black solid;
+    /*border: 1px black solid;*/
     font-weight: bold;
 }
 
@@ -337,7 +338,7 @@ body {
 
 #contenidoPerfil {
     grid-area: contenido;
-    background:#9ecef3;
+    background: white;
     text-align:center;
 }
 
