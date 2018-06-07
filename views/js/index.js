@@ -4,20 +4,19 @@ window.onload = () => {
     function comoJugar() {
         var pre = document.createElement('pre');
         //custom style.
-        /*pre.style.maxHeight = "400px";
+        pre.style.maxHeight = "400px";
         pre.style.margin = "0";
         pre.style.padding = "24px";
         pre.style.whiteSpace = "pre-wrap";
-        pre.style.textAlign = "justify";*/
-        /*pre.style.maxWidth = "900px";*/
+        pre.style.textAlign = "justify";
         pre.appendChild(document.createTextNode($('#divComoJugar').text()));
         //show as confirm
         alertify.confirm(pre, function () {
             //alertify.success('Accepted');
-            console.log("Aceptado");
+            //console.log("Aceptado");
         }, function () {
             //alertify.warning('Salir');
-        }).set({ labels: { cancel: 'Salir' }, padding: false });
+        }).setHeader("Como jugar").set({ labels: { ok: 'Entendido', cancel: 'Salir' }, padding: false, transition: 'zoom' });
     }
 
     /* COGER ID's HTML */

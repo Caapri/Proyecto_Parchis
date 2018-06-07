@@ -539,3 +539,13 @@ body {
 #Sala1, #Sala2, #Sala3, #Sala4 {
     margin-right: 10px;
 }
+
+#salas {
+    text-align: center;
+}
+
+#titleSalas {
+    text-align: center;
+    font-family: Sims;
+    font-size: 4em;
+}
