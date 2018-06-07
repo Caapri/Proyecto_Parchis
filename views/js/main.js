@@ -1,3 +1,5 @@
+import { WSAEPROVIDERFAILEDINIT } from "constants";
+
 /* CLIENTE */
 
 var socket = io.connect();
@@ -21,7 +23,7 @@ socket.on("borrarsala", function () {
 // Decirle al cliente que la sala está llena y redirigirlo a las salas
 socket.on("salallena", function () {
   alertify.alert('La sala está llena.<br />Se te redigirá a la página de inicio.');
-  setTimeout("location.href = '/';",3000); // Redirigir a la pag de inicio en 3 segundos
+  setTimeout("location.href = '/';", 3000); // Redirigir a la pag de inicio en 3 segundos
 });
 
 // Función para decirle al cliente que su rival se ha desconectado
@@ -33,8 +35,8 @@ socket.on("salallena", function () {
 // Mensaje de alerta cuando se conecta un usuario a la partida
 socket.emit('conectado');
 
-socket.on("hola", function() {
-  alertify.set("notifier","position","top-center");
+socket.on("hola", function () {
+  alertify.set("notifier", "position", "top-center");
   alertify.success("Se ha conectado un usuario.");
 });
 
@@ -87,7 +89,7 @@ window.onload = function () {
     participantes = new Map(),
     cas = new RegExp(/fill:#([a-f0-9]+)/),
     cas2 = new RegExp(/opacity:(0|1)+/);
-    sala,
+  sala,
     contcasas = 4,
     contmetas = 0,
     fichascasas = 1,
@@ -306,7 +308,11 @@ window.onload = function () {
           if (fichasamover.length == 1) {
             console.log("la id es: " + id);
             var idrecortada = id.substr(0, id.length - 2);
+            if (idrecortada == "fichaMetaVerdeFin" || idrecortada == "fichaMetaAzul0") {
+              idrecortada = id;
+            }
             console.log("la id recortada es: " + idrecortada);
+            console.log("movimientos: " + mov1 + " " + mov2 + " " + mov3);
             if (idrecortada == mov1 || idrecortada == mov2 || idrecortada == mov3) {
               if (idrecortada == mov1) contdados += dado11, dadosum -= dado1, dado1 = 0;
               if (idrecortada == mov2) contdados += dado22, dadosum -= dado2, dado2 = 0;
@@ -651,21 +657,21 @@ window.onload = function () {
               }
             }
 
-            if (dado1 != 0) opciones.push(opcion1);
-            if (dado2 != 0) opciones.push(opcion2);
-            if (dadosum != 0) opciones.push(opcion3);
+            if (dado1 != 0 || opcion1 != undefined) opciones.push(opcion1);
+            if (dado2 != 0 || opcion2 != undefined) opciones.push(opcion2);
+            if (dadosum != 0 || opcion3 != undefined) opciones.push(opcion3);
 
             console.log("elementos de opciones");
             console.log(opciones);
             for (var elementos of opciones) {
               var casilla = svg.select(elementos).attr('style');
               var casillacolor = casilla.replace(cas, "fill:#00ccff");
-              if(elementos == "#fichaMetaAzulFin01" || elementos == "#fichaMetaAzulFin02" || elementos == "#fichaMetaAzulFin03" || elementos == "#fichaMetaAzulFin04" || elementos == "#fichaMetaVerdeFin01" || elementos == "#fichaMetaVerdeFin02" || elementos == "#fichaMetaVerdedFin03" || elementos == "#fichaMetaVerdeFin04"){
+              if (elementos == "#fichaMetaAzulFin01" || elementos == "#fichaMetaAzulFin02" || elementos == "#fichaMetaAzulFin03" || elementos == "#fichaMetaAzulFin04" || elementos == "#fichaMetaVerdeFin01" || elementos == "#fichaMetaVerdeFin02" || elementos == "#fichaMetaVerdedFin03" || elementos == "#fichaMetaVerdeFin04") {
                 var casillacoloropaca = casilla.replace(cas2, "opacity:1");
                 svg.select(elementos).attr('style', casillacoloropaca);
-              }else{
+              } else {
                 svg.select(elementos).attr('style', casillacolor);
-              }              
+              }
             }
           }
         }
