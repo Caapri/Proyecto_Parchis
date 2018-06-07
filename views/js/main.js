@@ -27,17 +27,17 @@ socket.on("salallena", function () {
 });
 
 // Función para decirle al cliente que su rival se ha desconectado
-/*socket.on("fueritadeaca", function () { 
+socket.on("fueritadeaca", function () {
   alertify.alert('Tu rival se ha desconectado.<br /> Se te redigirá a la página de inicio.');
   setTimeout("location.href = '/';", 3000); // Redirigir a la pag de inicio en 3 segundos
-});*/
+});
 
 // Mensaje de alerta cuando se conecta un usuario a la partida
-socket.emit('conectado');
+socket.emit('conectado', sessionStorage.getItem("user"));
 
-socket.on("hola", function () {
+socket.on("hola", function (usuario) {
   alertify.set("notifier", "position", "top-center");
-  alertify.success("Se ha conectado un usuario.");
+  alertify.success("Se ha conectado " + usuario);
 });
 
 // USUARIOS CONECTADOS EN SALA 07/06/18 16 h (Borrar si no va)
@@ -252,13 +252,16 @@ window.onload = function () {
             dadosum -= 5;
             console.log("El primer dado vale 5");
             sacarcasa();
+            sleep(1000);
           }
+
           if (dado2 == 5) {
             contdados += 5;
             dado2 = 0;
             dadosum -= 5;
             console.log("El segundo dado vale 5");
             sacarcasa();
+            sleep(1000);
           }
           if (dadosum == 5) {
             contdados = dadosum2;
@@ -267,6 +270,7 @@ window.onload = function () {
             dadosum = 0;
             console.log("la suma de los dados vale 5");
             sacarcasa();
+            sleep(1000);
           }
 
           function sacarcasa() {
@@ -303,6 +307,15 @@ window.onload = function () {
 
             socket.emit("movimiento", dados5);
             dados5 = [];
+          }
+
+          function sleep(milliseconds) {
+            var start = new Date().getTime();
+            for (var i = 0; i < 1e7; i++) {
+              if ((new Date().getTime() - start) > milliseconds) {
+                break;
+              }
+            }
           }
 
         }
@@ -428,7 +441,7 @@ window.onload = function () {
           }
         }
 
-        if (contmetas == 4){
+        if (contmetas == 4) {
           alertify.alert("Has ganado").setHeader("Winner!!");
           socket.emit("perdedor");
         }

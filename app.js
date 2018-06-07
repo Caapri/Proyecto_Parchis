@@ -289,9 +289,9 @@ io.on('connection', function (socket) {
   });
 
   // Cuando un usuario se conecta
-  socket.on("conectado", function () {
+  socket.on("conectado", function (usuario) {
     //socket.broadcast.emit("hola");
-    io.sockets.to(getRoom(socket)).emit("hola"); // Función para decirle al cliente que se ha conectado un nuevo usuario a la sala
+    socket.broadcast.to(getRoom(socket)).emit("hola",usuario); // Función para decirle al cliente que se ha conectado un nuevo usuario a la sala
   });
 
   socket.on("movimiento", function (fichasamover) {
@@ -301,7 +301,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on("perdedor", function () {
-    io.sockets.to(getRoom(socket)).emit("perder");
+    socket.broadcast.to(getRoom(socket)).emit("perder");
   });
 
   socket.on('disconnect', function () { // Desconexión del socket
