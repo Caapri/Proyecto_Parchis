@@ -92,8 +92,10 @@ window.onload = function () {
     mov1, mov2, mov3,
     participantes = new Map(),
     cas = new RegExp(/fill:#([a-f0-9]+)/),
+    cas2 = new RegExp(/opacity:(0|1)+/);
     sala,
     contcasas = 4,
+    contmetas = 0,
     fichascasas = 1,
     fichasmetas = 1,
     contdados = 0,
@@ -308,9 +310,9 @@ window.onload = function () {
 
           // condicion si el array ya tiene una ficha
           if (fichasamover.length == 1) {
-            //console.log("la id es: " + id);
+            console.log("la id es: " + id);
             var idrecortada = id.substr(0, id.length - 2);
-            //console.log("la id recortada es: " + idrecortada);
+            console.log("la id recortada es: " + idrecortada);
             if (idrecortada == mov1 || idrecortada == mov2 || idrecortada == mov3) {
               if (idrecortada == mov1) contdados += dado11, dadosum -= dado1, dado1 = 0;
               if (idrecortada == mov2) contdados += dado22, dadosum -= dado2, dado2 = 0;
@@ -422,7 +424,8 @@ window.onload = function () {
 
             var temp1 = numero + dado1,
               temp2 = numero + dado2,
-              temp3 = numero + dadosum;
+              temp3 = numero + dadosum,
+              temp4;
 
             if (temp1 > 68) temp1 = temp1 - 68;
             if (temp2 > 68) temp2 = temp2 - 68;
@@ -446,9 +449,24 @@ window.onload = function () {
               } else {
                 if (meta == 1) {
                   if (temp1 > 7) {
-                    console.log("ten cuidadol!!");
-                    opcion1 = "#casilla" + temp1;
-                    mov1 = "ficha" + temp1;
+                    if (temp1 == 8) {
+                      for (let ficha in metasini) {
+                        console.log("ficha meta: " + ficha);
+                        if (metasini[ficha] == 0) {
+                          temp4 = ficha;
+                          metasini[ficha] = 1;
+                          contmetas++;
+                          break;
+                        }
+                      }
+                      console.log("ficha que devuelve " + temp4);
+                      opcion1 = "#" + temp4;
+                      mov1 = temp4;
+                    } else {
+                      console.log("ten cuidadol!!");
+                      opcion1 = "#casilla" + temp1;
+                      mov1 = "ficha" + temp1;
+                    }
                   } else {
                     opcion1 = "#metaAzul" + temp1;
                     mov1 = "fichaMetaAzul" + temp1;
@@ -466,9 +484,24 @@ window.onload = function () {
               } else {
                 if (meta == 1) {
                   if (temp2 > 7) {
-                    console.log("ten cuidadol!!");
-                    opcion2 = "#casilla" + temp2;
-                    mov2 = "ficha" + temp2;
+                    if (temp2 == 8) {
+                      for (let ficha in metasini) {
+                        console.log("ficha meta: " + ficha);
+                        if (metasini[ficha] == 0) {
+                          temp4 = ficha;
+                          metasini[ficha] = 1;
+                          contmetas++;
+                          break;
+                        }
+                      }
+                      console.log("ficha que devuelve " + temp4);
+                      opcion1 = "#" + temp4;
+                      mov1 = temp4;
+                    } else {
+                      console.log("ten cuidadol!!");
+                      opcion2 = "#casilla" + temp2;
+                      mov2 = "ficha" + temp2;
+                    }
                   } else {
                     opcion2 = "#metaAzul" + temp2;
                     mov2 = "fichaMetaAzul" + temp2;
@@ -486,9 +519,24 @@ window.onload = function () {
               } else {
                 if (meta == 1) {
                   if (temp3 > 7) {
-                    console.log("ten cuidadol!!");
-                    opcion3 = "#casilla" + temp3;
-                    mov3 = "ficha" + temp3
+                    if (temp3 == 8) {
+                      for (let ficha in metasini) {
+                        console.log("ficha meta: " + ficha);
+                        if (metasini[ficha] == 0) {
+                          temp4 = ficha;
+                          metasini[ficha] = 1;
+                          contmetas++;
+                          break;
+                        }
+                      }
+                      console.log("ficha que devuelve " + temp4);
+                      opcion1 = "#" + temp4;
+                      mov1 = temp4;
+                    } else {
+                      console.log("ten cuidadol!!");
+                      opcion3 = "#casilla" + temp3;
+                      mov3 = "ficha" + temp3;
+                    }
                   } else {
                     opcion3 = "#metaAzul" + temp3;
                     mov3 = "fichaMetaAzul" + temp3;
@@ -510,9 +558,24 @@ window.onload = function () {
               } else {
                 if (meta == 1) {
                   if (temp1 > 7) {
-                    console.log("ten cuidadol!!");
-                    opcion1 = "#casilla" + temp1;
-                    mov1 = "ficha" + temp1;
+                    if (temp1 == 8) {
+                      for (let ficha in metasini) {
+                        console.log("ficha meta: " + ficha);
+                        if (metasini[ficha] == 0) {
+                          temp4 = ficha;
+                          metasini[ficha] = 1;
+                          contmetas++;
+                          break;
+                        }
+                      }
+                      console.log("ficha que devuelve " + temp4);
+                      opcion1 = "#" + temp4;
+                      mov1 = temp4;
+                    } else {
+                      console.log("ten cuidadol!!");
+                      opcion1 = "#casilla" + temp1;
+                      mov1 = "ficha" + temp1;
+                    }
                   } else {
                     opcion1 = "#metaVerde" + temp1;
                     mov1 = "fichaMetaVerde" + temp1;
@@ -530,9 +593,24 @@ window.onload = function () {
               } else {
                 if (meta == 1) {
                   if (temp2 > 7) {
-                    console.log("ten cuidadol!!");
-                    opcion2 = "#casilla" + temp2;
-                    mov2 = "ficha" + temp2;
+                    if (temp2 == 8) {
+                      for (let ficha in metasini) {
+                        console.log("ficha meta: " + ficha);
+                        if (metasini[ficha] == 0) {
+                          temp4 = ficha;
+                          metasini[ficha] = 1;
+                          contmetas++;
+                          break;
+                        }
+                      }
+                      console.log("ficha que devuelve " + temp4);
+                      opcion1 = "#" + temp4;
+                      mov1 = temp4;
+                    } else {
+                      console.log("ten cuidadol!!");
+                      opcion2 = "#casilla" + temp2;
+                      mov2 = "ficha" + temp2;
+                    }
                   } else {
                     opcion2 = "#metaVerde" + temp2;
                     mov2 = "fichaMetaVerde" + temp2;
@@ -550,9 +628,24 @@ window.onload = function () {
               } else {
                 if (meta == 1) {
                   if (temp3 > 7) {
-                    console.log("ten cuidadol!!");
-                    opcion3 = "#casilla" + temp3;
-                    mov3 = "ficha" + temp3;
+                    if (temp3 == 8) {
+                      for (let ficha in metasini) {
+                        console.log("ficha meta: " + ficha);
+                        if (metasini[ficha] == 0) {
+                          temp4 = ficha;
+                          metasini[ficha] = 1;
+                          contmetas++;
+                          break;
+                        }
+                      }
+                      console.log("ficha que devuelve " + temp4);
+                      opcion1 = "#" + temp4;
+                      mov1 = temp4;
+                    } else {
+                      console.log("ten cuidadol!!");
+                      opcion3 = "#casilla" + temp3;
+                      mov3 = "ficha" + temp3;
+                    }
                   } else {
                     opcion3 = "#metaVerde" + temp3;
                     mov3 = "fichaMetaVerde" + temp3;
@@ -568,29 +661,50 @@ window.onload = function () {
             if (dado2 != 0) opciones.push(opcion2);
             if (dadosum != 0) opciones.push(opcion3);
 
+            console.log("elementos de opciones");
+            console.log(opciones);
             for (var elementos of opciones) {
               var casilla = svg.select(elementos).attr('style');
               var casillacolor = casilla.replace(cas, "fill:#00ccff");
-              svg.select(elementos).attr('style', casillacolor);
+              if(elementos == "#fichaMetaAzulFin01" || elementos == "#fichaMetaAzulFin02" || elementos == "#fichaMetaAzulFin03" || elementos == "#fichaMetaAzulFin04" || elementos == "#fichaMetaVerdeFin01" || elementos == "#fichaMetaVerdeFin02" || elementos == "#fichaMetaVerdedFin03" || elementos == "#fichaMetaVerdeFin04"){
+                var casillacoloropaca = casilla.replace(cas2, "opacity:1");
+                svg.select(elementos).attr('style', casillacoloropaca);
+              }else{
+                svg.select(elementos).attr('style', casillacolor);
+              }              
             }
           }
         }
       }
+      /*
+      function elegirmeta() {
+        var metermeta;
+        for (let ficha in metasini) {
+          console.log("ficha meta: " + ficha);
+          if (metasini[ficha] == 0) {
+            metermeta = ficha;
+            metasini[ficha] = 1;
+            contmetas++;
+            break;
+          }
+        }
+        console.log("ficha que devuelve " + metermeta);
+        return metermeta;
+      }*/
+
     }
 
     function descolorearcasillas() {
       var defec = "fill:#ffffff";
       for (var elementos of opciones) {
+        console.log("elementos que descolorear" + elementos);
+        var fichaese = elementos.substr(0, elementos.length - 4);
         var ponercolor = svg.select(elementos).attr('style');
 
-        if (elementos == "#casilla05") defec = "fill:#ff0000";
-        if (elementos == "#casilla68") defec = "fill:#ff0000";
-        if (elementos == "#casilla17") defec = "fill:#188300";
-        if (elementos == "#casilla22") defec = "fill:#188300";
-        if (elementos == "#casilla34") defec = "fill:#f6ff4b";
-        if (elementos == "#casilla39") defec = "fill:#f6ff4b";
-        if (elementos == "#casilla51") defec = "fill:#3831eb";
-        if (elementos == "#casilla56") defec = "fill:#3831eb";
+        if (elementos == "#casilla05" || elementos == "#casilla68") defec = "fill:#ff0000";
+        if (elementos == "#casilla17" || elementos == "#casilla22" || fichaese == "#fichaMetaVerde") defec = "fill:#188300";
+        if (elementos == "#casilla34" || elementos == "#casilla39") defec = "fill:#f6ff4b";
+        if (elementos == "#casilla51" || elementos == "#casilla56" || fichaese == "#fichaMetaAzul0") defec = "fill:#3831eb";
 
         var ponercolorsus = ponercolor.replace(cas, defec);
         svg.select(elementos).attr('style', ponercolorsus);
