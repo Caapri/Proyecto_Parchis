@@ -112,7 +112,7 @@ window.onload = function () {
   // Poner el nombre de usuario en la cabecera de la página del juego
   var nick = sessionStorage.getItem("user");
   var userPlay = document.getElementById("userPlay");
-  userPlay.innerHTML = nick;
+  userPlay.innerHTML = "<h1>" + nick + "</h1>";
   /*var divNick = document.createElement("p");
   var textNick = divNick.createTextNode(nick);
   divNick.appendChild(textNick);
