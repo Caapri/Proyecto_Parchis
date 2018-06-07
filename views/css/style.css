@@ -370,6 +370,7 @@ body {
     /*grid-gap: 10px;*/
     grid-column-gap: 10px;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-row-gap: 10px;
     /*padding: 10px;*/
 }
   
@@ -378,7 +379,7 @@ body {
 }*/
   
 #titulo11 { /* Cabecera */
-    background: #f6f8ac;
+    background: #83bbe4;
     display: grid;
     grid-template-areas: 'usuario logo sala';
     grid-area: titulo;
@@ -391,7 +392,7 @@ body {
   
 #tablero {
     grid-area: tablero;
-    background: #f6f8ac;
+    /*background: #f6f8ac;*/
     display: grid;
     grid-template-areas: 'dados parchis';
 }
@@ -426,21 +427,26 @@ body {
     /*grid-gap: 10px;*/
     background: white;
     width: 330px;
+    box-shadow: 5px 5px 2px grey;
 }
   
 #messages{
     grid-area: mensajes;
     overflow: auto;
-    height: 550px;
+    height: 535px;
+    margin-top: 20px;
+    width: 300px;
 }
 
 #messages li {
     list-style: none;
+    font-family: Sims;
+    font-size: 17px;
 }
 
 .welcomeChat {
     font-weight: bold;
-    color: orange;
+    color: #ff9521;
 }
 
 #nickChat {
@@ -456,8 +462,15 @@ body {
 
 #inputChat { /* Input chat página parchis.html*/
     /*margin-bottom: 20px;*/
-    width: 100%;
-    margin: 0 auto;
+    /*width: 100%;*/
+    width: 300px;
+    /*margin-bottom: 10px;*/
+    margin-left: 13px;
+    border: 1px grey solid;
+}
+
+#inputChat:focus {
+    background: #eeeeee;
 }
 
 #icon-user { /* Icono usuario página parchis.html */
@@ -471,8 +484,12 @@ body {
 
 #userPlay { /* Div con el usuario página parchis.html */
     /*max-height: 100px;*/
-    background: red;
+    /*background: red;*/
     grid-area: usuario;
+    margin-top: 10px;
+    text-align: center;
+    font-weight:bold;
+    font-family: Sims;
 }
 
 #logoParchisJugar { /*Logo Parchís página parchis.html */
@@ -494,6 +511,7 @@ body {
     /*background: yellow;*/
     text-align: center;
     text-shadow: 2px 2px 2px white;
+    margin-top: 27px;
 }
 
 #salirPartida {
