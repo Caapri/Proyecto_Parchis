@@ -129,7 +129,7 @@ metasiniciales.push(metasiniverdes);
 
 io.on('connection', function (socket) {
   console.log("Alguien se ha conectado con socket");
-  //socket.emit('messages', mensajes);
+  //socket.emit("conectado");
 
   // CHAT
   socket.on("chat_mensajes", function (msg) {
@@ -274,8 +274,10 @@ io.on('connection', function (socket) {
     socket.emit("resrgbTohx", hx);
   });
 
+  // Cuando un usuario se conecta
   socket.on("conectado", function () {
-    socket.broadcast.emit("hola");
+    //socket.broadcast.emit("hola");
+    io.sockets.to(getRoom(socket)).emit("hola"); // Función para decirle al cliente que se ha conectado un nuevo usuario a la sala
   });
 
   socket.on("movimiento", function (fichasamover) {

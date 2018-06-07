@@ -10,7 +10,7 @@ window.onload = function () {
         for (var elementos of salas) {
             var chart = inputs.append("input")
                 .attr("id", elementos)
-                .attr("class", "botonjugar")
+                .attr("class", "btn btn-default")
                 .attr("type", "submit")
                 .attr("name", elementos)
                 .attr("value", elementos)

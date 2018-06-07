@@ -13,36 +13,30 @@ socket.on("actualizartitulo", function (dados) {
   dados3drival(dados);
 });
 
+// Borrar la variable de sesión de la sala
 socket.on("borrarsala", function () {
-  //console.log(sessionStorage.getItem("sala"));
   sessionStorage.removeItem("sala");
-  //console.log(sessionStorage.getItem("sala"));
 });
 
 // Decirle al cliente que la sala está llena y redirigirlo a las salas
 socket.on("salallena", function () {
-  alertify.alert('La sala esta llena');
-  location.href = "/";
+  alertify.alert('La sala está llena.<br />Se te redigirá a la página de inicio.');
+  setTimeout("location.href = '/';",3000); // Redirigir a la pag de inicio en 3 segundos
 });
 
-socket.on("fueritadeaca", function () {
-  alertify.alert('Contrincante desconectado');
-  setTimeout(function () { location.href = "/"; }, 5000);
-});
-
-// mensaje de alerta de cuando se conecta un usuario a la partida
-socket.emit('conectado');
-
-/*var submitChat = document.getElementById("enviarChat");
-var mensajeChat = document.getElementById("inputChat");
-console.log("Console log mensajeChat value: " + mensajeChat);
-submitChat.addEventListener("click", function() {
-  socket.emit("chat message", mensajeChat);
+// Función para decirle al cliente que su rival se ha desconectado
+/*socket.on("fueritadeaca", function () { 
+  alertify.alert('Tu rival se ha desconectado.<br /> Se te redigirá a la página de inicio.');
+  setTimeout("location.href = '/';", 3000); // Redirigir a la pag de inicio en 3 segundos
 });*/
 
-/*var enviarChat = document.getElementById("enviarChat");
-enviarChat.addEventListener("click", mensajeChat(e));
-console.log("holiiis: " + enviarChat);*/
+// Mensaje de alerta cuando se conecta un usuario a la partida
+socket.emit('conectado');
+
+socket.on("hola", function() {
+  alertify.set("notifier","position","top-center");
+  alertify.success("Se ha conectado un usuario.");
+});
 
 // CHAT
 function mensajeChat(e) {

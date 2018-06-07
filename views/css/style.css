@@ -534,3 +534,8 @@ body {
     text-decoration: none;
     color: white;
 }
+
+/* SALAS.HTML */
+#Sala1, #Sala2, #Sala3, #Sala4 {
+    margin-right: 10px;
+}
