@@ -1,5 +1,3 @@
-//import { WSAEPROVIDERFAILEDINIT } from "constants";
-
 /* CLIENTE */
 
 var socket = io.connect();
@@ -102,8 +100,6 @@ socket.on("perder", function () {
 
 //////////////////////////////
 
-var daditos = 0;
-
 // carga de las funciones del js
 window.onload = function () {
   var svg = d3.select(document.getElementById("parchis").contentDocument);
@@ -117,14 +113,15 @@ window.onload = function () {
     mov1, mov2, mov3,
     participantes = new Map(),
     cas = new RegExp(/fill:#([a-f0-9]+)/),
-    cas2 = new RegExp(/opacity:(0|1)+/);
-  sala,
+    cas2 = new RegExp(/opacity:(0|1)+/),
+    sala,
     contcasas = 4,
     contmetas = 0,
     fichascasas = 1,
     fichasmetas = 1,
     contdados = 0,
-    todosumacinco = 1;
+    todosumacinco = 1,
+    daditos = 0;
 
 
   // Recoger el nombre de la sala del sessionStorage
@@ -180,9 +177,15 @@ window.onload = function () {
   socket.on("genteensala", function (gentedesala, fichasiniciales, metasiniciales) {
     participantes = gentedesala;
 
+    d3.selectAll("#boton11").append("button")
+      .attr("id", "boton")
+      .attr("type", "button")
+      .attr("class", "btn")
+      .html("Tirar");
+
     //console.log("gente que hay en sala, color y turno");
     //'#3831eb', ""     '#188300', ""     'turno', 0/1
-    console.log(participantes);
+    //console.log(participantes);
 
     var socketcolores = Object.values(participantes),
       socketcoloreskeys = Object.keys(participantes),
@@ -195,15 +198,15 @@ window.onload = function () {
     if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0], fichasini = fichascasas[0], fichasalida = "ficha56-2", metasini = fichasmetas[0];
     else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1], fichasini = fichascasas[1], fichasalida = "ficha22-2", metasini = fichasmetas[1];
 
-    console.log("fichas iniciales:");
-    console.log(fichasini);
-    console.log("fichas metas:");
-    console.log(metasini);
+    //console.log("fichas iniciales:");
+    //console.log(fichasini);
+    //console.log("fichas metas:");
+    //console.log(metasini);
 
-    console.log("Tu color es: " + colorpersona);
+    //console.log("Tu color es: " + colorpersona);
 
-    console.log("Turno del color ---------------- tu color");
-    console.log(colorparticipante + " - " + tusocket);
+    //console.log("Turno del color ---------------- tu color");
+    //console.log(colorparticipante + " - " + tusocket);
     if (colorpersona == "#3831eb") {
       //d3.select("#tucolor").html("Turno de las azules");
       alertify.set('notifier', 'position', 'top-right');
@@ -216,11 +219,18 @@ window.onload = function () {
     }
 
     if (colorparticipante == tusocket) {
+
+      d3.selectAll("#boton").attr("disabled", null);
+
       alertify.set('notifier', 'position', 'top-right');
       //alertify.set('notifier','delay', 10); // Dejar la notificación 30 segundos
       alertify.success('Tu turno');
-      tirada(turnos);
+
+      daditos = tirada(turnos, daditos);
+
     } else {
+      //d3.selectAll("#boton").on("click", function () { });//.remove();
+      d3.selectAll("#boton").attr("disabled", "false");
       // USO DE ALERTIFY PARA NOTIFICACIONES
       alertify.set('notifier', 'position', 'top-right');
       alertify.warning('Turno del rival');
@@ -228,12 +238,14 @@ window.onload = function () {
 
   });
 
-  function tirada(turnos) {
+  function tirada(turnos, daditos) {
     // variable que coge el svg del parchis
     var svg = d3.select(document.getElementById("parchis").contentDocument);
     var toca = turnos;
 
-    lanzar_dados.addEventListener("click", lanzardados);
+
+    var boton = d3.select("button");
+    boton.on("click", lanzardados);
 
     function lanzardados() {
       var caca = dados3d();
@@ -243,37 +255,43 @@ window.onload = function () {
       dado1 = dados[0], dado2 = dados[1], dadosum = dado1 + dado2;
       dado11 = dados[0], dado22 = dados[1], dadosum2 = dado1 + dado2;
 
-      console.log("somos los dados!!!!");
-      console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
+      //console.log("somos los dados!!!!");
+      //console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
       if (dado1 == 5 || dado2 == 5 || dadosum == 5) {
         if (contcasas > 0) {
-          console.log("ha salido un 5");
+          //console.log("ha salido un 5");
 
           if (dado1 == 5) {
             contdados += 5;
             dado1 = 0;
             dadosum -= 5;
-            console.log("El primer dado vale 5");
+            //console.log("El primer dado vale 5");
             sacarcasa();
-            sleep(1000);
-          }
-
-          if (dado2 == 5) {
+          } else if (dado2 == 5) {
             contdados += 5;
             dado2 = 0;
             dadosum -= 5;
-            console.log("El segundo dado vale 5");
+            //console.log("El segundo dado vale 5");
             sacarcasa();
-            sleep(1000);
-          }
-          if (dadosum == 5) {
+          } else if (dadosum == 5) {
             contdados = dadosum2;
             dado1 = 0;
             dado2 = 0;
             dadosum = 0;
-            console.log("la suma de los dados vale 5");
+            //console.log("la suma de los dados vale 5");
             sacarcasa();
-            sleep(1000);
+            if (toca == 0) toca = 1;
+            else toca = 0;
+            dado1 = 0, dado2 = 0, dadosum = 0;
+            dado11 = 0, dado22 = 0, dadosum2 = 0;
+            socket.emit("cambiarturno", toca);
+            contdados = 0;
+
+            svg
+              .selectAll('*[id^="ficha"]')   // selecciona todos los elementos que empiezen por el id ficha
+              .on("mouseover", function () { }) // funcion para iluminar casillas donde puedes poner las fichas
+              .on("click", function () { }) //funcion para seleccionar fichas
+              .on("mouseout", function () { });
           }
 
           function sacarcasa() {
@@ -292,8 +310,8 @@ window.onload = function () {
                 break;
               }
             }
-            console.log("somos los dados despues del 5!!!!");
-            console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
+            //console.log("somos los dados despues del 5!!!!");
+            //console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
 
 
             colorcasa = sacarcolor("#" + fichasalida);
@@ -322,6 +340,52 @@ window.onload = function () {
           }
 
         }
+      } else {
+        console.log("saco 1 ficha al empezar w w w w ");
+        console.log("dadito vale: " + daditos);
+        if (daditos == 0) {
+          console.log("saco 1 ficha al empezar");
+          sacarcasa();
+          return daditos = 1;
+        }
+      }
+
+      d3.selectAll("#boton").attr("disabled", "false");
+
+      function sacarcasa() {
+        var fichaasacar;
+        for (let ficha in fichasini) {
+          //console.log("ficha: " + ficha);
+          //console.log(fichasini[ficha]);
+          if (fichasini[ficha] == 1) {
+            //console.log("esta es la ficha a sacar: " + ficha);
+            fichaasacar = ficha;
+            fichasini[ficha] = 0;
+            contcasas--;
+            //console.log("array de las casas:");
+            //console.log(fichasini);
+            //console.log("contador de casas: " + contcasas);
+            break;
+          }
+        }
+        //console.log("somos los dados despues del 5!!!!");
+        //console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
+
+
+        colorcasa = sacarcolor("#" + fichasalida);
+
+        dados51 = { "id": fichaasacar, "fill": colorpersona };
+        dados52 = { "id": fichasalida, "fill": colorcasa };
+
+        var dados5 = [];
+        dados5.push(dados51);
+        dados5.push(dados52);
+
+        alertify.set('notifier', 'position', 'top-right');
+        alertify.success('Saco ficha');
+
+        socket.emit("movimiento", dados5);
+        dados5 = [];
       }
     }
 
@@ -352,23 +416,23 @@ window.onload = function () {
 
           // condicion si el array ya tiene una ficha
           if (fichasamover.length == 1) {
-            console.log("la id es: " + id);
+            //console.log("la id es: " + id);
             var idrecortada = id.substr(0, id.length - 2);
             if (idrecortada == "fichaMetaVerdeFin" || idrecortada == "fichaMetaAzulFin") {
               idrecortada = id;
               metasini[id] = 1;
               contmetas++;
-              console.log("la id recortada es si es meta: " + idrecortada);
+              //console.log("la id recortada es si es meta: " + idrecortada);
             }
-            console.log("la id recortada es: " + idrecortada);
-            console.log("movimientos: " + mov1 + " " + mov2 + " " + mov3);
+            //console.log("la id recortada es: " + idrecortada);
+            //console.log("movimientos: " + mov1 + " " + mov2 + " " + mov3);
             if (idrecortada == mov1 || idrecortada == mov2 || idrecortada == mov3) {
               if (idrecortada == mov1) contdados += dado11, dadosum -= dado1, dado1 = 0;
               if (idrecortada == mov2) contdados += dado22, dadosum -= dado2, dado2 = 0;
               if (idrecortada == mov3) contdados += dadosum2, dadosum = 0;
 
               var idrecortada1 = id.substr(0, id.length - 2);
-              console.log("recortada segundo control: " + idrecortada1);
+              //console.log("recortada segundo control: " + idrecortada1);
               if (idrecortada1 == "fichaMetaVerdeFin" || idrecortada1 == "fichaMetaAzulFin") {
                 var ficha2 = new Object();
                 ficha2.id = id;
@@ -380,7 +444,7 @@ window.onload = function () {
                 var fichapuente2 = "#" + id.substr(0, id.length - 1) + "2";
                 var fichapuente1 = "#" + id.substr(0, id.length - 1) + "1";
 
-                console.log("La segunda ficha no es la del medio");
+                //console.log("La segunda ficha no es la del medio");
 
                 var color1 = sacarcolor(fichapuente3);
                 var color2 = sacarcolor(fichapuente2);
@@ -412,7 +476,7 @@ window.onload = function () {
                 alertify.error('No intentes mover una ficha que no es tuya!!!');
               }
             } else {
-              console.log("la ficha es blanca");
+              //console.log("la ficha es blanca");
             }
           }
         }
@@ -421,8 +485,8 @@ window.onload = function () {
         if (fichasamover.length == 2 || (dado1 == 0 && dado2 == 0 && dadosum == 0)) {//salatual
           socket.emit("movimiento", fichasamover);
           fichasamover = [];
-          console.log("contador de dados = " + contdados);
-          console.log("suma de dados = " + dadosum2);
+          //console.log("contador de dados = " + contdados);
+          //console.log("suma de dados = " + dadosum2);
           //if (Math.round(contdados / 2) == dadosum2 || todosumacinco == 0) {
           if (contdados == dadosum2 || (dado1 == 0 && dado2 == 0 && dadosum == 0)) {
             if (toca == 0) toca = 1;
@@ -437,10 +501,10 @@ window.onload = function () {
               .on("mouseover", function () { }) // funcion para iluminar casillas donde puedes poner las fichas
               .on("click", function () { }) //funcion para seleccionar fichas
               .on("mouseout", function () { });
-            lanzar_dados.removeEventListener("click", lanzardados);
+
 
           } else {
-            console.log("sigue moviendo");
+            //console.log("sigue moviendo");
           }
         }
 
@@ -465,16 +529,16 @@ window.onload = function () {
           //console.log(num);
 
           var idfichameta = idficha.substr(0, idficha.length - 4);
-          console.log("ficha meta: " + idfichameta);
+          //console.log("ficha meta: " + idfichameta);
 
           if (idfichameta == "#fichaMetaAzul") {
             num = idficha.charAt(14) + idficha.charAt(15);
-            console.log("si es casilla de meta azul: " + num);
+            //console.log("si es casilla de meta azul: " + num);
             meta = 1;
           }
           if (idfichameta == "#fichaMetaVerde") {
             num = idficha.charAt(15) + idficha.charAt(16);
-            console.log("si es casilla de meta verde: " + num);
+            //console.log("si es casilla de meta verde: " + num);
             meta = 1;
           }
 
@@ -503,13 +567,13 @@ window.onload = function () {
             if (temp3 < 10) temp3 = "0" + temp3;
 
             var opcion1, opcion2, opcion3;
-            console.log("color de la ficha: " + colorfich);
+            //console.log("color de la ficha: " + colorfich);
             //fichaMetaVerde01-2  fichaMetaAzul01-2
             if (colorfich == "#3831eb") {
-              console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color azul");
+              //console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color azul");
 
               if (temp1 > 51 && temp1 < 56) {
-                console.log("la ficha azul se va la meta - 1");
+                //console.log("la ficha azul se va la meta - 1");
                 temp1 = "0" + (temp1 - 51);
                 opcion1 = "#metaAzul" + temp1;
                 mov1 = "fichaMetaAzul" + temp1;
@@ -518,13 +582,13 @@ window.onload = function () {
                   if (temp1 > 7) {
                     if (temp1 == 8) {
                       for (let ficha in metasini) {
-                        console.log("ficha meta: " + ficha);
+                        //console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
                           break;
                         }
                       }
-                      console.log("ficha que devuelve " + temp4);
+                      //console.log("ficha que devuelve " + temp4);
                       opcion1 = "#" + temp4;
                       mov1 = temp4;
                     } else {
@@ -541,7 +605,7 @@ window.onload = function () {
                 }
               }
               if (temp2 > 51 && temp2 < 56) {
-                console.log("la ficha azul se va la meta - 2");
+                //console.log("la ficha azul se va la meta - 2");
                 temp2 = "0" + (temp2 - 51);
                 opcion2 = "#metaAzul" + temp2;
                 mov2 = "fichaMetaAzul" + temp2;
@@ -550,13 +614,13 @@ window.onload = function () {
                   if (temp2 > 7) {
                     if (temp2 == 8) {
                       for (let ficha in metasini) {
-                        console.log("ficha meta: " + ficha);
+                        //console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
                           break;
                         }
                       }
-                      console.log("ficha que devuelve " + temp4);
+                      //console.log("ficha que devuelve " + temp4);
                       opcion2 = "#" + temp4;
                       mov2 = temp4;
                     } else {
@@ -574,7 +638,7 @@ window.onload = function () {
               }
               if (temp3 > 51 && temp3 < 56) {
                 temp3 = "0" + (temp3 - 51);
-                console.log("la ficha azul se va la meta - 2");
+                //console.log("la ficha azul se va la meta - 2");
                 opcion3 = "#metaAzul" + temp3;
                 mov3 = "fichaMetaAzul" + temp3;
               } else {
@@ -582,13 +646,13 @@ window.onload = function () {
                   if (temp3 > 7) {
                     if (temp3 == 8) {
                       for (let ficha in metasini) {
-                        console.log("ficha meta: " + ficha);
+                        //console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
                           break;
                         }
                       }
-                      console.log("ficha que devuelve " + temp4);
+                      //console.log("ficha que devuelve " + temp4);
                       opcion3 = "#" + temp4;
                       mov3 = temp4;
                     } else {
@@ -607,10 +671,10 @@ window.onload = function () {
             }
 
             if (colorfich == "#188300") {
-              console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color verde");
+              //console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color verde");
               if (temp1 > 17 && temp1 < 22) {
                 temp1 = "0" + (temp1 - 17);
-                console.log("la ficha Verde se va la meta - 1");
+                //console.log("la ficha Verde se va la meta - 1");
                 opcion1 = "#metaVerde" + temp1;
                 mov1 = "fichaMetaVerde" + temp1;
               } else {
@@ -618,13 +682,13 @@ window.onload = function () {
                   if (temp1 > 7) {
                     if (temp1 == 8) {
                       for (let ficha in metasini) {
-                        console.log("ficha meta: " + ficha);
+                        //console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
                           break;
                         }
                       }
-                      console.log("ficha que devuelve " + temp4);
+                      //console.log("ficha que devuelve " + temp4);
                       opcion1 = "#" + temp4;
                       mov1 = temp4;
                     } else {
@@ -642,7 +706,7 @@ window.onload = function () {
               }
               if (temp2 > 17 && temp2 < 22) {
                 temp2 = "0" + (temp2 - 17);
-                console.log("la ficha Verde se va la meta - 2");
+                //console.log("la ficha Verde se va la meta - 2");
                 opcion2 = "#metaVerde" + temp2;
                 mov2 = "fichaMetaVerde" + temp2;
               } else {
@@ -650,13 +714,13 @@ window.onload = function () {
                   if (temp2 > 7) {
                     if (temp2 == 8) {
                       for (let ficha in metasini) {
-                        console.log("ficha meta: " + ficha);
+                        //console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
                           break;
                         }
                       }
-                      console.log("ficha que devuelve " + temp4);
+                      //console.log("ficha que devuelve " + temp4);
                       opcion2 = "#" + temp4;
                       mov2 = temp4;
                     } else {
@@ -674,7 +738,7 @@ window.onload = function () {
               }
               if (temp3 > 17 && temp3 < 22) {
                 temp3 = "0" + (temp3 - 17);
-                console.log("la ficha Verde se va la meta - 2");
+                //console.log("la ficha Verde se va la meta - 2");
                 opcion3 = "#metaVerde" + temp3;
                 mov3 = "fichaMetaVerde" + temp3;
               } else {
@@ -682,13 +746,13 @@ window.onload = function () {
                   if (temp3 > 7) {
                     if (temp3 == 8) {
                       for (let ficha in metasini) {
-                        console.log("ficha meta: " + ficha);
+                        //console.log("ficha meta: " + ficha);
                         if (metasini[ficha] == 0) {
                           temp4 = ficha;
                           break;
                         }
                       }
-                      console.log("ficha que devuelve " + temp4);
+                      //console.log("ficha que devuelve " + temp4);
                       opcion3 = "#" + temp4;
                       mov3 = temp4;
                     } else {
@@ -710,8 +774,8 @@ window.onload = function () {
             if (dado2 != 0 || opcion2 != undefined) opciones.push(opcion2);
             if (dadosum != 0 || opcion3 != undefined) opciones.push(opcion3);
 
-            console.log("elementos de opciones");
-            console.log(opciones);
+            //console.log("elementos de opciones");
+            //console.log(opciones);
             for (var elementos of opciones) {
               var casilla = svg.select(elementos).attr('style');
               var casillacolor = casilla.replace(cas, "fill:#00ccff");
@@ -746,7 +810,7 @@ window.onload = function () {
     function descolorearcasillas() {
       var defec = "fill:#ffffff";
       for (var elementos of opciones) {
-        console.log("elementos que descolorear" + elementos);
+        //console.log("elementos que descolorear" + elementos);
         var fichaese = elementos.substr(0, elementos.length - 4);
         var ponercolor = svg.select(elementos).attr('style');
 
@@ -802,7 +866,7 @@ window.onload = function () {
       alertify.warning('Que pretendes?\nDuplicarte?');
     } else {
       var idrecortada1 = fichas[1].id.substr(0, fichas[1].id.length - 2);
-      console.log("recortada segundo control: " + idrecortada1);
+      //console.log("recortada segundo control: " + idrecortada1);
       if (idrecortada1 == "fichaMetaVerdeFin" || idrecortada1 == "fichaMetaAzulFin") {
         var f1 = svg.select(idficha1).attr('style');
         var newStyle = f1.replace(r, colorficha2);
@@ -910,7 +974,7 @@ window.onload = function () {
   function bridgebreak(posicion3, posicion2, posicion1, colorficha1) {
     var r = new RegExp(/fill:#([a-f0-9]+)/);
     var r1 = new RegExp(/opacity:(0|1)+/);
-    console.log("Rompo el puente!");
+    //console.log("Rompo el puente!");
     var arriba = svg.select(posicion3).attr('style');
     var arribablanca = arriba.replace(r, "fill:#ffffff");
     var arribablancaopaca = arribablanca.replace(r1, "opacity:0");
@@ -930,7 +994,7 @@ window.onload = function () {
   function bridgemake(posicion3, posicion2, posicion1, colorficha1) {
     var r = new RegExp(/fill:#([a-f0-9]+)/);
     var r1 = new RegExp(/opacity:(0|1)+/);
-    console.log("Pongo un puente!");
+    //console.log("Pongo un puente!");
     var arriba = svg.select(posicion3).attr('style');
     var arribablanca = arriba.replace(r, colorficha1);
     var arribablancaopaca = arribablanca.replace(r1, "opacity:1");
