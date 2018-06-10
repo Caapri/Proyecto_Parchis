@@ -21,13 +21,13 @@ socket.on("borrarsala", function () {
 // Decirle al cliente que la sala está llena y redirigirlo a las salas
 socket.on("salallena", function () {
   alertify.alert('La sala está llena.<br />Se te redigirá a la página de inicio.').setHeader("Sala llena");
-  setTimeout("location.href = '/salas';", 4000); // Redirigir a la pag de inicio en 3 segundos
+  //setTimeout("location.href = '/salas';", 4000); // Redirigir a la pag de inicio en 3 segundos
 });
 
 // Función para decirle al cliente que su rival se ha desconectado y redirigirlo a la página de inicio
 socket.on("fueritadeaca", function () {
-  alertify.alert('Tu rival se ha desconectado.<br /> Se te redigirá a la página de inicio.').setHeader("Desconexión de rival");
-  setTimeout("location.href = '/';", 4000); // Redirigir a la pag de inicio en 3 segundos
+  alertify.alert('Tu rival se ha desconectado.<br /> Se te redigirá a la página de inicio.').setHeader("Desconexión de rival");//.setting({ 'onok': function () { location.href = "/"; } });
+  //setTimeout("location.href = '/';", 4000); // Redirigir a la pag de inicio en 3 segundos
 });
 
 // Mensaje de alerta cuando se conecta un usuario a la partida
@@ -98,6 +98,7 @@ socket.on("perder", function () {
   alertify.alert("Ooohhh... <br />Has perdido. Otra vez será...").setHeader("Loser!!!");
 });
 
+
 //////////////////////////////
 
 // carga de las funciones del js
@@ -107,7 +108,8 @@ window.onload = function () {
     fichasamover = [],
     opciones = [],
     turnos,
-    fichasini,
+    fichasini = 1,
+    fichasinirival = 1,
     metasini,
     dados, dado1, dado2, dadosum, dadosum2,
     mov1, mov2, mov3,
@@ -116,12 +118,16 @@ window.onload = function () {
     cas2 = new RegExp(/opacity:(0|1)+/),
     sala,
     contcasas = 4,
+    contcasas2 = 4,
     contmetas = 0,
     fichascasas = 1,
     fichasmetas = 1,
     contdados = 0,
+    colorpersona,
+    colorrival,
     todosumacinco = 1,
-    daditos = 0;
+    daditos1 = 0,
+    daditos2 = 0;
 
 
   // Recoger el nombre de la sala del sessionStorage
@@ -148,6 +154,57 @@ window.onload = function () {
 
   // Mensaje de se ha conectado el otro usuario
   socket.emit('conectado', sessionStorage.getItem("user"));
+
+  // Actualizacion de las fichas iniciales enemigas
+  socket.on("updatecasasrival", function (fichasinirival, colorcasa) {
+    console.log("actualizo las fichas del rival");
+    console.log(fichasinirival);
+    console.log("color del enemigo " + colorcasa);
+    if (colorcasa == "#188300") {
+      console.log("soy azul");
+      fichascasas[1] = fichasinirival;
+    }
+    if (colorcasa == "#3831eb") {
+      console.log("soy verde");
+      fichascasas[0] = fichasinirival;
+    }
+    console.log("fichas cosas despues de actualizar las del rival");
+    console.log(fichascasas);
+  });
+
+  // Actualizacion de las mis fichas iniciales 
+  socket.on("updatemiscasas", function (colorcambio, fichasini, fichasinirival, contcasas2, fichapush, colorponer1, fichaameter, colorponer2) {
+    console.log("actualizo mis casas");
+    var r = new RegExp(/fill:#([a-f0-9]+)/);
+    var r1 = new RegExp(/opacity:(0|1)+/);
+
+    console.log(colorcambio);
+    console.log(fichasini);
+    console.log(fichasinirival);
+    if (colorcambio == "#188300") {
+      console.log("soy azul");
+      fichascasas[0] = fichasinirival;
+    }
+    if (colorcambio == "#3831eb") {
+      console.log("soy verde");
+      fichascasas[1] = fichasinirival;
+    }
+
+    contcasas = contcasas2;
+
+    var f1 = svg.select(fichapush).attr('style');
+    var newStyle = f1.replace(r, colorponer1);
+    newStyle = newStyle.replace(r1, "opacity:0");
+    svg.select(fichapush).attr('style', newStyle);
+
+    var f2 = svg.select(fichaameter).attr('style');
+    var newStyle1 = f2.replace(r, colorponer2);
+    newStyle1 = newStyle1.replace(r1, "opacity:1");
+    svg.select(fichaameter).attr('style', newStyle1);
+
+    console.log("fichas cosas despues de que el rival me coma");
+    console.log(fichascasas);
+  });
 
   var sala;
 
@@ -176,7 +233,7 @@ window.onload = function () {
 
   socket.on("genteensala", function (gentedesala, fichasiniciales, metasiniciales) {
     participantes = gentedesala;
-
+    console.log("asd");
     d3.selectAll("#boton11").append("button")
       .attr("id", "boton")
       .attr("type", "button")
@@ -195,8 +252,23 @@ window.onload = function () {
 
     if (fichascasas == 1) fichascasas = fichasiniciales;
     if (fichasmetas == 1) fichasmetas = metasiniciales;
-    if (turnos == 0) colorparticipante = socketcolores[0], colorpersona = socketcoloreskeys[0], fichasini = fichascasas[0], fichasalida = "ficha56-2", metasini = fichasmetas[0];
-    else colorparticipante = socketcolores[1], colorpersona = socketcoloreskeys[1], fichasini = fichascasas[1], fichasalida = "ficha22-2", metasini = fichasmetas[1];
+    if (turnos == 0) {
+      colorparticipante = socketcolores[0];
+      colorpersona = socketcoloreskeys[0];
+      colorrival = socketcoloreskeys[1];
+      fichasini = fichascasas[0];
+      fichasinirival = fichascasas[1];
+      fichasalida = "ficha56-2";
+      metasini = fichasmetas[0];
+    } else {
+      colorparticipante = socketcolores[1];
+      colorpersona = socketcoloreskeys[1];
+      colorrival = socketcoloreskeys[0];
+      fichasini = fichascasas[1];
+      fichasinirival = fichascasas[0];
+      fichasalida = "ficha22-2";
+      metasini = fichasmetas[1];
+    }
 
     //console.log("fichas iniciales:");
     //console.log(fichasini);
@@ -207,15 +279,24 @@ window.onload = function () {
 
     //console.log("Turno del color ---------------- tu color");
     //console.log(colorparticipante + " - " + tusocket);
+
     if (colorpersona == "#3831eb") {
       //d3.select("#tucolor").html("Turno de las azules");
       alertify.set('notifier', 'position', 'top-right');
       alertify.warning('Turno de los azules');
+      if (daditos1 == 0) {
+        sacarcasa();
+        daditos1 = 1;
+      }
     }
     if (colorpersona == "#188300") {
       //d3.select("#tucolor").html("Turno de las verdes");
       alertify.set('notifier', 'position', 'top-right');
       alertify.warning('Turno de los verdes');
+      if (daditos2 == 0) {
+        sacarcasa();
+        daditos2 = 1;
+      }
     }
 
     if (colorparticipante == tusocket) {
@@ -226,7 +307,7 @@ window.onload = function () {
       //alertify.set('notifier','delay', 10); // Dejar la notificación 30 segundos
       alertify.success('Tu turno');
 
-      daditos = tirada(turnos, daditos);
+      tirada(turnos);
 
     } else {
       //d3.selectAll("#boton").on("click", function () { });//.remove();
@@ -236,9 +317,61 @@ window.onload = function () {
       alertify.warning('Turno del rival');
     }
 
+    function sacarcasa() {
+      var fichaasacar;
+      for (let ficha in fichasini) {
+        //console.log("ficha: " + ficha);
+        //console.log(fichasini[ficha]);
+        if (fichasini[ficha] == 1) {
+          //console.log("esta es la ficha a sacar: " + ficha);
+          fichaasacar = ficha;
+          fichasini[ficha] = 0;
+          contcasas--;
+          //console.log("array de las casas:");
+          //console.log(fichasini);
+          //console.log("contador de casas: " + contcasas);
+          break;
+        }
+      }
+      //console.log("somos los dados despues del 5!!!!");
+      //console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
+
+
+      colorcasa = sacarcolor("#" + fichasalida);
+
+      dados51 = { "id": fichaasacar, "fill": colorpersona };
+      dados52 = { "id": fichasalida, "fill": colorcasa };
+
+      var dados5 = [];
+      dados5.push(dados51);
+      dados5.push(dados52);
+
+      fichaasacar = "#" + fichasalida;
+
+      alertify.set('notifier', 'position', 'top-right');
+      alertify.success('Saco ficha');
+
+
+      socket.emit("fichascasasrivalupdate", fichasini, colorcasa);
+
+      if (colorcasa == "#188300") {
+        console.log("soy azul");
+        fichascasas[0] = fichasini;
+      }
+      if (colorcasa == "#3831eb") {
+        console.log("soy verde");
+        fichascasas[1] = fichasini;
+      }
+
+      console.log("actualizo mis fichas casa desues de sacar un 5");
+      console.log(fichascasas);
+      socket.emit("movimiento", dados5);
+      dados5 = [];
+    }
+
   });
 
-  function tirada(turnos, daditos) {
+  function tirada(turnos) {
     // variable que coge el svg del parchis
     var svg = d3.select(document.getElementById("parchis").contentDocument);
     var toca = turnos;
@@ -258,7 +391,7 @@ window.onload = function () {
       //console.log("somos los dados!!!!");
       //console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
       if (dado1 == 5 || dado2 == 5 || dadosum == 5) {
-        if (contcasas > 0) {
+        if (contcasas >= 0) {
           //console.log("ha salido un 5");
 
           if (dado1 == 5) {
@@ -326,6 +459,20 @@ window.onload = function () {
             alertify.set('notifier', 'position', 'top-right');
             alertify.success('Saco ficha');
 
+            socket.emit("fichascasasrivalupdate", fichasini, colorpersona);
+
+            if (colorcasa == "#188300") {
+              //console.log("soy azul");
+              fichascasas[1] = fichasini;
+            }
+            if (colorcasa == "#3831eb") {
+              //console.log("soy verde");
+              fichascasas[0] = fichasini;
+            }
+
+            //console.log("actualizo mis fichas casa despues por sacar la primera ficha");
+            //console.log(fichascasas);
+
             socket.emit("movimiento", dados5);
             dados5 = [];
           }
@@ -340,53 +487,11 @@ window.onload = function () {
           }
 
         }
-      } else {
-        console.log("saco 1 ficha al empezar w w w w ");
-        console.log("dadito vale: " + daditos);
-        if (daditos == 0) {
-          console.log("saco 1 ficha al empezar");
-          sacarcasa();
-          return daditos = 1;
-        }
       }
 
       d3.selectAll("#boton").attr("disabled", "false");
 
-      function sacarcasa() {
-        var fichaasacar;
-        for (let ficha in fichasini) {
-          //console.log("ficha: " + ficha);
-          //console.log(fichasini[ficha]);
-          if (fichasini[ficha] == 1) {
-            //console.log("esta es la ficha a sacar: " + ficha);
-            fichaasacar = ficha;
-            fichasini[ficha] = 0;
-            contcasas--;
-            //console.log("array de las casas:");
-            //console.log(fichasini);
-            //console.log("contador de casas: " + contcasas);
-            break;
-          }
-        }
-        //console.log("somos los dados despues del 5!!!!");
-        //console.log("dado1: " + dado1 + " dado2: " + dado2 + " sumadados: " + dadosum + " contadordados: " + contdados);
 
-
-        colorcasa = sacarcolor("#" + fichasalida);
-
-        dados51 = { "id": fichaasacar, "fill": colorpersona };
-        dados52 = { "id": fichasalida, "fill": colorcasa };
-
-        var dados5 = [];
-        dados5.push(dados51);
-        dados5.push(dados52);
-
-        alertify.set('notifier', 'position', 'top-right');
-        alertify.success('Saco ficha');
-
-        socket.emit("movimiento", dados5);
-        dados5 = [];
-      }
     }
 
     // inicializacion de la variable que contendra los puentes y los movimientos de las fichas
@@ -483,8 +588,62 @@ window.onload = function () {
 
         // hacer el movimiento cuando ya has seleccionado 2 fichas
         if (fichasamover.length == 2 || (dado1 == 0 && dado2 == 0 && dadosum == 0)) {//salatual
+          var fichapush1 = fichasamover[0],
+            fichapush2 = fichasamover[1];
+          //console.log(fichapush1.fill + " " + fichapush2.fill);
+          if (fichapush2.fill != "#ffffff" && fichapush2.fill != colorpersona) {
+            //console.log("hola");
+            var fichaameter;
+            //console.log("fichas iniciales rival 1 ");
+            //console.log(fichasinirival);
+
+            for (let ficha in fichasinirival) {
+              if (fichasinirival[ficha] == 0) {
+                fichaameter = ficha;
+                fichasinirival[ficha] = 1;
+                contcasas2--;
+                break;
+              }
+            }
+
+            fichaameter = "#" + fichaameter;
+
+            var colorponer1 = "fill:#ffffff";
+            var colorponer2 = "fill:" + fichapush2.fill;
+            var fichapush = "#" + fichapush2.id;
+            var colorcambio = fichapush1.fill;
+
+            var f1 = svg.select(fichapush).attr('style');
+            var newStyle = f1.replace(r, colorponer1);
+            newStyle = newStyle.replace(r1, "opacity:0");
+            svg.select(fichapush).attr('style', newStyle);
+
+            var f2 = svg.select(fichaameter).attr('style');
+            var newStyle1 = f2.replace(r, colorponer2);
+            newStyle1 = newStyle1.replace(r1, "opacity:1");
+            svg.select(fichaameter).attr('style', newStyle1);
+
+            socket.emit("fichasiniupdate", colorcambio, fichasini, fichasinirival, contcasas2, fichapush, colorponer1, fichaameter, colorponer2);
+
+            if (colorcambio == "#188300") {
+              //console.log("soy verde");
+              fichascasas[0] = fichasinirival;
+              fichascasas[1] = fichasini;
+            }
+            if (colorcambio == "#3831eb") {
+              //console.log("soy azul");
+              fichascasas[0] = fichasini;
+              fichascasas[1] = fichasinirival;
+            }
+
+            //console.log("fichas iniciales rival 2");
+            //console.log(fichasinirival);
+
+          }
+
           socket.emit("movimiento", fichasamover);
           fichasamover = [];
+
           //console.log("contador de dados = " + contdados);
           //console.log("suma de dados = " + dadosum2);
           //if (Math.round(contdados / 2) == dadosum2 || todosumacinco == 0) {
@@ -509,7 +668,7 @@ window.onload = function () {
         }
 
         if (contmetas == 4) {
-          alertify.alert("Enhorabuena!!!!<br />Has ganado").setHeader("Winner!!");
+          alertify.alert("Enhorabuena!!!!<br />Has ganado").setHeader("Winner!!").setting({ 'onok': function () { location.href = "/"; } });
           socket.emit("perdedor");
         }
       }
@@ -525,286 +684,274 @@ window.onload = function () {
         var colorfich = sacarcolor(idficha);
 
         if (colorfich != "#ffffff") {
-          var num = idficha.charAt(6) + idficha.charAt(7);
-          //console.log(num);
-
-          var idfichameta = idficha.substr(0, idficha.length - 4);
-          //console.log("ficha meta: " + idfichameta);
-
-          if (idfichameta == "#fichaMetaAzul") {
-            num = idficha.charAt(14) + idficha.charAt(15);
-            //console.log("si es casilla de meta azul: " + num);
-            meta = 1;
-          }
-          if (idfichameta == "#fichaMetaVerde") {
-            num = idficha.charAt(15) + idficha.charAt(16);
-            //console.log("si es casilla de meta verde: " + num);
-            meta = 1;
-          }
-
-          if (isNaN(num)) {
-            //num = idficha.charAt(10) + idficha.charAt(11);
-            alertify.set('notifier', 'position', 'top-right');
-            alertify.error('No puedes mover esa ficha');
-          } else {
+          if (colorfich == colorpersona) {
+            var num = idficha.charAt(6) + idficha.charAt(7);
             //console.log(num);
 
-            var mouse = d3.select(this).attr("id");
+            var idfichameta = idficha.substr(0, idficha.length - 4);
+            //console.log("ficha meta: " + idfichameta);
 
-            var numero = parseInt(num);
-
-            var temp1 = numero + dado1,
-              temp2 = numero + dado2,
-              temp3 = numero + dadosum,
-              temp4;
-
-            if (temp1 > 68) temp1 = temp1 - 68;
-            if (temp2 > 68) temp2 = temp2 - 68;
-            if (temp3 > 68) temp3 = temp3 - 68;
-
-            if (temp1 < 10) temp1 = "0" + temp1;
-            if (temp2 < 10) temp2 = "0" + temp2;
-            if (temp3 < 10) temp3 = "0" + temp3;
-
-            var opcion1, opcion2, opcion3;
-            //console.log("color de la ficha: " + colorfich);
-            //fichaMetaVerde01-2  fichaMetaAzul01-2
-            if (colorfich == "#3831eb") {
-              //console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color azul");
-
-              if (temp1 > 51 && temp1 < 56) {
-                //console.log("la ficha azul se va la meta - 1");
-                temp1 = "0" + (temp1 - 51);
-                opcion1 = "#metaAzul" + temp1;
-                mov1 = "fichaMetaAzul" + temp1;
-              } else {
-                if (meta == 1) {
-                  if (temp1 > 7) {
-                    if (temp1 == 8) {
-                      for (let ficha in metasini) {
-                        //console.log("ficha meta: " + ficha);
-                        if (metasini[ficha] == 0) {
-                          temp4 = ficha;
-                          break;
-                        }
-                      }
-                      //console.log("ficha que devuelve " + temp4);
-                      opcion1 = "#" + temp4;
-                      mov1 = temp4;
-                    } else {
-                      opcion1 = "#casilla" + temp1;
-                      mov1 = "ficha" + temp1;
-                    }
-                  } else {
-                    opcion1 = "#metaAzul" + temp1;
-                    mov1 = "fichaMetaAzul" + temp1;
-                  }
-                } else {
-                  opcion1 = "#casilla" + temp1;
-                  mov1 = "ficha" + temp1;
-                }
-              }
-              if (temp2 > 51 && temp2 < 56) {
-                //console.log("la ficha azul se va la meta - 2");
-                temp2 = "0" + (temp2 - 51);
-                opcion2 = "#metaAzul" + temp2;
-                mov2 = "fichaMetaAzul" + temp2;
-              } else {
-                if (meta == 1) {
-                  if (temp2 > 7) {
-                    if (temp2 == 8) {
-                      for (let ficha in metasini) {
-                        //console.log("ficha meta: " + ficha);
-                        if (metasini[ficha] == 0) {
-                          temp4 = ficha;
-                          break;
-                        }
-                      }
-                      //console.log("ficha que devuelve " + temp4);
-                      opcion2 = "#" + temp4;
-                      mov2 = temp4;
-                    } else {
-                      opcion2 = "#casilla" + temp2;
-                      mov2 = "ficha" + temp2;
-                    }
-                  } else {
-                    opcion2 = "#metaAzul" + temp2;
-                    mov2 = "fichaMetaAzul" + temp2;
-                  }
-                } else {
-                  opcion2 = "#casilla" + temp2;
-                  mov2 = "ficha" + temp2;
-                }
-              }
-              if (temp3 > 51 && temp3 < 56) {
-                temp3 = "0" + (temp3 - 51);
-                //console.log("la ficha azul se va la meta - 2");
-                opcion3 = "#metaAzul" + temp3;
-                mov3 = "fichaMetaAzul" + temp3;
-              } else {
-                if (meta == 1) {
-                  if (temp3 > 7) {
-                    if (temp3 == 8) {
-                      for (let ficha in metasini) {
-                        //console.log("ficha meta: " + ficha);
-                        if (metasini[ficha] == 0) {
-                          temp4 = ficha;
-                          break;
-                        }
-                      }
-                      //console.log("ficha que devuelve " + temp4);
-                      opcion3 = "#" + temp4;
-                      mov3 = temp4;
-                    } else {
-                      opcion3 = "#casilla" + temp3;
-                      mov3 = "ficha" + temp3;
-                    }
-                  } else {
-                    opcion3 = "#metaAzul" + temp3;
-                    mov3 = "fichaMetaAzul" + temp3;
-                  }
-                } else {
-                  opcion3 = "#casilla" + temp3;
-                  mov3 = "ficha" + temp3;
-                }
-              }
+            if (idfichameta == "#fichaMetaAzul") {
+              num = idficha.charAt(14) + idficha.charAt(15);
+              //console.log("si es casilla de meta azul: " + num);
+              meta = 1;
+            }
+            if (idfichameta == "#fichaMetaVerde") {
+              num = idficha.charAt(15) + idficha.charAt(16);
+              //console.log("si es casilla de meta verde: " + num);
+              meta = 1;
             }
 
-            if (colorfich == "#188300") {
-              //console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color verde");
-              if (temp1 > 17 && temp1 < 22) {
-                temp1 = "0" + (temp1 - 17);
-                //console.log("la ficha Verde se va la meta - 1");
-                opcion1 = "#metaVerde" + temp1;
-                mov1 = "fichaMetaVerde" + temp1;
-              } else {
-                if (meta == 1) {
-                  if (temp1 > 7) {
-                    if (temp1 == 8) {
-                      for (let ficha in metasini) {
-                        //console.log("ficha meta: " + ficha);
-                        if (metasini[ficha] == 0) {
-                          temp4 = ficha;
-                          break;
-                        }
-                      }
-                      //console.log("ficha que devuelve " + temp4);
-                      opcion1 = "#" + temp4;
-                      mov1 = temp4;
-                    } else {
-                      opcion1 = "#casilla" + temp1;
-                      mov1 = "ficha" + temp1;
-                    }
-                  } else {
-                    opcion1 = "#metaVerde" + temp1;
-                    mov1 = "fichaMetaVerde" + temp1;
-                  }
-                } else {
-                  opcion1 = "#casilla" + temp1;
-                  mov1 = "ficha" + temp1;
-                }
-              }
-              if (temp2 > 17 && temp2 < 22) {
-                temp2 = "0" + (temp2 - 17);
-                //console.log("la ficha Verde se va la meta - 2");
-                opcion2 = "#metaVerde" + temp2;
-                mov2 = "fichaMetaVerde" + temp2;
-              } else {
-                if (meta == 1) {
-                  if (temp2 > 7) {
-                    if (temp2 == 8) {
-                      for (let ficha in metasini) {
-                        //console.log("ficha meta: " + ficha);
-                        if (metasini[ficha] == 0) {
-                          temp4 = ficha;
-                          break;
-                        }
-                      }
-                      //console.log("ficha que devuelve " + temp4);
-                      opcion2 = "#" + temp4;
-                      mov2 = temp4;
-                    } else {
-                      opcion2 = "#casilla" + temp2;
-                      mov2 = "ficha" + temp2;
-                    }
-                  } else {
-                    opcion2 = "#metaVerde" + temp2;
-                    mov2 = "fichaMetaVerde" + temp2;
-                  }
-                } else {
-                  opcion2 = "#casilla" + temp2;
-                  mov2 = "ficha" + temp2;
-                }
-              }
-              if (temp3 > 17 && temp3 < 22) {
-                temp3 = "0" + (temp3 - 17);
-                //console.log("la ficha Verde se va la meta - 2");
-                opcion3 = "#metaVerde" + temp3;
-                mov3 = "fichaMetaVerde" + temp3;
-              } else {
-                if (meta == 1) {
-                  if (temp3 > 7) {
-                    if (temp3 == 8) {
-                      for (let ficha in metasini) {
-                        //console.log("ficha meta: " + ficha);
-                        if (metasini[ficha] == 0) {
-                          temp4 = ficha;
-                          break;
-                        }
-                      }
-                      //console.log("ficha que devuelve " + temp4);
-                      opcion3 = "#" + temp4;
-                      mov3 = temp4;
-                    } else {
-                      opcion3 = "#casilla" + temp3;
-                      mov3 = "ficha" + temp3;
-                    }
-                  } else {
-                    opcion3 = "#metaVerde" + temp3;
-                    mov3 = "fichaMetaVerde" + temp3;
-                  }
-                } else {
-                  opcion3 = "#casilla" + temp3;
-                  mov3 = "ficha" + temp3;
-                }
-              }
-            }
+            if (isNaN(num)) {
+              //num = idficha.charAt(10) + idficha.charAt(11);
+              alertify.set('notifier', 'position', 'top-right');
+              alertify.error('No puedes mover esa ficha');
+            } else {
+              //console.log(num);
 
-            if (dado1 != 0 || opcion1 != undefined) opciones.push(opcion1);
-            if (dado2 != 0 || opcion2 != undefined) opciones.push(opcion2);
-            if (dadosum != 0 || opcion3 != undefined) opciones.push(opcion3);
+              var mouse = d3.select(this).attr("id");
 
-            //console.log("elementos de opciones");
-            //console.log(opciones);
-            for (var elementos of opciones) {
-              var casilla = svg.select(elementos).attr('style');
-              var casillacolor = casilla.replace(cas, "fill:#00ccff");
-              if (elementos == "#fichaMetaAzulFin01" || elementos == "#fichaMetaAzulFin02" || elementos == "#fichaMetaAzulFin03" || elementos == "#fichaMetaAzulFin04" || elementos == "#fichaMetaVerdeFin01" || elementos == "#fichaMetaVerdeFin02" || elementos == "#fichaMetaVerdedFin03" || elementos == "#fichaMetaVerdeFin04") {
-                var casillacoloropaca = casilla.replace(cas2, "opacity:1");
-                svg.select(elementos).attr('style', casillacoloropaca);
-              } else {
-                svg.select(elementos).attr('style', casillacolor);
+              var numero = parseInt(num);
+
+              var temp1 = numero + dado1,
+                temp2 = numero + dado2,
+                temp3 = numero + dadosum,
+                temp4;
+
+              if (temp1 > 68) temp1 = temp1 - 68;
+              if (temp2 > 68) temp2 = temp2 - 68;
+              if (temp3 > 68) temp3 = temp3 - 68;
+
+              if (temp1 < 10) temp1 = "0" + temp1;
+              if (temp2 < 10) temp2 = "0" + temp2;
+              if (temp3 < 10) temp3 = "0" + temp3;
+
+              var opcion1, opcion2, opcion3;
+              //console.log("color de la ficha: " + colorfich);
+              //fichaMetaVerde01-2  fichaMetaAzul01-2
+              if (colorfich == "#3831eb") {
+                //console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color azul");
+
+                if (temp1 > 51 && temp1 < 56) {
+                  //console.log("la ficha azul se va la meta - 1");
+                  temp1 = "0" + (temp1 - 51);
+                  opcion1 = "#metaAzul" + temp1;
+                  mov1 = "fichaMetaAzul" + temp1;
+                } else {
+                  if (meta == 1) {
+                    if (temp1 > 7) {
+                      if (temp1 == 8) {
+                        for (let ficha in metasini) {
+                          //console.log("ficha meta: " + ficha);
+                          if (metasini[ficha] == 0) {
+                            temp4 = ficha;
+                            break;
+                          }
+                        }
+                        //console.log("ficha que devuelve " + temp4);
+                        opcion1 = "#" + temp4;
+                        mov1 = temp4;
+                      } else {
+                        opcion1 = "#casilla" + temp1;
+                        mov1 = "ficha" + temp1;
+                      }
+                    } else {
+                      opcion1 = "#metaAzul" + temp1;
+                      mov1 = "fichaMetaAzul" + temp1;
+                    }
+                  } else {
+                    opcion1 = "#casilla" + temp1;
+                    mov1 = "ficha" + temp1;
+                  }
+                }
+                if (temp2 > 51 && temp2 < 56) {
+                  //console.log("la ficha azul se va la meta - 2");
+                  temp2 = "0" + (temp2 - 51);
+                  opcion2 = "#metaAzul" + temp2;
+                  mov2 = "fichaMetaAzul" + temp2;
+                } else {
+                  if (meta == 1) {
+                    if (temp2 > 7) {
+                      if (temp2 == 8) {
+                        for (let ficha in metasini) {
+                          //console.log("ficha meta: " + ficha);
+                          if (metasini[ficha] == 0) {
+                            temp4 = ficha;
+                            break;
+                          }
+                        }
+                        //console.log("ficha que devuelve " + temp4);
+                        opcion2 = "#" + temp4;
+                        mov2 = temp4;
+                      } else {
+                        opcion2 = "#casilla" + temp2;
+                        mov2 = "ficha" + temp2;
+                      }
+                    } else {
+                      opcion2 = "#metaAzul" + temp2;
+                      mov2 = "fichaMetaAzul" + temp2;
+                    }
+                  } else {
+                    opcion2 = "#casilla" + temp2;
+                    mov2 = "ficha" + temp2;
+                  }
+                }
+                if (temp3 > 51 && temp3 < 56) {
+                  temp3 = "0" + (temp3 - 51);
+                  //console.log("la ficha azul se va la meta - 2");
+                  opcion3 = "#metaAzul" + temp3;
+                  mov3 = "fichaMetaAzul" + temp3;
+                } else {
+                  if (meta == 1) {
+                    if (temp3 > 7) {
+                      if (temp3 == 8) {
+                        for (let ficha in metasini) {
+                          //console.log("ficha meta: " + ficha);
+                          if (metasini[ficha] == 0) {
+                            temp4 = ficha;
+                            break;
+                          }
+                        }
+                        //console.log("ficha que devuelve " + temp4);
+                        opcion3 = "#" + temp4;
+                        mov3 = temp4;
+                      } else {
+                        opcion3 = "#casilla" + temp3;
+                        mov3 = "ficha" + temp3;
+                      }
+                    } else {
+                      opcion3 = "#metaAzul" + temp3;
+                      mov3 = "fichaMetaAzul" + temp3;
+                    }
+                  } else {
+                    opcion3 = "#casilla" + temp3;
+                    mov3 = "ficha" + temp3;
+                  }
+                }
+              }
+
+              if (colorfich == "#188300") {
+                //console.log("valor de los dados a resaltar: " + temp1 + " " + temp2 + " " + temp3 + " color verde");
+                if (temp1 > 17 && temp1 < 22) {
+                  temp1 = "0" + (temp1 - 17);
+                  //console.log("la ficha Verde se va la meta - 1");
+                  opcion1 = "#metaVerde" + temp1;
+                  mov1 = "fichaMetaVerde" + temp1;
+                } else {
+                  if (meta == 1) {
+                    if (temp1 > 7) {
+                      if (temp1 == 8) {
+                        for (let ficha in metasini) {
+                          //console.log("ficha meta: " + ficha);
+                          if (metasini[ficha] == 0) {
+                            temp4 = ficha;
+                            break;
+                          }
+                        }
+                        //console.log("ficha que devuelve " + temp4);
+                        opcion1 = "#" + temp4;
+                        mov1 = temp4;
+                      } else {
+                        opcion1 = "#casilla" + temp1;
+                        mov1 = "ficha" + temp1;
+                      }
+                    } else {
+                      opcion1 = "#metaVerde" + temp1;
+                      mov1 = "fichaMetaVerde" + temp1;
+                    }
+                  } else {
+                    opcion1 = "#casilla" + temp1;
+                    mov1 = "ficha" + temp1;
+                  }
+                }
+                if (temp2 > 17 && temp2 < 22) {
+                  temp2 = "0" + (temp2 - 17);
+                  //console.log("la ficha Verde se va la meta - 2");
+                  opcion2 = "#metaVerde" + temp2;
+                  mov2 = "fichaMetaVerde" + temp2;
+                } else {
+                  if (meta == 1) {
+                    if (temp2 > 7) {
+                      if (temp2 == 8) {
+                        for (let ficha in metasini) {
+                          //console.log("ficha meta: " + ficha);
+                          if (metasini[ficha] == 0) {
+                            temp4 = ficha;
+                            break;
+                          }
+                        }
+                        //console.log("ficha que devuelve " + temp4);
+                        opcion2 = "#" + temp4;
+                        mov2 = temp4;
+                      } else {
+                        opcion2 = "#casilla" + temp2;
+                        mov2 = "ficha" + temp2;
+                      }
+                    } else {
+                      opcion2 = "#metaVerde" + temp2;
+                      mov2 = "fichaMetaVerde" + temp2;
+                    }
+                  } else {
+                    opcion2 = "#casilla" + temp2;
+                    mov2 = "ficha" + temp2;
+                  }
+                }
+                if (temp3 > 17 && temp3 < 22) {
+                  temp3 = "0" + (temp3 - 17);
+                  //console.log("la ficha Verde se va la meta - 2");
+                  opcion3 = "#metaVerde" + temp3;
+                  mov3 = "fichaMetaVerde" + temp3;
+                } else {
+                  if (meta == 1) {
+                    if (temp3 > 7) {
+                      if (temp3 == 8) {
+                        for (let ficha in metasini) {
+                          //console.log("ficha meta: " + ficha);
+                          if (metasini[ficha] == 0) {
+                            temp4 = ficha;
+                            break;
+                          }
+                        }
+                        //console.log("ficha que devuelve " + temp4);
+                        opcion3 = "#" + temp4;
+                        mov3 = temp4;
+                      } else {
+                        opcion3 = "#casilla" + temp3;
+                        mov3 = "ficha" + temp3;
+                      }
+                    } else {
+                      opcion3 = "#metaVerde" + temp3;
+                      mov3 = "fichaMetaVerde" + temp3;
+                    }
+                  } else {
+                    opcion3 = "#casilla" + temp3;
+                    mov3 = "ficha" + temp3;
+                  }
+                }
+              }
+
+
+              if (dado1 != 0 || opcion1 != undefined) opciones.push(opcion1);
+              if (dado2 != 0 || opcion2 != undefined) opciones.push(opcion2);
+              if (dadosum != 0 || opcion3 != undefined) opciones.push(opcion3);
+
+              //console.log("elementos de opciones");
+              //console.log(opciones);
+              for (var elementos of opciones) {
+                var casilla = svg.select(elementos).attr('style');
+                var casillacolor = casilla.replace(cas, "fill:#00ccff");
+                if (elementos == "#fichaMetaAzulFin01" || elementos == "#fichaMetaAzulFin02" || elementos == "#fichaMetaAzulFin03" || elementos == "#fichaMetaAzulFin04" || elementos == "#fichaMetaVerdeFin01" || elementos == "#fichaMetaVerdeFin02" || elementos == "#fichaMetaVerdedFin03" || elementos == "#fichaMetaVerdeFin04") {
+                  var casillacoloropaca = casilla.replace(cas2, "opacity:1");
+                  svg.select(elementos).attr('style', casillacoloropaca);
+                } else {
+                  svg.select(elementos).attr('style', casillacolor);
+                }
               }
             }
           }
+
         }
       }
-      /*
-      function elegirmeta() {
-        var metermeta;
-        for (let ficha in metasini) {
-          console.log("ficha meta: " + ficha);
-          if (metasini[ficha] == 0) {
-            metermeta = ficha;
-            metasini[ficha] = 1;
-            contmetas++;
-            break;
-          }
-        }
-        console.log("ficha que devuelve " + metermeta);
-        return metermeta;
-      }*/
-
     }
 
     function descolorearcasillas() {
@@ -880,8 +1027,6 @@ window.onload = function () {
         svg.select(idficha2).attr('style', newStyle1);
         var f2 = svg.select(idficha2).attr('style');
       } else {
-
-
         var idfichacompare = idficha1.charAt(idficha1.length - 1);
         var idfichasalida = idficha1.substr(0, idficha1.length - 1);
         //console.log("ficha1: " + idfichasalida);
@@ -946,7 +1091,7 @@ window.onload = function () {
         var newStyle1 = f2.replace(r, colorficha1);
         newStyle1 = newStyle1.replace(r1, "opacity:1");
         svg.select(idficha2).attr('style', newStyle1);
-        var f2 = svg.select(idficha2).attr('style');
+        //var f2 = svg.select(idficha2).attr('style');
       }
       /* // esto es para cuando se rompa el puente borrarlo del array de objetos de puentes
       for(var element in puentes){

@@ -254,6 +254,14 @@ io.on('connection', function (socket) {
     }
   });
 
+  socket.on("fichascasasrivalupdate", function (miscasas, colorcasa) {
+    socket.broadcast.in(getRoom(socket)).emit("updatecasasrival", miscasas, colorcasa);
+  });
+
+  socket.on("fichasiniupdate", function (colorcambio, fichasini, fichasinirival, contcasas2, fichapush, colorponer1, fichaameter, colorponer2) {
+    socket.broadcast.in(getRoom(socket)).emit("updatemiscasas",colorcambio, fichasini, fichasinirival, contcasas2, fichapush, colorponer1, fichaameter, colorponer2);
+  });
+
   socket.on("new-message", function (comentarios) {
     if (getRoom(socket) == "Sala1") mensajes = mensajesSala1;
     if (getRoom(socket) == "Sala2") mensajes = mensajesSala2;
@@ -280,7 +288,7 @@ io.on('connection', function (socket) {
 
     var actualizarturno2 = { '#3831eb': actualizarturno.get('#3831eb'), '#188300': actualizarturno.get('#188300'), "turno": actualizarturno.get('turno') };
 
-    io.sockets.in(getRoom(socket)).emit("genteensala", actualizarturno2, fichasiniciales);
+    io.sockets.in(getRoom(socket)).emit("genteensala", actualizarturno2);
   });
 
   socket.on("rgbTohx", function (color) {
@@ -290,7 +298,7 @@ io.on('connection', function (socket) {
 
   // Cuando un usuario se conecta
   socket.on("conectado", function (usuario) {
-    socket.broadcast.to(getRoom(socket)).emit("hola",usuario); // Función para decirle al cliente que se ha conectado un nuevo usuario a la sala
+    socket.broadcast.to(getRoom(socket)).emit("hola", usuario); // Función para decirle al cliente que se ha conectado un nuevo usuario a la sala
   });
 
   socket.on("movimiento", function (fichasamover) {
