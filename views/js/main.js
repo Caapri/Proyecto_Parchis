@@ -157,36 +157,36 @@ window.onload = function () {
 
   // Actualizacion de las fichas iniciales enemigas
   socket.on("updatecasasrival", function (fichasinirival, colorcasa) {
-    console.log("actualizo las fichas del rival");
-    console.log(fichasinirival);
-    console.log("color del enemigo " + colorcasa);
+    //console.log("actualizo las fichas del rival");
+    //console.log(fichasinirival);
+    //console.log("color del enemigo " + colorcasa);
     if (colorcasa == "#188300") {
-      console.log("soy azul");
+      //console.log("soy azul");
       fichascasas[1] = fichasinirival;
     }
     if (colorcasa == "#3831eb") {
-      console.log("soy verde");
+      //console.log("soy verde");
       fichascasas[0] = fichasinirival;
     }
-    console.log("fichas cosas despues de actualizar las del rival");
-    console.log(fichascasas);
+    //console.log("fichas cosas despues de actualizar las del rival");
+    //console.log(fichascasas);
   });
 
   // Actualizacion de las mis fichas iniciales 
   socket.on("updatemiscasas", function (colorcambio, fichasini, fichasinirival, contcasas2, fichapush, colorponer1, fichaameter, colorponer2) {
-    console.log("actualizo mis casas");
+    //console.log("actualizo mis casas");
     var r = new RegExp(/fill:#([a-f0-9]+)/);
     var r1 = new RegExp(/opacity:(0|1)+/);
 
-    console.log(colorcambio);
-    console.log(fichasini);
-    console.log(fichasinirival);
+    //console.log(colorcambio);
+    //console.log(fichasini);
+    //console.log(fichasinirival);
     if (colorcambio == "#188300") {
-      console.log("soy azul");
+      //console.log("soy azul");
       fichascasas[0] = fichasinirival;
     }
     if (colorcambio == "#3831eb") {
-      console.log("soy verde");
+      //console.log("soy verde");
       fichascasas[1] = fichasinirival;
     }
 
@@ -202,8 +202,11 @@ window.onload = function () {
     newStyle1 = newStyle1.replace(r1, "opacity:1");
     svg.select(fichaameter).attr('style', newStyle1);
 
-    console.log("fichas cosas despues de que el rival me coma");
-    console.log(fichascasas);
+    //console.log("fichas cosas despues de que el rival me coma");
+    //console.log(fichascasas);
+
+    alertify.set('notifier','position','top-right');
+    alertify.warning('Oohh... Te han comido una ficha');
   });
 
   var sala;
@@ -233,7 +236,7 @@ window.onload = function () {
 
   socket.on("genteensala", function (gentedesala, fichasiniciales, metasiniciales) {
     participantes = gentedesala;
-    console.log("asd");
+    //console.log("asd");
     d3.selectAll("#boton11").append("button")
       .attr("id", "boton")
       .attr("type", "button")
@@ -355,16 +358,16 @@ window.onload = function () {
       socket.emit("fichascasasrivalupdate", fichasini, colorcasa);
 
       if (colorcasa == "#188300") {
-        console.log("soy azul");
+        //console.log("soy azul");
         fichascasas[0] = fichasini;
       }
       if (colorcasa == "#3831eb") {
-        console.log("soy verde");
+        //console.log("soy verde");
         fichascasas[1] = fichasini;
       }
 
-      console.log("actualizo mis fichas casa desues de sacar un 5");
-      console.log(fichascasas);
+      //console.log("actualizo mis fichas casa desues de sacar un 5");
+      //console.log(fichascasas);
       socket.emit("movimiento", dados5);
       dados5 = [];
     }
@@ -555,6 +558,7 @@ window.onload = function () {
                 var color2 = sacarcolor(fichapuente2);
                 var color3 = sacarcolor(fichapuente1);
                 //console.log(color1);
+                var colorficha1 = fichasamover[0].fill;
 
                 var ficha2 = new Object();
                 ficha2.id = id;
@@ -638,6 +642,9 @@ window.onload = function () {
 
             //console.log("fichas iniciales rival 2");
             //console.log(fichasinirival);
+
+            alertify.set('notifier', 'position', 'top-right');
+            alertify.success('Te has comido una ficha');
 
           }
 
@@ -1000,6 +1007,10 @@ window.onload = function () {
     var colorficha1 = "fill:" + fichas[0].fill;
     var idficha2 = "#" + fichas[1].id;
     var colorficha2 = "fill:" + fichas[1].fill;
+    console.log("id ficha1: " + idficha1);
+    console.log("fill ficha1: " + colorficha1);
+    console.log("id ficha2: " + idficha2);
+    console.log("fill ficha2: " + colorficha2);
 
     var pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
     var pos2 = idficha1.substr(0, idficha1.length - 1) + "2";
@@ -1007,13 +1018,13 @@ window.onload = function () {
 
     if (idficha1 == idficha2) {
       alertify.set('notifier', 'position', 'top-right');
-      alertify.warning('No puedes poner la ficha en el mismo sitio!!!\nTonto!');
+      alertify.warning('No puedes poner la ficha en el mismo sitio!!!');
     } else if (idficha2 == pos3 || idficha2 == pos2 || idficha2 == pos1) {
       alertify.set('notifier', 'position', 'top-right');
       alertify.warning('Que pretendes?\nDuplicarte?');
     } else {
       var idrecortada1 = fichas[1].id.substr(0, fichas[1].id.length - 2);
-      //console.log("recortada segundo control: " + idrecortada1);
+      //console.log("ficha1 recortada para camino meta: " + idrecortada1);
       if (idrecortada1 == "fichaMetaVerdeFin" || idrecortada1 == "fichaMetaAzulFin") {
         var f1 = svg.select(idficha1).attr('style');
         var newStyle = f1.replace(r, colorficha2);
@@ -1029,13 +1040,17 @@ window.onload = function () {
       } else {
         var idfichacompare = idficha1.charAt(idficha1.length - 1);
         var idfichasalida = idficha1.substr(0, idficha1.length - 1);
-        //console.log("ficha1: " + idfichasalida);
+        //console.log("numero de la posicion de la ficha1: " + idfichacompare);
+        //console.log("control para saber si es una ficha de casa: " + idfichasalida);
         if (idfichacompare != 2) {
+          //console.log("la ficha1 no acaba en 2");
           if (idfichasalida == "#fichaAzul0" || idfichasalida == "#fichaVerd0" || idfichasalida == "#fichaAmar0" || idfichasalida == "#fichaRoja0") {
-            //console.log("ficha de salida");
-            //console.log(idfichacompare);
+            //console.log("la ficha1 es una ficha de casa");
             if (fichas[0].fill == fichas[1].fill) {
-              bridgemake(pos3, pos2, pos1, colorficha1);
+              //console.log("las fichas tienen el mismo color");
+              //bridgemake(pos3, pos2, pos1, colorficha1);
+            } else {
+              //console.log("la ficha1 no tiene el mismo color que la ficha2");
             }
           } else {
             pos3 = idficha1.substr(0, idficha1.length - 1) + "3";
@@ -1046,6 +1061,7 @@ window.onload = function () {
           }
         }
         var idfichacompare2 = idficha2.charAt(idficha2.length - 1);
+        //console.log("numero de la posicion de la ficha2: " + idfichacompare2);
         if (idfichacompare2 != 2) {
           pos33 = idficha2.substr(0, idficha2.length - 1) + "3";
           pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
@@ -1067,14 +1083,20 @@ window.onload = function () {
           } else if (color2 == fichas[0].fill) {
             //console.log("la ficha 2 es del mismo color que la primera");
             bridgemake(pos33, pos22, pos11, colorficha1);
+            idficha2 = pos33;
           }
         } else {
+          //por aqui esta el error de la salida
           if (fichas[0].fill == fichas[1].fill) {
             pos33 = idficha2.substr(0, idficha2.length - 1) + "3";
             pos22 = idficha2.substr(0, idficha2.length - 1) + "2";
             pos11 = idficha2.substr(0, idficha2.length - 1) + "1";
-            //console.log("la ficha 2 es del mismo color que la primera");
+            //console.log("la ficha 2 es del mismo color que la primera 2");
+            //console.log(pos33, pos22, pos11, colorficha1);
             bridgemake(pos33, pos22, pos11, colorficha1);
+            if (idfichasalida == "#fichaAzul0" || idfichasalida == "#fichaVerd0" || idfichasalida == "#fichaAmar0" || idfichasalida == "#fichaRoja0") {
+              idficha2 = pos33;
+            }
           }
         }
 
@@ -1091,7 +1113,7 @@ window.onload = function () {
         var newStyle1 = f2.replace(r, colorficha1);
         newStyle1 = newStyle1.replace(r1, "opacity:1");
         svg.select(idficha2).attr('style', newStyle1);
-        //var f2 = svg.select(idficha2).attr('style');
+
       }
       /* // esto es para cuando se rompa el puente borrarlo del array de objetos de puentes
       for(var element in puentes){
